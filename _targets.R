@@ -18,5 +18,5 @@ tar_option_set(
 tar_source("R")
 # List of targets ------
 list(
-  
+  "stuff"
 )
