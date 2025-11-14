@@ -47,3 +47,11 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+# large files
+data/
+data/temp/
+*.parquet
+*.snappy.parquet
+*.csv
+*.feather
