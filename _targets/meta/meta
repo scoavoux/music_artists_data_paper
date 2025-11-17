@@ -7,15 +7,18 @@ clean_items|stem|a937db26f142a053|ba58e1391870520d|e8273244607a1dd1|1818735708|b
 user_data|stem|33a51ab94e1408c1|2b313b9e766091f7|108de26e55044042|1237590449|bucket=scoavoux*region=NULL*key=music_artists/objects/user_data*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20406.6447302596s||0|rds|aws|vector|||90.263||
 artist_id|stem|ab48282d9fa91924|6724ad1cd532cb3f|8578d09b7007a859|-1495173641|bucket=scoavoux*region=NULL*key=music_artists/objects/artist_id*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20406.6448504355s||0|rds|aws|vector|||0.001||
 artist_gender|stem|b22d675201ad6dc2|079bd3d7d29804d8|1c3856fca7a1edd8|628736541|bucket=scoavoux*region=NULL*key=music_artists/objects/artist_gender*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20406.7099043657s||0|rds|aws|vector|||12.888||
+items|stem|495e76e0d2a74635|87fe9388045f937f|289fb5da3f6b6756|-545601299|bucket=scoavoux*region=NULL*key=music_artists/objects/items*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20406.7107414406s||0|rds|aws|vector|||15.686||
+artist_language|stem|error|5b31dc71972231b9|2c530c1562a7fbd1|2098208649||t20409.4703675968s||0|null|aws|vector|||1.154||could not find function 'make_artist_language'
+artist_country|stem|error|ec761c670799ea3d|2c530c1562a7fbd1|-1291930120||t20409.4703704652s||0|null|aws|vector|||0.004||could not find function 'make_artist_country'
+artist_names|stem|error|c56a387ddb22ce08|2c530c1562a7fbd1|1714016708||t20409.4711130485s||0|null|aws|vector|||1.234||could not find function 'make_artist_names'
 initialize_s3|function|25a2772c1c03257f
 make_artist_id|function|ed9a6ad304e904c1
 join_items|function|e1e174fd79d367a3
 load_s3|function|7417c405edcb69bf
-.Random.seed|object|a693b5c766e8c03a
+.Random.seed|object|0f3f1a31c1753cab
 make_artists_names|function|9fa99d86f71c9750
 make_user_data|function|808f4ac2b353ed3a
 remove_artists|function|79826cdff62e8f00
 download_s3|function|1655382ce5f098f1
 make_artist_gender|function|3ffe943b4c657ae0
 make_aliases|function|3e2a46100841bc3f
-items|stem|495e76e0d2a74635|87fe9388045f937f|289fb5da3f6b6756|-545601299|bucket=scoavoux*region=NULL*key=music_artists/objects/items*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20406.7107414406s||0|rds|aws|vector|||15.686||

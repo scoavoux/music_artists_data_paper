@@ -1,6 +1,11 @@
+# placeholder for computing of master id
+make_artist_id <- function(clean_items){
+  artist_id <- clean_items$artist_id
+  return(artist_id)
+}
 
 
-# match senscritique_id with artist_id
+# match senscritique_id with artist_id (from deezer)
 manual_search_file <- fread("data/manual_search.csv")
 
 
@@ -33,9 +38,6 @@ s3 <- initialize_s3()
 f <- s3$get_object(Bucket = "scoavoux", 
                    Key = "musicbrainz/mbid_wikidataid_pair.csv")
 mbz_wikidata <- f$Body %>% rawToChar() %>% read_csv()
-
-
-
 
 
 

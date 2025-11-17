@@ -1,6 +1,5 @@
 name|type|parent|branches|progress
-items|stem|items|0|dispatched
-items|stem|items|0|completed
+items|stem|items|0|skipped
 artist_gender|stem|artist_gender|0|skipped
 clean_items|stem|clean_items|0|skipped
 user_data|stem|user_data|0|skipped

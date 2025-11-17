@@ -1,11 +1,14 @@
-make_senscritique_pairing_data <- function(){
+# Make senscritique data ------
+# Makes pairing of deezer id (artist_id) with musicbrainz and senscritique
+# Starts from dump of senscritique SQL database,
+# made July, 1st 2024
+
+make_senscritique_pairing_data <- function(manual_search_file){
   require(tidyverse)
   require(tidytable)
   require(WikidataQueryServiceR)
   
   s3 <- initialize_s3()
-  
-  manual_search_file <- fread("data/manual_search.csv")
   
   ## Import various pairings ------
   
@@ -27,63 +30,51 @@ make_senscritique_pairing_data <- function(){
     ?statement1 (ps:P2722) _:anyValueP2722.
     ?item wdt:P2722 ?deezer_id.
   }')
-  
   wikidata_deezer <- wikidata_deezer %>% 
     mutate(wikidata_id = str_extract(item, "/(Q\\d+)", group = 1)) %>% 
     select(-item)
-
-  f <- s3$get_object(Bucket = "scoavoux", 
-                     Key = "musicbrainz/mbid_wikidataid_pair.csv")
-  mbz_wikidata <- f$Body %>% rawToChar() %>% read_csv(show_col_types=F)
+  
+  f <- s3$get_object(Bucket = "scoavoux", Key = "musicbrainz/mbid_wikidataid_pair.csv")
+  mbz_wikidata <- f$Body %>% rawToChar() %>% read_csv()
   rm(f)
   
-
   mbz_wikidata <- mbz_wikidata %>% 
     select(-mbname) %>% 
     inner_join(wikidata_deezer) %>% 
     select(-wikidata_id)
   
-
   ### Musicbrainz id / deezer id pairs from musicbrainz dumps ------
-  f <- s3$get_object(Bucket = "scoavoux", 
-                     Key = "musicbrainz/mbid_deezerid_pair.csv")
-  mbz_dz <- f$Body %>% rawToChar() %>% read_csv(show_col_types=F)
+  f <- s3$get_object(Bucket = "scoavoux", Key = "musicbrainz/mbid_deezerid_pair.csv")
+  mbz_dz <- f$Body %>% rawToChar() %>% read_csv()
   rm(f)
   
-
   ### Musicbrainz id / spotify id to add spotify id when it lacks from co data ------
-  f <- s3$get_object(Bucket = "scoavoux", 
-                     Key = "musicbrainz/mbid_spotifyid_pair.csv")
-  mbid_spotifyid <- f$Body %>% rawToChar() %>% read_csv(show_col_types=F)
+  f <- s3$get_object(Bucket = "scoavoux", Key = "musicbrainz/mbid_spotifyid_pair.csv")
+  mbid_spotifyid <- f$Body %>% rawToChar() %>% read_csv()
   
   ### SensCritique / deezer id ------
   #### From manual search by me... highly trustworthy ------
   pairings0 <- manual_search_file
   
-
   #### from Deezer api search (old) ------
-  f <- s3$get_object(Bucket = "scoavoux", 
-                     Key = "senscritique/senscritique_id_deezer_id_pairing.csv")
-  pairings1 <- f$Body %>% rawToChar() %>% read_csv(show_col_types=F)
+  f <- s3$get_object(Bucket = "scoavoux", Key = "senscritique/senscritique_id_deezer_id_pairing.csv")
+  pairings1 <- f$Body %>% rawToChar() %>% read_csv()
   
-  f <- s3$get_object(Bucket = "scoavoux", 
-                     Key = "senscritique/senscritique_deezer_id_pairing_2.csv")
-  pairings2 <- f$Body %>% rawToChar() %>% read_csv(show_col_types=F)
+  f <- s3$get_object(Bucket = "scoavoux", Key = "senscritique/senscritique_deezer_id_pairing_2.csv")
+  pairings2 <- f$Body %>% rawToChar() %>% read_csv()
   
   #### From exact matches ------
   ## exact match between artists in dz and sc.
   ## Only those with unique match
   ## see script pair_more_artists
-  f <- s3$get_object(Bucket = "scoavoux", 
-                     Key = "senscritique/senscritique_deezer_id_pairing_3.csv")
-  pairings3 <- f$Body %>% rawToChar() %>% read_csv(show_col_types=F)
+  f <- s3$get_object(Bucket = "scoavoux", Key = "senscritique/senscritique_deezer_id_pairing_3.csv")
+  pairings3 <- f$Body %>% rawToChar() %>% read_csv()
   rm(f)  
   
   ## Exact match but allow multiple matches -- script will collapse them
   ## together afterwards
-  f <- s3$get_object(Bucket = "scoavoux", 
-                     Key = "senscritique/senscritique_deezer_id_pairing_4.csv")
-  pairings4 <- f$Body %>% rawToChar() %>% read_csv(show_col_types=F)
+  f <- s3$get_object(Bucket = "scoavoux", Key = "senscritique/senscritique_deezer_id_pairing_4.csv")
+  pairings4 <- f$Body %>% rawToChar() %>% read_csv()
   rm(f)  
   
   #### Put them together ------
@@ -104,14 +95,12 @@ make_senscritique_pairing_data <- function(){
   # project (based on... search in SC database?)
   # Also need to check whether this is a problem with SC spotify links or
   # with wikidata not having spotify/deezer match.
-  f <- s3$get_object(Bucket = "scoavoux", 
-                     Key = "senscritique/contacts.csv")
-  co <- f$Body %>% rawToChar() %>% read_csv(show_col_types=F) %>% distinct()
+  f <- s3$get_object(Bucket = "scoavoux", Key = "senscritique/contacts.csv")
+  co <- f$Body %>% rawToChar() %>% fread() %>% distinct()
   rm(f)
   
-  f <- s3$get_object(Bucket = "scoavoux", 
-                     Key = "senscritique/contacts_tracks.csv")
-  co_tr <- f$Body %>% rawToChar() %>% read_csv(show_col_types=F)
+  f <- s3$get_object(Bucket = "scoavoux", Key = "senscritique/contacts_tracks.csv")
+  co_tr <- f$Body %>% rawToChar() %>% fread()
   rm(f)
   co <- bind_rows(co, co_tr) %>% distinct()
   
@@ -161,7 +150,6 @@ make_senscritique_pairing_data <- function(){
     group_by(artist_id) %>% 
     mutate(consolidated_artist_id = first(inter_artist_id)) %>% 
     select(-inter_artist_id)
-  senscritique_mb_deezer_id <- ungroup(co)
-  
-  return(senscritique_mb_deezer_id)  
+  co <- ungroup(co)
+  return(co)  
 }
