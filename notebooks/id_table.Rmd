@@ -30,344 +30,37 @@ s3 <- initialize_s3()
 ```
 
 
-## Import various pairings
+## Import all IDs
 
+### CONTACT ID - 776K unique
 ```{r}
- ### Spotify/deezer id pairings from WIKIDATA ------
-  wikidata_spotify_deezer <- query_wikidata('SELECT DISTINCT ?spotify_id ?deezer_id
-  WHERE {
-    ?item p:P1902 ?statement0.
-    ?statement0 (ps:P1902) _:anyValueP1902.
-    ?item p:P2722 ?statement1.
-    ?statement1 (ps:P2722) _:anyValueP2722.
-    ?item wdt:P2722 ?deezer_id.
-    ?item wdt:P1902 ?spotify_id.
-  }')
-```
+f <- s3$get_object(Bucket = "scoavoux", 
+                   Key = "senscritique/contacts.csv")
+co <- f$Body %>% rawToChar() %>% fread() %>% distinct()
+rm(f)
 
-```{r}
-  ### Wikidata/deezer id pairs from WIKIDATA ------
-  wikidata_deezer <- query_wikidata('SELECT DISTINCT ?item ?deezer_id
-  WHERE {
-    ?item p:P2722 ?statement1.
-    ?statement1 (ps:P2722) _:anyValueP2722.
-    ?item wdt:P2722 ?deezer_id.
-  }')
-  wikidata_deezer <- wikidata_deezer %>% 
-    mutate(wikidata_id = str_extract(item, "/(Q\\d+)", group = 1)) %>% 
-    select(-item)
-  
-  f <- s3$get_object(Bucket = "scoavoux", Key = "musicbrainz/mbid_wikidataid_pair.csv")
-  mbz_wikidata <- f$Body %>% rawToChar() %>% read_csv()
-  rm(f)
-  
-  mbz_wikidata <- mbz_wikidata %>% 
-    select(-mbname) %>% 
-    inner_join(wikidata_deezer) %>% 
-    select(-wikidata_id)
+f <- s3$get_object(Bucket = "scoavoux", 
+                   Key = "senscritique/contacts_tracks.csv")
+co_tr <- f$Body %>% rawToChar() %>% fread()
+rm(f)
+co <- bind_rows(co, co_tr) %>% distinct()
 ```
 
 
+### MBZ-WIKIDATA - 776K unique
 ```{r}
-### Musicbrainz id / deezer id pairs from musicbrainz dumps ------
-  f <- s3$get_object(Bucket = "scoavoux", Key = "musicbrainz/mbid_deezerid_pair.csv")
-  mbz_dz <- f$Body %>% rawToChar() %>% read_csv()
-  rm(f)
-  
-  ### Musicbrainz id / spotify id to add spotify id when it is missing in co data ------
-  f <- s3$get_object(Bucket = "scoavoux", Key = "musicbrainz/mbid_spotifyid_pair.csv")
-  mbid_spotifyid <- f$Body %>% rawToChar() %>% read_csv()
-```
+mbz_wikidata <- s3$get_object(Bucket = "scoavoux", 
+                   Key = "musicbrainz/mbid_wikidataid_pair.csv")
+mbz_wikidata <- mbz_wikidata$Body %>% rawToChar() %>% read_csv()
 
-## senscritique pairings
-```{r}
-### SensCritique / deezer id ------
-  #### From manual search by me... highly trustworthy ------
-  pairings0 <- manual_search_file
-  
-  #### from Deezer api search (old) ------
-  f <- s3$get_object(Bucket = "scoavoux", 
-                     Key = "senscritique/senscritique_id_deezer_id_pairing.csv")
-  pairings1 <- f$Body %>% rawToChar() %>% read_csv()
-  rm(f)
-  
-  f <- s3$get_object(Bucket = "scoavoux", 
-                     Key = "senscritique/senscritique_deezer_id_pairing_2.csv")
-  pairings2 <- f$Body %>% rawToChar() %>% read_csv()
-  rm(f)
-
-  #### From exact matches ------
-  ## exact match between artists in dz and sc.
-  ## Only those with unique match
-  ## see script pair_more_artists
-  f <- s3$get_object(Bucket = "scoavoux", Key = "senscritique/senscritique_deezer_id_pairing_3.csv")
-  pairings3 <- f$Body %>% rawToChar() %>% read_csv()
-  rm(f)  
-  
-  ## Exact match but allow multiple matches -- script will collapse them
-  ## together afterwards
-  f <- s3$get_object(Bucket = "scoavoux", Key = "senscritique/senscritique_deezer_id_pairing_4.csv")
-  pairings4 <- f$Body %>% rawToChar() %>% read_csv()
-  rm(f)  
-  
-  #### Put them together ------
-  pairings <- pairings1 %>% 
-    select(contact_id, artist_id) %>% 
-    bind_rows(pairings0,
-              select(pairings2, contact_id, artist_id = "deezer_id"),
-              pairings3,
-              pairings4) %>% 
-    distinct()
-  
-  pairings <- pairings %>% 
-    filter(!is.na(artist_id))
-  
+length(unique(mbz_wikidata$mbid)) # 200 duplicates
+length(unique(mbz_wikidata$wikidata_id)) # 3K duplicates
 ```
 
 
 ```{r}
 
 ```
-
-
-
-## joining ids
-```{r}
-f <- s3$get_object(Bucket = "scoavoux", Key = "senscritique/contacts.csv")
-  co <- f$Body %>% rawToChar() %>% fread() %>% distinct()
-  rm(f)
-  
-  f <- s3$get_object(Bucket = "scoavoux", Key = "senscritique/contacts_tracks.csv")
-  co_tr <- f$Body %>% rawToChar() %>% fread()
-  rm(f)
-  co <- bind_rows(co, co_tr) %>% distinct()
-  
-  co <- distinct(co) %>% 
-    mutate(spotify_id = str_remove(spotify_id, "spotify:artist:"),
-           spotify_id = ifelse(spotify_id == "", NA, spotify_id)) %>% 
-    rename(mbid = "mbz_id")
-  
-  co <- co %>% 
-    left_join(select(mbid_spotifyid, mbid, spotify_id2 = "spotify_id")) %>% 
-    mutate(spotify_id = ifelse(is.na(spotify_id), spotify_id2, spotify_id)) %>% 
-    select(-spotify_id2) %>% 
-    left_join(select(wikidata_spotify_deezer, spotify_id, deezer_id), by = "spotify_id") %>% 
-    left_join(select(mbz_wikidata, mbid, deezer_id_wk = "deezer_id")) %>% 
-    left_join(select(mbz_dz, mbid, deezer_id_mb = "deezer_id")) %>% 
-    left_join(select(pairings, contact_id, deezer_id_p = "artist_id"))
-  
-  co <- co %>% 
-    mutate(deezer_id = as.numeric(deezer_id),
-           artist_id = case_when(!is.na(deezer_id) ~ deezer_id, 
-                                 !is.na(deezer_id_wk) ~ deezer_id_wk,
-                                 !is.na(deezer_id_mb) ~ deezer_id_mb,
-                                 TRUE ~ deezer_id_p),
-           id_origin = case_when(!is.na(deezer_id)    ~ "Wikidata spotify/deezer pair", 
-                                 !is.na(deezer_id_wk) ~ "Wikidata mbid/deezer pair",
-                                 !is.na(deezer_id_mb) ~ "Musicbrainz mbid / deezer pair",
-                                 !is.na(deezer_id_p)  ~ "API search"))
-```
-
-
-```{r}
-make_pairing_long <- function(manual_search_file) {
-  library(tidyverse)
-  library(tidytable)
-  library(WikidataQueryServiceR)
-  
-  s3 <- initialize_s3()
-  
-  # ----------------------------------------------------------
-  # 1. LOAD ALL PAIRING DATA SOURCES
-  # ----------------------------------------------------------
-  
-  # --- Wikidata: Spotify ↔ Deezer
-  wikidata_spotify_deezer <- query_wikidata('
-    SELECT DISTINCT ?spotify_id ?deezer_id WHERE {
-      ?item wdt:P1902 ?spotify_id .
-      ?item wdt:P2722 ?deezer_id .
-    }
-  ') %>%
-    mutate(
-      source = "wikidata_spotify_dz",
-      from_id_type = "spotify",
-      to_id_type = "deezer",
-      from_id = spotify_id,
-      to_id = deezer_id
-    ) %>%
-    select(source, from_id_type, from_id, to_id_type, to_id)
-  
-  # --- Wikidata: Wikidata ↔ Deezer
-  wikidata_dz <- query_wikidata('
-    SELECT DISTINCT ?item ?deezer_id WHERE {
-      ?item wdt:P2722 ?deezer_id .
-    }
-  ') %>%
-    mutate(
-      wikidata_id = str_extract(item, "Q[0-9]+"),
-      source = "wikidata_dz",
-      from_id_type = "wikidata",
-      from_id = wikidata_id,
-      to_id_type = "deezer",
-      to_id = deezer_id
-    ) %>%
-    select(source, from_id_type, from_id, to_id_type, to_id)
-  
-  # --- MBID ↔ Wikidata, joined to Wikidata-Deezer
-  f <- s3$get_object(Bucket="scoavoux", Key="musicbrainz/mbid_wikidataid_pair.csv")
-  mbz_wikidata <- f$Body %>% rawToChar() %>% read_csv()
-  
-  mbz_wikidata_dz <- mbz_wikidata %>%
-    select(mbid, wikidata_id) %>%
-    inner_join(
-      wikidata_dz %>% transmute(wikidata_id = from_id, deezer_id = to_id),
-      by = "wikidata_id"
-    ) %>%
-    mutate(
-      source = "mbz_wikidata_dz",
-      from_id_type = "mbid",
-      from_id = mbid,
-      to_id_type = "deezer",
-      to_id = deezer_id
-    ) %>%
-    select(source, from_id_type, from_id, to_id_type, to_id)
-  
-  # --- MBID ↔ Deezer direct (MusicBrainz)
-  f <- s3$get_object(Bucket="scoavoux", Key="musicbrainz/mbid_deezerid_pair.csv")
-  mbz_dz <- f$Body %>% rawToChar() %>% read_csv() %>%
-    mutate(
-      source = "mbz_direct_dz",
-      from_id_type = "mbid",
-      from_id = mbid,
-      to_id_type = "deezer",
-      to_id = deezer_id
-    ) %>%
-    select(source, from_id_type, from_id, to_id_type, to_id)
-  
-  # --- MBID ↔ Spotify
-  f <- s3$get_object(Bucket="scoavoux", Key="musicbrainz/mbid_spotifyid_pair.csv")
-  mbz_spotify <- f$Body %>% rawToChar() %>% read_csv() %>%
-    mutate(
-      source = "mbz_spotify",
-      from_id_type = "mbid",
-      to_id_type = "spotify",
-      from_id = mbid,
-      to_id = spotify_id
-    ) %>%
-    select(source, from_id_type, from_id, to_id_type, to_id)
-  
-  # --- SensCritique manual
-  sc_manual <- manual_search_file %>%
-    mutate(
-      source = "sc_manual",
-      from_id_type = "sc_contact",
-      to_id_type = "deezer",
-      from_id = contact_id,
-      to_id = artist_id
-    ) %>%
-    select(source, from_id_type, from_id, to_id_type, to_id)
-  
-  # --- SensCritique API search #1
-  f <- s3$get_object(Bucket="scoavoux", Key="senscritique/senscritique_id_deezer_id_pairing.csv")
-  sc_api1 <- f$Body %>% rawToChar() %>% read_csv() %>%
-    mutate(
-      source = "sc_api_1",
-      from_id_type = "sc_contact",
-      to_id_type = "deezer",
-      from_id = contact_id,
-      to_id = artist_id
-    ) %>%
-    select(source, from_id_type, from_id, to_id_type, to_id)
-  
-  # --- SensCritique API search #2
-  f <- s3$get_object(Bucket="scoavoux", Key="senscritique/senscritique_deezer_id_pairing_2.csv")
-  sc_api2 <- f$Body %>% rawToChar() %>% read_csv() %>%
-    mutate(
-      source = "sc_api_2",
-      from_id_type = "sc_contact",
-      to_id_type = "deezer",
-      from_id = contact_id,
-      to_id = deezer_id
-    ) %>%
-    select(source, from_id_type, from_id, to_id_type, to_id)
-  
-  # --- SensCritique exact-match unique
-  f <- s3$get_object(Bucket="scoavoux", Key="senscritique/senscritique_deezer_id_pairing_3.csv")
-  sc_api3 <- f$Body %>% rawToChar() %>% read_csv() %>%
-    mutate(
-      source = "sc_exact_unique",
-      from_id_type = "sc_contact",
-      to_id_type = "deezer",
-      from_id = contact_id,
-      to_id = artist_id
-    ) %>%
-    select(source, from_id_type, from_id, to_id_type, to_id)
-  
-  # --- SensCritique exact-match multi
-  f <- s3$get_object(Bucket="scoavoux", Key="senscritique/senscritique_deezer_id_pairing_4.csv")
-  sc_api4 <- f$Body %>% rawToChar() %>% read_csv() %>%
-    mutate(
-      source = "sc_exact_multi",
-      from_id_type = "sc_contact",
-      to_id_type = "deezer",
-      from_id = contact_id,
-      to_id = artist_id
-    ) %>%
-    select(source, from_id_type, from_id, to_id_type, to_id)
-  
-  # ----------------------------------------------------------
-  # 2. COMBINE ALL INTO ONE LONG TABLE
-  # ----------------------------------------------------------
-  
-  pairing_long <- bind_rows(
-    wikidata_spotify_deezer,
-    wikidata_dz,
-    mbz_wikidata_dz,
-    mbz_dz,
-    mbz_spotify,
-    sc_manual,
-    sc_api1,
-    sc_api2,
-    sc_api3,
-    sc_api4
-  ) %>%
-    distinct() %>%
-    filter(!is.na(from_id), !is.na(to_id))
-  
-  return(pairing_long)
-}
-
-```
-
-
-```{r}
-query <- '
-SELECT DISTINCT ?item ?mbid ?deezer_id ?spotify_id WHERE {
-  ?item wdt:P31/wdt:P279* wd:Q215380 .
-
-  OPTIONAL { ?item wdt:P434  ?mbid. }
-  OPTIONAL { ?item wdt:P2722 ?deezer_id. }
-  OPTIONAL { ?item wdt:P1902 ?spotify_id. }
-}
-'
-
-wd_all <- query_wikidata(query) %>%
-  mutate(
-    wikidata_id = stringr::str_extract(item, "Q[0-9]+")
-  ) %>%
-  select(wikidata_id, mbid, deezer_id, spotify_id)
-
-
-length(unique(wd_all$spotify_id))
-```
-
-
-
-
-
-
-
-
 
 
 
