@@ -16,31 +16,25 @@ initialize_s3 <- function(){
   return(s3)
 }
 
-s3 <- initialize_s3()
-
-obj <- s3$get_object(Bucket = "scoavoux", 
-                     Key = "records_w3/artists_genre_weight.csv") # load object from s3 bucket
 
 ##### load csv and parquet files
-load_file <- function(path, file, bucket = "scoavoux", ...) {
+load_s3 <- function(file, bucket = "scoavoux", ...) {
   
   s3 <- initialize_s3()
   
   if(grepl("\\.csv", file)) {
-    key <- file.path(path, file)
-    obj <- s3$get_object(Bucket = bucket, Key = key) # load object from s3 bucket
+    obj <- s3$get_object(Bucket = bucket, Key = file) # load object from s3 bucket
     txt <- rawToChar(obj$Body) # raw bytes to UTF-8 text
-    dat <- data.table::fread(input = txt, nrows = 0, ...) # fread reads strings directly if they contain CSV content
-    return(names(dat))
+    dat <- data.table::fread(input = txt, ...) # fread reads strings directly if they contain CSV content
+    return(dat)
   }
   
-
-  if(grepl("\\.parquet", file)) {
-    
-    key <- file.path(path, file)
-    obj <- s3$get_object(Bucket = bucket, Key = key)
-    dat <- arrow::read_parquet(obj$Body, as_data_frame = F)$schema # arrow reads parquet directly from raw vector
-    return(names(dat))
+  # --- Parquet ---
+  if (grepl("\\.parquet$", file)) {
+    obj <- s3$get_object(Bucket = bucket, Key = file)
+    buf <- arrow::BufferReader$create(obj$Body)
+    dat <- arrow::read_parquet(buf, as_data_frame = TRUE)
+    return(dat)
   }
   
   #message(cat(file, "loaded"))
@@ -49,12 +43,11 @@ load_file <- function(path, file, bucket = "scoavoux", ...) {
   
   stop("Unsupported file type: ", file)
   
-  
 }
 
 ##### load partitioned dataset
 ##### for streams
-load_partitioned_data <- function(
+load_partitioned_s3 <- function(
     bucket = "scoavoux",
     prefix = NULL,
     endpoint = "minio.lab.sspcloud.fr",
@@ -76,35 +69,44 @@ load_partitioned_data <- function(
   
   # ---- Partitioning (optional) ----
   if (is.null(partition_cols)) {
-    ds <- arrow::open_dataset(dat_path)
+    dat <- arrow::open_dataset(dat_path)
   } else {
     schema <- arrow::schema(!!!partition_cols)
     dat <- arrow::open_dataset(dat_path, partitioning = schema)
   }
   
   dat <- dat %>% 
-    select(is_listened) %>% 
-    ungroup() %>% 
-    collect()
+  select(all_of(cols)) %>% 
+  ungroup() %>% 
+  collect()
   
   return(dat)
 }
 
 
-# temporary: for stuff stored locally
 
-load_data_file <- function(path="data/", file) {
-  file <- paste0(path, file)
-  dat <- data.table::fread(input = file, nrows = 0) # fread reads strings directly if they contain CSV content
-  return(names(dat))
+##### TEMP --- return variable list of a file
+load_s3_info <- function(file, bucket = "scoavoux", ...) {
+  
+  s3 <- initialize_s3()
+  
+  if(grepl("\\.csv", file)) {
+    obj <- s3$get_object(Bucket = bucket, Key = file) # load object from s3 bucket
+    txt <- rawToChar(obj$Body) # raw bytes to UTF-8 text
+    dat <- data.table::fread(input = txt, nrows = 0, ...) 
+    return(names(dat))
+  }
+  
+  
+  if(grepl("\\.parquet", file)) {
+    obj <- s3$get_object(Bucket = bucket, Key = file)
+    dat <- arrow::read_parquet(obj$Body, as_data_frame = F)$schema # arrow reads parquet directly from raw vector
+    return(names(dat))
+  }
+  
+  stop("Unsupported file type: ", file)
+  
 }
-
-
-
-
-
-
-
 
 
 

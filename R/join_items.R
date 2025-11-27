@@ -1,4 +1,4 @@
-join_items <- function(to_remove_file){
+join_items <- function(){
   require(tidyverse)
   require(tidytable)
   
@@ -6,8 +6,8 @@ join_items <- function(to_remove_file){
   
   # items to take care of duplicated artists 
   # To remove "fake" artists: accounts that compile anonymous music
-  to_remove <- to_remove_file %>% 
-    select(artist_id)
+  # to_remove <- to_remove_file %>% 
+  #  select(artist_id)
   
   items_old <- s3$get_object(Bucket = "scoavoux", 
                              Key = "records_w3/items/songs.snappy.parquet")$Body %>% 
