@@ -1,10 +1,18 @@
 name|type|data|command|depend|seed|path|time|size|bytes|format|repository|iteration|parent|children|seconds|warnings|error
-.Random.seed|object|52a4def23187ab90
+to_remove_file|stem|cda4e4b60c1ee9c3|3be76b8ef4bf5db7|2c530c1562a7fbd1|-1383996971|bucket=scoavoux*region=NULL*key=music_artist/objects/to_remove_file*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20419.364013932s||0|rds|aws|vector|||1.326||
+join_items|function|b5e8c044a2607326
+streams|stem|edea8ad60457d1bc|b42acd4a7802717c|355c9eb843523bee|479841425|bucket=scoavoux*region=NULL*key=music_artist/objects/streams*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20419.4110565157s||0|rds|aws|vector|||104.3||
+streams_to_items|stem||33735b21e2a7fe89|2c530c1562a7fbd1|-1352621704||t20419.4489174519s||0|rds|aws|vector|||1.089||could not find function 'logfunc'
+items_old|stem|bb6ec61dd2f09584|fd404f30c2fb9ce9|dabb15fdfefcd698|-639525641|bucket=scoavoux*region=NULL*key=music_artist/objects/items_old*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20419.5790449503s||0|rds|aws|vector|||69.114||
+items_new|stem|8dc086c1d4239593|8ad051641478451c|dabb15fdfefcd698|-128255073|bucket=scoavoux*region=NULL*key=music_artist/objects/items_new*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20419.5795628745s||0|rds|aws|vector|||28.317||
+names|stem|76da9f606c5bce33|1b4a5dd2f4a68296|82732369c18b11b5|-2108954709|bucket=scoavoux*region=NULL*key=music_artist/objects/names*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20420.3398950654s||0|rds|aws|vector|||7.717||
 initialize_s3|function|25a2772c1c03257f
-load_streams|function|c6caca7a52c2173e
+load_streams|function|5c7624fab94fa27c
 load_partitioned_s3|function|ef32fd7856f71aa0
+.Random.seed|object|6efc10d34d33287a
 load_s3_info|function|b201b67fd14b09a5
-join_items|function|28f7d993e3472a91
 load_s3|function|f88139c9b1b1bb28
+bind_items|function|937aa1f5a2d0d1ac
 make_artist_popularity_data|function|eba21cded9d898c1
-streams|stem|df5c214f0772609c|b42acd4a7802717c|9df3acbd5c9534f5|479841425||t20418.6435702478s||39515|rds|local|vector|||0.373||IOError: When getting information for key 'records_w3/streams/streams_short' in bucket 'scoavoux': AWS Error ACCESS_DENIED during HeadObject operation: No response body.
+songs|stem|7c2ccda448f0707d|cecd19e2d3b63439|82732369c18b11b5|-1469361909|bucket=scoavoux*region=NULL*key=music_artist/objects/songs*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20420.423240976s||0|rds|aws|vector|||96.455||
+items|stem|2d9a25485a6e14ad|e41c225688bf89d4|c3deee8b3385991a|-545601299|bucket=scoavoux*region=NULL*key=music_artist/objects/items*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20420.4251237217s||0|rds|aws|vector|||115.847||
