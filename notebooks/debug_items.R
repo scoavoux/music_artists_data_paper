@@ -1,14 +1,39 @@
 ## items sanity checks: issues with cases not matching between items_old and items_new
 
 library(purrr)
+library(dplyr)
 
 tar_source("R")
 
+
+## ------------------------------------------------------------------------------------
+## load data
+items_old <- load_s3("records_w3/items/songs.snappy.parquet",
+                     col_select = c("song_id","artist_id","artists_ids"))
+
+items_old <- items_old %>% 
+  anti_join(to_remove) %>% 
+  select(song_id,
+         deezer_feat_ids = "artists_ids",
+         deezer_id = "artist_id") %>% 
+  filter(!is.na(deezer_id)) %>% 
+  
+  items_new <- load_s3("records_w3/items/song.snappy.parquet",
+                       col_select = c("song_id","artist_id","artists_ids"))
+
+items_new <- items_new %>% 
+  anti_join(to_remove) %>% 
+  select(song_id,
+         deezer_feat_ids = "artists_ids",
+         deezer_id = "artist_id") %>% 
+  filter(!is.na(deezer_id)) %>% 
+
 tar_load(items)
+
+
 
 ## ------------------------------------------------------------------------------------
 ## identify issue
-
 items_unique_rows <- items %>%  # all song-artist pairs are unique
   distinct()
 

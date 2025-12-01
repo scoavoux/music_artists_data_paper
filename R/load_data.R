@@ -18,7 +18,7 @@ initialize_s3 <- function(){
 
 
 ##### load csv and parquet files
-load_s3 <- function(file, bucket = "scoavoux", ...) {
+load_s3 <- function(file, bucket = "scoavoux", col_select = NULL, ...) {
   
   s3 <- initialize_s3()
   
@@ -33,7 +33,7 @@ load_s3 <- function(file, bucket = "scoavoux", ...) {
   if (grepl("\\.parquet$", file)) {
     obj <- s3$get_object(Bucket = bucket, Key = file)
     buf <- arrow::BufferReader$create(obj$Body)
-    dat <- arrow::read_parquet(buf, as_data_frame = TRUE)
+    dat <- arrow::read_parquet(buf, as_data_frame = TRUE, col_select = NULL)
     return(dat)
   }
   

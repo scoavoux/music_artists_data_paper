@@ -6,13 +6,13 @@ streams_to_items|stem||33735b21e2a7fe89|2c530c1562a7fbd1|-1352621704||t20419.448
 items_old|stem|bb6ec61dd2f09584|fd404f30c2fb9ce9|dabb15fdfefcd698|-639525641|bucket=scoavoux*region=NULL*key=music_artist/objects/items_old*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20419.5790449503s||0|rds|aws|vector|||69.114||
 items_new|stem|8dc086c1d4239593|8ad051641478451c|dabb15fdfefcd698|-128255073|bucket=scoavoux*region=NULL*key=music_artist/objects/items_new*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20419.5795628745s||0|rds|aws|vector|||28.317||
 names|stem|76da9f606c5bce33|1b4a5dd2f4a68296|82732369c18b11b5|-2108954709|bucket=scoavoux*region=NULL*key=music_artist/objects/names*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20420.3398950654s||0|rds|aws|vector|||7.717||
+songs|stem|7c2ccda448f0707d|cecd19e2d3b63439|82732369c18b11b5|-1469361909|bucket=scoavoux*region=NULL*key=music_artist/objects/songs*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20420.423240976s||0|rds|aws|vector|||96.455||
 initialize_s3|function|25a2772c1c03257f
 load_streams|function|5c7624fab94fa27c
 load_partitioned_s3|function|ef32fd7856f71aa0
-.Random.seed|object|6efc10d34d33287a
+.Random.seed|object|193d25e21dc349da
 load_s3_info|function|b201b67fd14b09a5
 load_s3|function|f88139c9b1b1bb28
 bind_items|function|937aa1f5a2d0d1ac
 make_artist_popularity_data|function|eba21cded9d898c1
-songs|stem|7c2ccda448f0707d|cecd19e2d3b63439|82732369c18b11b5|-1469361909|bucket=scoavoux*region=NULL*key=music_artist/objects/songs*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20420.423240976s||0|rds|aws|vector|||96.455||
-items|stem|2d9a25485a6e14ad|e41c225688bf89d4|c3deee8b3385991a|-545601299|bucket=scoavoux*region=NULL*key=music_artist/objects/items*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20420.4251237217s||0|rds|aws|vector|||115.847||
+items|stem|0cc12a51615ad897|31fdda059490c694|c3deee8b3385991a|-545601299|bucket=scoavoux*region=NULL*key=music_artist/objects/items*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20423.3222071884s||0|rds|aws|vector|||178.605||

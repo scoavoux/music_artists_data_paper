@@ -1,4 +1,3 @@
-
 ## bind items and remove to_remove_file.
 ## temporary: split up in old and new
 bind_items <- function(items_old, items_new, to_remove = to_remove_file){
@@ -22,6 +21,7 @@ bind_items <- function(items_old, items_new, to_remove = to_remove_file){
   items <- bind_rows(items_old, items_new) %>% 
     distinct()
   
+  # remove artists in to_remove_file
   items <- items %>% 
     anti_join(to_remove) %>% 
     select(song_id,
