@@ -32,12 +32,9 @@ list(
                command = bind_items(items_old = "records_w3/items/songs.snappy.parquet",
                                     items_new = "records_w3/items/song.snappy.parquet",
                                     to_remove = to_remove_file)),
-    
     tar_target(name = names,
-               command = load_s3(file = "records_w3/items/artists_data.snappy.parquet")),
+               command = load_s3(file = "records_w3/items/artists_data.snappy.parquet"))
   
-    tar_target(name = songs,
-               command = load_s3("records_w3/items/song.snappy.parquet"))
 )
 
 
