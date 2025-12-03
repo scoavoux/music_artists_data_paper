@@ -1,9 +1,9 @@
 library(httr)
 library(lubridate)
 
-names_to_scrape <- conflicts %>%
+new_names_to_scrape <- conflicts %>%
   filter(is.na(name_new_id)) %>% 
-  select(deezer_id.old, name_old_id)
+  select(deezer_id.new, name_old_id)
 
 
 get_artist_name <- function(artist_id){
@@ -16,17 +16,18 @@ get_artist_name <- function(artist_id){
 }
 
 # remplacer artists par un tibble avec artist_id = les id des artists dont le nom manque. 
-# à l'initialisation, ajouter une colonne scrapped = FALSE pour tout le monde
+# à l'initialisation, ajouter une colonne scraped = FALSE pour tout le monde
 # (permet de faciliter la relance quand la boucle plante)
 
-artists <- names_to_scrape %>% 
-  rename(artist_id = deezer_id.old) %>% 
+artists <- new_names_to_scrape %>% 
+  rename(artist_id = deezer_id.new) %>% 
   mutate(scraped = FALSE)
 
 results <- vector("list", length = nrow(artists))
 
 # time control (limite API: 50 requêtes toutes les 5 secondes
 start <- now()
+
 for(i in 1:nrow(artists)){
   if(artists$scraped[i]) next
   results[[i]] <- get_artist_name(artists$artist_id[i])
@@ -44,14 +45,14 @@ for(i in 1:nrow(artists)){
   
 }
 
-artists_names_from_api <- bind_rows(results)
+new_artists_names_from_api <- bind_rows(results)
 
-write_csv(artists_names_from_api, "data/interim/artists_names_from_api.csv")
-  
-  
+new_artists_names_from_api <- new_artists_names_from_api %>%
+  rename(deezer_id.new = deezer_id) %>% 
+  distinct(deezer_id.new, .keep_all = TRUE)
 
+write_csv(new_artists_names_from_api, "data/interim/new_artists_names_from_api.csv")
 
-  
   
   
   
