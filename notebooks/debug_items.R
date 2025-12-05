@@ -3,6 +3,7 @@ library(stringr)
 library(dplyr)
 library(tidyr)
 library(arrow)
+library(openxlsx)
 
 
 ### explode rows with feats
@@ -110,10 +111,7 @@ nrow(conflicts)
 
 
 
-### prepare fuzzy matching ------------------------
-
-#conflicts_unique <- conflicts %>% 
- # distinct(deezer_id.old, deezer_id.new)
+### prepare matching ------------------------
 
 removed <- conflicts %>% 
   group_by(song_id, deezer_id.old) %>%
@@ -127,17 +125,25 @@ to_match <- conflicts %>%
   filter(!any(deezer_id.old  == deezer_id.new)) %>% 
   ungroup() %>% 
   anti_join(removed) %>% 
-  distinct(deezer_id.old, deezer_id.new) %>% 
-  select(song_title, f_n_play, name_old_id, name_new_id)
+  distinct(deezer_id.old, deezer_id.new, .keep_all = TRUE) %>% 
+  select(f_n_play, name_old_id, name_new_id, deezer_id.old, deezer_id.new)
 
 
-write_csv(to_match, "data/interim/conflicts_to_match.csv")
+write_csv2(to_match_2, "data/interim/conflicts_to_match.csv")
+
+matched_scores <- read.xlsx("data/interim/matched_scores.xlsx")
+
+matched_scores <- tibble(matched_scores)
+
+matched_scores <- matched_scores %>% 
+  left_join(pop_sum, by = c("deezer_id.old", "deezer_id.new"))
 
 
+### see score of missing artists
+unmatched <- matched_scores %>% 
+  filter(is.na(match) | match != 1)
 
-
-
-
+sum(unmatched$f_n_play) * 100
 
 
 
