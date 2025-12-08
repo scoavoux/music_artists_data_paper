@@ -10,19 +10,23 @@ make_items_old|function|690cec12b30797df
 items_old|stem|d891de0811872c91|e5987bfe4876562b|130903fa37c9b43b|-639525641|bucket=scoavoux*region=NULL*key=music_artist/objects/items_old*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20430.3545272467s||0|rds|aws|vector|||528.322||
 items_new|stem|94c38b8a7c126325|a9f2184596c994c4|130903fa37c9b43b|-128255073|bucket=scoavoux*region=NULL*key=music_artist/objects/items_new*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20430.3570180571s||0|rds|aws|vector|||187.326||
 conflicts|stem|03a7d9caf32da7d1|54bf82ddf1be8041|1dc0337ff9e916ee|-774522916|bucket=scoavoux*region=NULL*key=music_artist/objects/conflicts*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20430.4181214883s||0|rds|aws|vector|||73.981|Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 18 of `x` matches multiple rows in `y`. ℹ Row 2670446 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.|
-conflicts_names|stem|ef84fb91c93d9da3|706fe63d64d60408|51499c7b01886989|-1481380506|bucket=scoavoux*region=NULL*key=music_artist/objects/conflicts_names*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20430.4346289391s||0|rds|aws|vector|||1.621||
 add_missing_names|function|aa4085767533169c
 scraped_names|stem||ca0c7666f2cf6a74|400d9cde4dea2355|-243752331||t20430.434634684s||0|rds|aws|vector|||5.237||'unit' should be one of 0, 1, 2, or 3
+new_names|stem|5dd9d65ca5f03cad|396ed47a82fed727|2c530c1562a7fbd1|2054026725|bucket=scoavoux*region=NULL*key=music_artist/objects/new_names*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20430.4870421662s||0|rds|aws|vector|||1.227||
+conflicts_names|stem|f6f0facb5dab8a1c|8adc0ee1563aaea4|4279c3c3d3c302aa|-1481380506|bucket=scoavoux*region=NULL*key=music_artist/objects/conflicts_names*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20430.4871471471s||0|rds|aws|vector|||2.329||
+matched_names|stem|f7bcc18b2c3c9546|4bf3ded1041fdd90|2c530c1562a7fbd1|278424977|bucket=scoavoux*region=NULL*key=music_artist/objects/matched_names*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20430.5364350764s||0|rds|aws|vector|||1.118||
 initialize_s3|function|25a2772c1c03257f
-names_to_conflicts|function|b0968aba6071cef9
+names_to_conflicts|function|dd5fdfe04f7ec928
 load_streams|function|5c7624fab94fa27c
+filter_conflicts_to_match|function|3092f73acf421a33
 load_partitioned_s3|function|ef32fd7856f71aa0
 make_conflict_items|function|6ad394234272aae4
-.Random.seed|object|fa775ac2c1600c7f
+.Random.seed|object|f313cedfe7973a25
+resolve_conflicts|function|cf6ccf807c9bdbaa
 write_s3|function|e5e136442f12838e
 load_s3_info|function|b201b67fd14b09a5
 load_s3|function|2f0bfd56597701f8
 bind_items|function|937aa1f5a2d0d1ac
 make_artist_popularity_data|function|eba21cded9d898c1
 make_items|function|0e565284c38d1f86
-new_names|stem||baae252f0b4c2968|83c85aa9e6e44528|2054026725||t20430.4666171189s||0|rds|aws|vector|||1.001||NoSuchKey (HTTP 404). The specified key does not exist.
+conflicts_to_match|stem|990adbdc36dc0efe|fca3920b4de5c8ea|20b42371a66eedad|1971099024|bucket=scoavoux*region=NULL*key=music_artist/objects/conflicts_to_match*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20430.649331031s||0|rds|aws|vector|||2.064||

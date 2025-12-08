@@ -49,7 +49,7 @@ make_conflict_items <- function(items_old, items_new, streams) {
   
 
 #### join to names
-names_to_conflicts <- function(conflicts, names) {
+names_to_conflicts <- function(conflicts, names, new_names) {
   
   names_old <- names %>% 
     select(deezer_id_old = artist_id, 
@@ -72,11 +72,68 @@ names_to_conflicts <- function(conflicts, names) {
            f_n_play, 
            song_id)
   
+  ## join names scraped from deezer API
+  conflicts_names <- conflicts_names %>%
+    left_join(new_names, by = "deezer_id_new") %>%
+    mutate(name_new_id = coalesce(name_new_id, name),
+           deezer_match = ifelse(deezer_id_old == deezer_id_new, TRUE, FALSE)) %>%
+    select(-name)
+  
   return(conflicts_names)
 }
 
 
 ### join to scraped names
+
+
+### filter conflicts to match
+filter_conflicts_to_match <- function(conflicts_names) {
+  
+  removed <- conflicts_names %>% 
+    group_by(song_id, deezer_id_old) %>%
+    filter(any(deezer_id_old  == deezer_id_new)) %>% 
+    ungroup() %>% 
+    filter(deezer_id_old  == deezer_id_new) %>% 
+    select(song_id, deezer_id_new)
+  
+  to_match <- conflicts_names %>% 
+    group_by(song_id, deezer_id_old) %>% 
+    filter(!any(deezer_id_old  == deezer_id_new)) %>% 
+    ungroup() %>% 
+    anti_join(removed) %>% 
+    distinct(deezer_id_old, deezer_id_new, .keep_all = TRUE) %>% 
+    select(song_id, song_title, deezer_id_old, deezer_id_new, f_n_play, name_old_id, name_new_id)
+  
+  
+  write_csv2(to_match, "data/interim/conflicts_to_match.csv")
+  
+}
+
+
+### filter conflicts to match
+resolve_conflicts <- function(conflicts_names, matched_names) {
+  
+  
+  
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

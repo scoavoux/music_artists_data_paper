@@ -161,6 +161,23 @@ unmatched <- matched_scores %>%
 
 sum(unmatched$f_n_play) * 100
 
+matched_names %>% 
+  as_tibble() %>% 
+  filter(match == 1)
+
+## objective: 
+
+## 1. resolve conflicts in conflicts with matched_names
+
+## 2. remerge conflicts into items 
+## with deezer_id of items_new when available (?)
+
+
+
+
+
+
+
 
 
 
