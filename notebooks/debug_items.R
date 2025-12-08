@@ -59,16 +59,22 @@ no_common_id <- items_old %>%
   group_by(song_id) %>%
   mutate(keep_song = any(!shared_deezer_id)) %>% # boolean column "keep song"
   ungroup() %>%
-  filter(keep_song) %>% # drop if FALSE
+  filter(keep_song)  %>% # drop if FALSE
   select(song_id,
          song_title = "song_title.old", # keep old only because song title never changes
-         as.integer(deezer_id.old),
-         as.integer(deezer_id.new)) %>% # to int for later operations
+         deezer_id.old = as.integer(deezer_id.old),
+         deezer_id.new = as.integer(deezer_id.new)) %>% # to int for later operations
   arrange(song_id, song_title)
+
+
 
 write_parquet(no_common_id, "data/interim/no_common_id.parquet",
               compression = "snappy")
 
+items <- items_old %>% 
+  inner_join(items_new, 
+           by = "song_id", 
+           suffix = c(".old", ".new"))
 
 ### join to streams and names ---------------------
 conflicts <- no_common_id %>%
@@ -85,7 +91,7 @@ names_new <- names %>%
          name_new_id = name)
 
 conflicts <- conflicts %>%
-  left_join(names_old, by = "deezer_id.old") %>% # merge to old 
+  left_join(names_old, by = "deezer_id.old") %>% 
   left_join(names_new, by = "deezer_id.new") %>% 
   arrange(desc(f_n_play)) %>% 
   select(song_title, 
@@ -97,6 +103,16 @@ conflicts <- conflicts %>%
          f_n_play, 
          song_id)
 
+
+
+#### THIS EVENING: SCRAPE ALL THESE NAMES IN ONE TARGET!
+items_new_name_na <- items_new %>% 
+  mutate(deezer_id = as.integer(deezer_id)) %>% 
+  left_join(names, by = "deezer_id") %>% 
+  distinct(deezer_id, .keep_all = TRUE)
+
+sum(is.na(items_new_name_na$name))
+  
 
 
 ### join scraped names ---------------------
