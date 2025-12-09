@@ -10,10 +10,10 @@ make_items <- function(to_remove = to_remove_file,
               by = "artist_id") %>% 
     
     mutate(deezer_feat_id = map_chr(artists_ids, 
-                                    ~ paste(as.integer(.x), 
+                                    ~ pasteas.integer(.x), 
                                             collapse = ","))) %>% 
     filter(!is.na(artist_id)) %>% 
-    separate_rows(deezer_feat_id, sep = ",") %>% 
+    separate_rows(deezer_feat_id, sep = ",") %>% # split feats into single deezer_ids
     select(song_id,
            song_title,
            deezer_id = "deezer_feat_id")
@@ -40,7 +40,7 @@ make_conflict_items <- function(items_old, items_new, streams) {
     select(song_id,
            song_title = song_title_old, # keep old only because song title never changes
            deezer_id_old,
-           deezer_id_new) %>% # to int for later operations
+           deezer_id_new) %>%
     arrange(song_id, song_title) %>% 
     inner_join(streams, by = "song_id")
   
@@ -88,12 +88,11 @@ names_to_conflicts <- function(conflicts, names, new_names) {
 
 ### filter conflicts to match
 filter_conflicts_to_match <- function(conflicts_names) {
-  
-  removed <- conflicts_names %>% 
+    removed <- conflicts_names %>% 
     group_by(song_id, deezer_id_old) %>%
-    filter(any(deezer_id_old  == deezer_id_new)) %>% 
+    filter(any(deezer_id_old == deezer_id_new)) %>% 
     ungroup() %>% 
-    filter(deezer_id_old  == deezer_id_new) %>% 
+    filter(deezer_id_old == deezer_id_new) %>% 
     select(song_id, deezer_id_new)
   
   to_match <- conflicts_names %>% 
@@ -101,7 +100,7 @@ filter_conflicts_to_match <- function(conflicts_names) {
     filter(!any(deezer_id_old  == deezer_id_new)) %>% 
     ungroup() %>% 
     anti_join(removed) %>% 
-    distinct(deezer_id_old, deezer_id_new, .keep_all = TRUE) %>% 
+    distinct(deezer_id_old, deezer_id_new, .keep_all = TRUE) %>% ## took unique pairs !! important
     select(song_id, song_title, deezer_id_old, deezer_id_new, f_n_play, name_old_id, name_new_id)
   
   
@@ -117,9 +116,6 @@ resolve_conflicts <- function(conflicts_names, matched_names) {
   
 
 }
-
-
-
 
 
 

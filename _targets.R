@@ -1,7 +1,6 @@
 # Preparation ------
 library(targets)
 library(tarchetypes)
-library(dplyr)
 
 tar_option_set(
   packages = c("paws", "tidyverse", "arrow"),
@@ -56,10 +55,6 @@ list(
                command = read.csv("data/interim/matched_scores.csv", sep = ";"))
     
 )
-
-
-
-
 
 
 

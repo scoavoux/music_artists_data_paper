@@ -1,12 +1,12 @@
 name|type|parent|branches|progress
 names|stem|names|0|skipped
 new_names|stem|new_names|0|skipped
-matched_names|stem|matched_names|0|skipped
+matched_names|stem|matched_names|0|dispatched
+matched_names|stem|matched_names|0|completed
 streams|stem|streams|0|skipped
 to_remove_file|stem|to_remove_file|0|skipped
 items_new|stem|items_new|0|skipped
 items_old|stem|items_old|0|skipped
 conflicts|stem|conflicts|0|skipped
 conflicts_names|stem|conflicts_names|0|skipped
-conflicts_to_match|stem|conflicts_to_match|0|dispatched
-conflicts_to_match|stem|conflicts_to_match|0|completed
+conflicts_to_match|stem|conflicts_to_match|0|skipped
