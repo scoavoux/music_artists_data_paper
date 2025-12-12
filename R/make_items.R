@@ -9,17 +9,55 @@ make_items <- function(to_remove = to_remove_file,
     anti_join(to_remove, 
               by = "artist_id") %>% 
     
-    mutate(deezer_feat_id = map_chr(artists_ids, 
-                                    ~ pasteas.integer(.x), 
-                                            collapse = ","))) %>% 
-    filter(!is.na(artist_id)) %>% 
-    separate_rows(deezer_feat_id, sep = ",") %>% # split feats into single deezer_ids
     select(song_id,
            song_title,
-           deezer_id = "deezer_feat_id")
+           deezer_feat_id = "artists_ids",
+           deezer_id = "artist_id")
   
   return(df)
 }
+
+
+bind_items <- function(items_old, items_new, streams){
+  
+  # bind items_old and items_new
+  # prioritize deezer_id of items_new
+  items <- items_new %>% 
+    bind_rows(
+      items_old %>% 
+        anti_join(items_new, by = "song_id")
+    )
+  
+  # remove 3 NAs
+  items <-  items %>% 
+    filter(!is.na(items$deezer_id))
+  
+  # separate rows of featurings
+  items <- items %>% 
+    mutate(deezer_feat_id = map_chr(deezer_feat_id, 
+                                    ~ paste(as.integer(.x), 
+                                            collapse = ","))) %>% 
+    filter(!is.na(deezer_id)) %>% 
+    separate_rows(deezer_feat_id, sep = ",") %>% 
+    select(song_id,
+           song_title,
+           deezer_id,
+           deezer_feat_id)
+  
+  ## new col to weight by n featured artists
+  items <- items %>%
+    group_by(song_id) %>%
+    mutate(w_feat = 1 / n_distinct(deezer_feat_id))
+  
+  ## join to streams and compute weighted popularity
+  items <- items %>% 
+    inner_join(streams, by = "song_id") %>% 
+    mutate(weighted_f_n_play = w_feat * f_n_play)
+  
+  return(items)
+}
+
+
   
 
 ### make conflicted items
@@ -46,7 +84,7 @@ make_conflict_items <- function(items_old, items_new, streams) {
   
   return(df)
 }
-  
+
 
 #### join to names
 names_to_conflicts <- function(conflicts, names, new_names) {
@@ -106,15 +144,6 @@ filter_conflicts_to_match <- function(conflicts_names) {
   
   write_csv2(to_match, "data/interim/conflicts_to_match.csv")
   
-}
-
-
-### filter conflicts to match
-resolve_conflicts <- function(conflicts_names, matched_names) {
-  
-  
-  
-
 }
 
 

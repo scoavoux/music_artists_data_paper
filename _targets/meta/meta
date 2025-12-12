@@ -5,10 +5,7 @@ streams|stem|edea8ad60457d1bc|b42acd4a7802717c|355c9eb843523bee|479841425|bucket
 streams_to_items|stem||33735b21e2a7fe89|2c530c1562a7fbd1|-1352621704||t20419.4489174519s||0|rds|aws|vector|||1.089||could not find function 'logfunc'
 names|stem|76da9f606c5bce33|1b4a5dd2f4a68296|83c85aa9e6e44528|-2108954709|bucket=scoavoux*region=NULL*key=music_artist/objects/names*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20423.362166207s||0|rds|aws|vector|||7.716||
 songs|stem|7c2ccda448f0707d|cecd19e2d3b63439|83c85aa9e6e44528|-1469361909|bucket=scoavoux*region=NULL*key=music_artist/objects/songs*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20423.3643842323s||0|rds|aws|vector|||90.53||
-items|stem|2d9a25485a6e14ad|e41c225688bf89d4|c3deee8b3385991a|-545601299|bucket=scoavoux*region=NULL*key=music_artist/objects/items*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20423.3662028638s||0|rds|aws|vector|||109.432||
 make_items_old|function|690cec12b30797df
-items_old|stem|d891de0811872c91|e5987bfe4876562b|130903fa37c9b43b|-639525641|bucket=scoavoux*region=NULL*key=music_artist/objects/items_old*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20430.3545272467s||0|rds|aws|vector|||528.322||
-items_new|stem|94c38b8a7c126325|a9f2184596c994c4|130903fa37c9b43b|-128255073|bucket=scoavoux*region=NULL*key=music_artist/objects/items_new*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20430.3570180571s||0|rds|aws|vector|||187.326||
 conflicts|stem|03a7d9caf32da7d1|54bf82ddf1be8041|1dc0337ff9e916ee|-774522916|bucket=scoavoux*region=NULL*key=music_artist/objects/conflicts*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20430.4181214883s||0|rds|aws|vector|||73.981|Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 18 of `x` matches multiple rows in `y`. ℹ Row 2670446 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.|
 add_missing_names|function|aa4085767533169c
 scraped_names|stem||ca0c7666f2cf6a74|400d9cde4dea2355|-243752331||t20430.434634684s||0|rds|aws|vector|||5.237||'unit' should be one of 0, 1, 2, or 3
@@ -19,18 +16,21 @@ matched_artists|stem|3cffe0ba4f193e08|4bf3ded1041fdd90|2c530c1562a7fbd1|-1887074
 matche|stem|3cffe0ba4f193e08|4bf3ded1041fdd90|2c530c1562a7fbd1|1472541978|bucket=scoavoux*region=NULL*key=music_artist/objects/matche*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20431.3724467395s||0|rds|aws|vector|||1.426||
 match|stem|3cffe0ba4f193e08|4bf3ded1041fdd90|2c530c1562a7fbd1|3885863|bucket=scoavoux*region=NULL*key=music_artist/objects/match*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20431.3791439758s||0|rds|aws|vector|||0.942||
 matched|stem|3cffe0ba4f193e08|4bf3ded1041fdd90|2c530c1562a7fbd1|423165601|bucket=scoavoux*region=NULL*key=music_artist/objects/matched*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20431.3834599959s||0|rds|aws|vector|||1.404||
+matched_names|stem|3cffe0ba4f193e08|4bf3ded1041fdd90|2c530c1562a7fbd1|278424977|bucket=scoavoux*region=NULL*key=music_artist/objects/matched_names*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20431.5302352279s||0|rds|aws|vector|||1.269||
+resolve_conflicts|function|cf6ccf807c9bdbaa
+items_new|stem|431e5316fb2cd442|a9f2184596c994c4|eada48c99571ee7e|-128255073|bucket=scoavoux*region=NULL*key=music_artist/objects/items_new*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20434.449377641s||0|rds|aws|vector|||85.901||
+items_old|stem|18c23010cd94ad78|e5987bfe4876562b|eada48c99571ee7e|-639525641|bucket=scoavoux*region=NULL*key=music_artist/objects/items_old*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20434.4529940739s||0|rds|aws|vector|||232.16||
 initialize_s3|function|25a2772c1c03257f
 names_to_conflicts|function|dd5fdfe04f7ec928
 load_streams|function|5c7624fab94fa27c
 filter_conflicts_to_match|function|3092f73acf421a33
 load_partitioned_s3|function|ef32fd7856f71aa0
 make_conflict_items|function|6ad394234272aae4
-.Random.seed|object|f7ee5cbbb8dd9763
-resolve_conflicts|function|cf6ccf807c9bdbaa
+.Random.seed|object|8b14275ba55b2671
+bind_items|function|6bd0b9a593f340bb
 write_s3|function|e5e136442f12838e
 load_s3_info|function|b201b67fd14b09a5
 load_s3|function|2f0bfd56597701f8
-bind_items|function|937aa1f5a2d0d1ac
 make_artist_popularity_data|function|eba21cded9d898c1
-make_items|function|0e565284c38d1f86
-matched_names|stem|3cffe0ba4f193e08|4bf3ded1041fdd90|2c530c1562a7fbd1|278424977|bucket=scoavoux*region=NULL*key=music_artist/objects/matched_names*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20431.5302352279s||0|rds|aws|vector|||1.269||
+make_items|function|0f0313fcdfc70bc3
+items|stem|56cfcd718af3e213|705108165f092c26|48955828a6822670|-545601299|bucket=scoavoux*region=NULL*key=music_artist/objects/items*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20434.5705297821s||0|rds|aws|vector|||531.583||

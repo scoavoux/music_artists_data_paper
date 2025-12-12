@@ -36,23 +36,14 @@ list(
                command = make_items(to_remove = to_remove_file,
                                     file = "records_w3/items/song.snappy.parquet")),
     
-    tar_target(name = conflicts,
-               command = make_conflict_items(items_old, items_new, streams)),
+    tar_target(name = items,
+               command = bind_items(items_old, items_new, streams))
     
-    tar_target(name = names,
-               command = load_s3(file = "records_w3/items/artists_data.snappy.parquet")),
+    #tar_target(name = names,
+     #          command = load_s3(file = "records_w3/items/artists_data.snappy.parquet")),
   
-    tar_target(name = new_names,
-               command = read.csv("./data/interim/names_from_api.csv")),
-    
-    tar_target(name = conflicts_names,
-               command = names_to_conflicts(conflicts, names, new_names)),
-    
-    tar_target(name = conflicts_to_match,
-               command = filter_conflicts_to_match(conflicts_names)),
-    
-    tar_target(name = matched_names,
-               command = read.csv("data/interim/matched_scores.csv", sep = ";"))
+    #tar_target(name = new_names,
+     #          command = read.csv("./data/interim/names_from_api.csv"))
     
 )
 
