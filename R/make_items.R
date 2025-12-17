@@ -18,7 +18,7 @@ make_items <- function(to_remove = to_remove_file,
 }
 
 
-bind_items <- function(items_old, items_new, streams){
+bind_items <- function(items_old, items_new, streams, names){
   
   # bind items_old and items_new
   # prioritize deezer_id of items_new
@@ -50,28 +50,48 @@ bind_items <- function(items_old, items_new, streams){
     mutate(w_feat = 1 / n_distinct(deezer_feat_id))
   
   ## join to streams and compute weighted popularity
-  #items <- items %>% 
-   #inner_join(streams, by = "song_id") %>% 
-    #mutate(weighted_f_n_play = w_feat * f_n_play)
+  items <- items %>% 
+   inner_join(streams, by = "song_id") %>% 
+    mutate(weighted_f_n_play = w_feat * f_n_play)
+
+  ## add deezer names to debug joins with other ids
+  items <- items %>% 
+    left_join(names, by = "deezer_id")
   
   return(items)
 }
 
 
+bind_names <- function(file_1, file_2){
+  
+  names <- load_s3(file = file_1)
+  scraped_names <- read.csv(file = file_2)
+  
+  names <- names %>% 
+    rename(deezer_id = "artist_id") %>% 
+    select(deezer_id, name)
+  
+  scraped_names <- scraped_names %>% 
+    rename(deezer_id = "deezer_id.new")
+  
+  names <- names %>% 
+    bind_rows(scraped_names)
+  
+  return(names)
+
+}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+group_items_by_artist <- function(items){
+  
+  artists <- items %>% 
+    group_by(deezer_id) %>% 
+    summarise(name = first(name),
+              f_n_play = sum(f_n_play)) %>% 
+    arrange(desc(f_n_play))
+  
+  return(artists)
+}
 
 
 

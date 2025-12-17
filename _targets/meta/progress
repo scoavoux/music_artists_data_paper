@@ -1,7 +1,8 @@
 name|type|parent|branches|progress
+names|stem|names|0|skipped
 streams|stem|streams|0|skipped
 to_remove_file|stem|to_remove_file|0|skipped
 items_new|stem|items_new|0|skipped
 items_old|stem|items_old|0|skipped
-items|stem|items|0|dispatched
-items|stem|items|0|completed
+items|stem|items|0|skipped
+artists|stem|artists|0|skipped

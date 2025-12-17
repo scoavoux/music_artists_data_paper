@@ -140,7 +140,7 @@ df3 <- df2 %>%
 
 
 options(scipen = 99)
-df
+
 sum(df$weighted_f_n_play)
 
 
