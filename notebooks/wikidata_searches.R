@@ -41,32 +41,14 @@ WHERE {
 ")
 
 
-# add spotify key when there is one
-keys <- wikidata_deezer %>% 
-  left_join(deezer_spotify, by = c("deezer_id", "label")) %>% 
-  mutate(deezer_id = as.integer(deezer_id))
-
-mbz_wikidata <- load_s3(file = "musicbrainz/mbid_wikidataid_pair.csv") %>% 
-  as_tibble()
 
 
-#### figure this out: 9k NAs with mbz_wikidata as y 
-#### but many more cases
-keys2 <- mbz_wikidata %>% 
-  left_join(keys, by = "wikidata_id")
-
-# manual search file (senscritique / deezer_id)
-
-# senscritique pairing (deezer API)
-
-### Musicbrainz id / deezer id pairs from musicbrainz dumps ------
-mbz_deezer <- load_s3(file = "musicbrainz/mbid_deezerid_pair.csv") %>% 
-  as_tibble()
-
-str(mbz_deezer)
 
 
-test <- mbz_deezer %>% 
-  left_join(keys, by = "deezer_id")
+
+
+
+
+
 
 

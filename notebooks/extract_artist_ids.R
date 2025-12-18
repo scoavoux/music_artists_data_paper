@@ -54,9 +54,13 @@ sum(pairings_in_artists$f_n_play)
 # ------------------------------------------------------
 # artists in musicbrainz
 
+artists
+
 ## N = 55,898 contact_ids with a match in artists
 artists %>% 
-  inner_join(mbz_deezer, by = "deezer_id")
+  inner_join(mbz_deezer, by = "deezer_id") %>% 
+  summarise(n = n(),
+            pop = sum(f_n_play))
 
 ## N = 55,339 unique deezer_ids
 artists %>% 
@@ -68,8 +72,7 @@ artists %>%
   inner_join(mbz_deezer, by = "deezer_id") %>% 
   group_by(deezer_id) %>% 
   filter(n_distinct(mbid) > 1) %>% 
-  ungroup() %>% 
-  distinct(deezer_id, .keep_all = T)
+  ungroup()
 
 mbid_in_artists <- artists %>% 
   inner_join(mbz_deezer, by = "deezer_id")
@@ -79,9 +82,9 @@ sum(mbid_in_artists$f_n_play)
 
 
 
+# ------------------------------------------------------------------
 
 # WIKIDATA QUERIES
-# ------------------------------------------------------------------
 
 # get unique names (native name if available)
 wikidata_deezer <- query_wikidata("SELECT DISTINCT ?item ?deezer_id ?label
@@ -102,13 +105,45 @@ wikidata_deezer <- query_wikidata("SELECT DISTINCT ?item ?deezer_id ?label
   mutate(wikidata_id = str_extract(item, "/(Q\\d+)", group = 1)) %>% 
   select(-item)
 
+wikidata_deezer
+
+# artists in wikidata
+
+## N = 24,531 wikidata_id with a match in artists
+artists %>% 
+  inner_join(wikidata_deezer, by = "deezer_id")
+
+## N = 24,509 unique deezer_ids
+artists %>% 
+  inner_join(wikidata_deezer, by = "deezer_id") %>% 
+  distinct(deezer_id, .keep_all = T)
+
+## --> 22 cases with multiple wikidata_ids for one deezer_id
+artists %>% 
+  inner_join(wikidata_deezer, by = "deezer_id") %>% 
+  group_by(deezer_id) %>% 
+  filter(n_distinct(wikidata_id) > 1) %>% 
+  ungroup() %>% 
+  distinct(deezer_id, .keep_all = T)
+
+wikidata_in_artists <- artists %>% 
+  inner_join(wikidata_deezer, by = "deezer_id")
+
+
+# 90% of playtime
+sum(wikidata_in_artists$f_n_play) 
 
 
 
+# ------------------------------------------------------------
 
+wikidata_deezer$deezer_id <- as.integer(wikidata_deezer$deezer_id)
 
-
-
+artist_matches <- artists %>% 
+  left_join(mbz_deezer, by = "deezer_id") %>% 
+  left_join(pairings, by = "deezer_id") %>% 
+  left_join(wikidata_deezer, by = "deezer_id") %>% 
+  arrange(desc)
 
 
 

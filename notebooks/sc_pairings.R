@@ -1,7 +1,11 @@
 
 pairings0 <- read.csv("data/manual_search.csv")
 
+# matchs uniques entre api deezer et sc (sur le nom)
 pairings1 <- load_s3(file = "senscritique/senscritique_id_deezer_id_pairing.csv")
+
+## -----------------------------
+
 pairings2 <- load_s3(file = "senscritique/senscritique_deezer_id_pairing_2.csv")
 pairings3 <- load_s3(file = "senscritique/senscritique_deezer_id_pairing_3.csv")
 pairings4 <- load_s3(file = "senscritique/senscritique_deezer_id_pairing_4.csv")
