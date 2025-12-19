@@ -81,10 +81,11 @@ bind_names <- function(file_1, file_2){
 
 }
 
-
+## unique artists for now --- because of f_n_play
 group_items_by_artist <- function(items){
   
   artists <- items %>% 
+    distinct(deezer_id, .keep_all = TRUE) %>% 
     group_by(deezer_id) %>% 
     summarise(name = first(name),
               f_n_play = sum(f_n_play)) %>% 
@@ -92,6 +93,14 @@ group_items_by_artist <- function(items){
   
   return(artists)
 }
+
+
+
+
+
+
+
+
 
 
 
