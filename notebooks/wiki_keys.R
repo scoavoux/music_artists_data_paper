@@ -1,7 +1,7 @@
-# get all possible keys between deezer, musicbrainz, discogs, and spotify
-# -----------------------------------------------------------
+library(lubridate)
+library(tidyverse)
 
-## MUSICBRAINZ
+# get all possible keys between deezer, musicbrainz, discogs, and spotify
 
 wiki_mbz <- query_wikidata("
 
@@ -81,91 +81,216 @@ WHERE {
 
 ")
 
+
+# --------------------------------------------------------------
+
+## ADD WIKI LABELS (TIME-INTENSIVE)
+
+batch_size <- 250
+
+all_ids <- unique(c(wiki_mbz$itemId, 
+                    wiki_deezer$itemId, 
+                    wiki_discogs$itemId, 
+                    wiki_spotify$itemId))
+
+# Split into batches
+batches <- split(all_ids, ceiling(seq_along(all_ids)/batch_size))
+
+wiki_labels <- vector("list", length(batches))
+
+for (i in seq_along(batches)) {
+  
+  id_list <- paste0("wd:", batches[[i]])
+  
+  query <- sprintf(
+    'SELECT ?itemId ?label WHERE {
+       VALUES ?item { %s }
+       BIND(STRAFTER(STR(?item), "entity/") AS ?itemId)
+       OPTIONAL {
+         ?item rdfs:label ?label .
+         FILTER(LANG(?label) = "en")
+       }
+     }',
+    paste(id_list, collapse = " ")
+  )
+  
+  wiki_labels[[i]] <- query_wikidata(query)
+  
+  Sys.sleep(0.2)  # be nice to WDQS
+}
+
+wiki_labels_df <- bind_rows(wiki_labels) %>%
+  distinct(itemId, .keep_all = TRUE)
+
+
+# --------------------------------------------------------------
+
+
 # outer join all 4 keys
-wiki_ids <- wiki_deezer %>% 
-  full_join(wiki_discogs, by = "itemId") %>% 
+wiki_ids <- wiki_labels_df %>% 
+  
+  full_join(wiki_deezer, by = "itemId") %>% 
   full_join(wiki_mbz, by = "itemId") %>% 
-  full_join(wiki_spotify, by = "itemId")
+  full_join(wiki_discogs, by = "itemId") %>% 
+  full_join(wiki_spotify, by = "itemId") %>% 
+  
+  sapply(as.character) %>% # convert all to str
+  as_tibble() # as tibble
 
-## ADD WIKI LABELS: find a way
 
-# remove columns with only one identifier
-#df <- wiki_ids %>% 
-# filter(rowSums(!is.na(select(., musicBrainzID, deezerID, discogsID, spotifyID))) >= 2)
+write.csv(wiki_ids, "data/wiki_ids.csv")
 
-# ------------------------------------------------------
+# --------------------------------------------------------------
 
 ## inspect matches 
 
-sum(is.na(wiki_ids$musicBrainzID)) / nrow(wiki_ids)
-sum(is.na(wiki_ids$discogsID)) / nrow(wiki_ids)
-sum(is.na(wiki_ids$spotifyID)) / nrow(wiki_ids)
-sum(is.na(wiki_ids$deezerID)) / nrow(wiki_ids)
+prop_na <- function(x){
+  sum(is.na(x)) / length(x)
+}
+
+lapply(wiki_ids, prop_na)
 
 
-
+# ------------------------------------------------------
 
 # BUILD MUSICBRAINZ TABLE
-
-# mbz_deezer <- load_s3(file = "musicbrainz/mbid_deezerid_pair.csv") %>% 
-  # as_tibble()
+# *is template. insert new mbz data when sam has it
 
 mbz_deezer <- load_s3(file = "musicbrainz/mbid_deezerid.csv") %>% 
   as_tibble() %>% 
-  rename(deezer_id = "artist_id")
+  rename(deezer_id = "artist_id") %>% 
+  mutate(
+    mbid = as.character(mbid),
+    deezer_id = as.character(deezer_id)
+  )
 
 mbz_spotify <- load_s3(file = "musicbrainz/mbid_spotifyid_pair.csv") %>% 
   as_tibble()
 
-mbz_deezer
-mbz_spotify
+mbz <- mbz_deezer %>% 
+  full_join(mbz_spotify, by = "mbid") %>% 
+  rename(musicBrainzID = "mbid",
+         spotifyID = "spotify_id",
+         deezerID = "deezer_id")
 
 
+# ---------------------------------------------------------
 
-# how many rows have both id1 and id2?
-wiki_ids_filled %>%
-  filter(!is.na(musicBrainzID), !is.na(deezerID)) %>%
-  nrow()
-
-# 52k
-wiki_ids %>%
-  filter(!is.na(musicBrainzID), !is.na(deezerID)) %>%
-  nrow()
-
-
-##
-wiki_ids_enriched <- wiki_ids %>%
-  mutate(
-    musicBrainzID = as.character(musicBrainzID),
-    deezerID = as.character(deezerID)
-  ) %>%
+# PIVOT WIKI TO LONG
+wiki_long <- wiki_ids %>%
   
-  left_join(
-    mbz_deezer %>%
-      mutate(
-        mbid = as.character(mbid),
-        deezer_id = as.character(deezer_id)
-      ),
-    by = c("musicBrainzID" = "mbid")
+  select(itemId, label, musicBrainzID, deezerID, spotifyID) %>%
+  pivot_longer(
+    cols = c(musicBrainzID, deezerID, spotifyID),
+    names_to = "id_type",
+    values_to = "id_value"
   ) %>%
-  
-  mutate(
-    deezerID = coalesce(deezerID, deezer_id) # returns deezer_ID if not NA, otherwise deezer_id
+  filter
+(!is.na(id_value))
+
+
+
+# PIVOT MBZ TO LONG
+mbz_long <- mbz %>%
+  pivot_longer(
+    cols = c(musicBrainzID, deezerID, spotifyID),
+    names_to = "id_type",
+    values_to = "id_value"
   ) %>%
+  filter(!is.na(id_value))
+
+
+# JOIN WIKI AND MBZ
+links <- wiki_long %>%
+  full_join(
+    mbz_long,
+    by = c("id_value", "id_type")
+  )
+
+# collapse back into wide
+wiki_enriched <- links %>%
+  distinct(itemId, label, id_type, id_value, mbname) %>%
+  pivot_wider(
+    names_from  = id_type,
+    values_from = id_value,
+    values_fn = first
+  )
+
+wiki_enriched # <=> WIKI + MBZ
+
+
+
+# --------------------------------------------------
+# SENSCRITIQUE
+
+contacts <- load_s3("senscritique/contacts.csv") %>% 
+  as_tibble() %>% 
+  mutate(spotifyID = str_remove(spotify_id, "spotify:artist:"),
+         spotifyID = ifelse(spotify_id == "", NA, spotify_id),
+         contact_id = as.character(contact_id)) %>% 
+  select(contact_id, 
+         musicBrainzID = "mbz_id", 
+         spotifyID)
+
+
+# PIVOT CONTACTS TO LONG
+contacts_long <- contacts %>%
+  pivot_longer(
+    cols = c(musicBrainzID, contact_id, spotifyID),
+    names_to = "id_type",
+    values_to = "id_value"
+  ) %>%
+  filter(!is.na(id_value))
+
+contacts_long
+
+wiki_enriched
+
+wiki_enriched_long <- links %>%
   
-  select(-deezer_id)
+  select(itemId, label, musicBrainzID, deezerID, spotifyID) %>%
+  pivot_longer(
+    cols = c(musicBrainzID, deezerID, spotifyID),
+    names_to = "id_type",
+    values_to = "id_value"
+  ) %>%
+  filter
+(!is.na(id_value))
 
-# 110k! added ~60k pairings 
-wiki_ids_enriched %>%
-  filter(!is.na(musicBrainzID), !is.na(deezerID)) %>%
-  nrow()
 
-#... among which 50k new deezerIDs
-sum(is.na(wiki_ids$deezerID)) - sum(is.na(wiki_ids_enriched$deezerID))
 
-# 66k deezer artists
-wiki_ids_enriched %>% 
-  distinct(deezerID)
+# JOIN WIKI AND MBZ
+links <- wiki_long %>%
+  full_join(
+    mbz_long,
+    by = c("id_value", "id_type")
+  )
+
+# collapse back into wide
+wiki_enriched <- links %>%
+  distinct(itemId, label, id_type, id_value, mbname) %>%
+  pivot_wider(
+    names_from  = id_type,
+    values_from = id_value,
+    values_fn = first
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
