@@ -55,3 +55,6 @@ data/temp/
 *.snappy.parquet
 *.csv
 *.feather
+
+# python
+sql/.ipynb_checkpoints/
