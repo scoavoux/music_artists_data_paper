@@ -1,5 +1,8 @@
 library(tidyverse)
+library(arrow)
+library(WikidataQueryServiceR)
 
+options(scipen = 99)
 
 # get all possible keys between deezer, musicbrainz, discogs, and spotify
 
@@ -136,17 +139,17 @@ wiki_labels_df <- bind_rows(wiki_labels) %>%
 
 write.csv(wiki_labels_df, "data/wiki_labels.csv")
 
+wiki_labels_df <- read.csv("data/wiki_labels.csv")
 
 # --------------------------------------------------------------
-
 
 # outer join all 4 keys
 wiki_ids <- wiki_labels_df %>% 
   
   full_join(wiki_deezer, by = "itemId") %>% 
   full_join(wiki_mbz, by = "itemId") %>% 
-  # full_join(wiki_discogs, by = "itemId") %>%  # leave out for now
-  # full_join(wiki_spotify, by = "itemId") %>%  # leave out for now
+  full_join(wiki_discogs, by = "itemId") %>%  # leave out for now
+  full_join(wiki_spotify, by = "itemId") %>%  # leave out for now
   
   sapply(as.character) %>% # convert all to str
   as_tibble() # as tibble
@@ -158,6 +161,8 @@ rm(wiki_labels, wiki_spotify, wiki_discogs, wiki_deezer,
 
 wiki_ids <- read.csv("data/wiki_ids.csv") 
 
+wiki_ids <- wiki_ids %>% 
+  select(-X)
 
 # --------------------------------------------------------------
 ## inspect matches 
@@ -168,30 +173,18 @@ prop_na <- function(x){
 
 lapply(wiki_ids, prop_na)
 
-
 # ------------------------------------------------------
 
-# LOAD MUSICBRAINZ AND SENSCRITIQUE PAIRS
-# *insert new mbz data when sam has it
+# LOAD MUSICBRAINZ NEW
 
-mbz_deezer <- load_s3(file = "musicbrainz/mbid_deezerid.csv") %>% 
-  as_tibble() %>% 
-  mutate(
-    musicBrainzID = as.character(mbid),
-    deezerID = as.character(artist_id)
-  ) %>% 
-  select(-artist_id, -mbid)
+mbz_deezer <- tibble(collapsed_short) %>% 
+  select(-wiki) %>% 
+  filter(!is.na(deezer)) %>% 
+  rename(musicBrainzID = "musicbrainz_id",
+         deezerID = "deezer")
 
 
-mbz_spotify <- load_s3(file = "musicbrainz/mbid_spotifyid_pair.csv") %>% 
-  as_tibble() %>% 
-  mutate(
-    musicBrainzID = as.character(mbid),
-    spotifyID = as.character(spotify_id)
-  ) %>% 
-  select(-spotify_id, -mbid) 
-
-
+## LOAD SENSCRITIQUE
 contacts <- load_s3("senscritique/contacts.csv") %>% 
   as_tibble() %>% 
   mutate(spotifyID = str_remove(spotify_id, "spotify:artist:"),
@@ -202,14 +195,13 @@ contacts <- load_s3("senscritique/contacts.csv") %>%
    #       contact_name)
 
 
-
 # ---------------------------------------------
 ## implement MBZ + CONTACTS in WIKI_IDs
 
-
-all_ids <- wiki_ids %>% 
+wiki_ids_mbz <- wiki_ids %>% 
   full_join(mbz_deezer, by = "musicBrainzID") %>% 
   mutate(deezerID = coalesce(deezerID.x, deezerID.y)) %>% 
+
   
   #full_join(mbz_spotify, by = "musicBrainzID") %>% 
   #mutate(spotifyID = coalesce(spotifyID.x, spotifyID.y)) %>% 
@@ -220,48 +212,65 @@ all_ids <- wiki_ids %>%
             deezerID.y, 
             #spotifyID.x, 
             #spotifyID.y
-            ))
+            )) 
+
+lapply(wiki_ids_mbz, prop_na)
+
+# ------------------------------------------------------
+# 
+
+full_artists_mbz <- artists %>% 
+  left_join(mbz_deezer, by = c(deezer_id = "deezerID")) %>% 
+  #distinct(deezer_id, .keep_all = T) %>% 
+  filter(!is.na(musicBrainzID))
+
+
+test <- full_artists_mbz %>% 
+  full_join(wiki_ids, by = c(deezer_id = "deezerID")) %>% 
+  mutate(musicBrainzID = coalesce(musicBrainzID.x, musicBrainzID.y))
+
+
+# ------------------------------------------------------
+
+# START FROM ITEMS --> 98.5%
+
+## interesting: when itemID is NA, musicBrainzID and spotify always are too
+## meaning we cannot link any artist over mbz-wiki and spotify-wiki
+## except maybe over name matching?
+
+
+test <- test %>%
+  mutate(
+    chosen_id_source = case_when(
+      # !is.na(contact_id)    ~ "contact_id",
+      !is.na(musicBrainzID) ~ "musicBrainzID",
+      !is.na(itemId)        ~ "itemId",
+      !is.na(discogsID)     ~ "discogsID",
+      !is.na(spotifyID)     ~ "spotifyID",
+      # !is.na(deezer_id)     ~ "deezer_id",
+      TRUE                  ~ NA_character_
+    )
+  )
+
+test <- test %>% 
+  select(deezer_id, name, chosen_id_source, f_n_play)
+
+table(test$chosen_id_source)
+
+
+t <- test %>% 
+  filter(chosen_id_source == "musicBrainzID" & 
+           !is.na(deezer_id) &
+           !is.na(f_n_play)) %>% 
+  distinct(deezer_id, .keep_all = T)
+
+sum(t$f_n_play)
+
+test %>% 
+  filter(!is.na(itemId) &
+           !is.na(musicBrainzID) &
+           !is.na(f_n_play)) 
   
-
-write_parquet(all_ids, "data/all_ids.parquet", 
-              compression = "snappy")
-  
-
-
-# ----------------------------------------------
-
-all_ids %>% 
-  distinct(deezerID)
-
-artists <- artists %>% 
-  mutate(deezer_id = as.character(deezer_id)) %>% 
-  rename(deezerID = deezer_id,
-         deezer_name = name)
-
-ids <- wiki_ids %>% 
-  left_join(artists, 
-            by = "deezerID")
-
-ids$f_n_play <- ifelse(is.na(ids$f_n_play) == TRUE, 0, ids$f_n_play)
-
-ids <- ids %>% 
-  arrange(desc(f_n_play))
-
-# 92.5% of deezerIDs
-ids %>% 
-  distinct(deezerID, .keep_all = T) %>% 
-  tally(f_n_play)
-
-
-# possible rule: compare completeness of duplicates,
-# i.e. if one duplicate has all ids and the other
-# only has mbz and itemId, take the first one
-
-
-
-
-
-
 
 
 
