@@ -137,9 +137,9 @@ for (i in seq_along(batches)) {
 wiki_labels_df <- bind_rows(wiki_labels) %>%
   distinct(itemId, .keep_all = TRUE)
 
-write.csv(wiki_labels_df, "data/wiki_labels.csv")
+write_s3(wiki_labels_df, "interim/wiki_labels.csv")
 
-wiki_labels_df <- read.csv("data/wiki_labels.csv")
+wiki_labels_df <- load_s3("interim/wiki_labels.csv")
 
 # --------------------------------------------------------------
 
@@ -154,15 +154,14 @@ wiki_ids <- wiki_labels_df %>%
   sapply(as.character) %>% # convert all to str
   as_tibble() # as tibble
 
-write.csv(wiki_ids, "data/wiki_ids.csv")
+write_s3(wiki_ids, "interim/wiki_ids.csv")
 
 rm(wiki_labels, wiki_spotify, wiki_discogs, wiki_deezer,
    wiki_labels_df)
 
-wiki_ids <- read.csv("data/wiki_ids.csv") 
+wiki <- load_s3("interim/wiki_ids.csv") 
 
-wiki_ids <- wiki_ids %>% 
-  select(-X)
+
 
 # --------------------------------------------------------------
 ## inspect matches 
@@ -171,7 +170,7 @@ prop_na <- function(x){
   sum(is.na(x)) / length(x)
 }
 
-lapply(wiki_ids, prop_na)
+lapply(wiki, prop_na)
 
 # ------------------------------------------------------
 
@@ -198,7 +197,7 @@ contacts <- load_s3("senscritique/contacts.csv") %>%
 # ---------------------------------------------
 ## implement MBZ + CONTACTS in WIKI_IDs
 
-wiki_ids_mbz <- wiki_ids %>% 
+wiki_ids_mbz <- wiki %>% 
   full_join(mbz_deezer, by = "musicBrainzID") %>% 
   mutate(deezerID = coalesce(deezerID.x, deezerID.y)) %>% 
 
@@ -226,8 +225,10 @@ full_artists_mbz <- artists %>%
 
 
 test <- full_artists_mbz %>% 
-  full_join(wiki_ids, by = c(deezer_id = "deezerID")) %>% 
-  mutate(musicBrainzID = coalesce(musicBrainzID.x, musicBrainzID.y))
+  full_join(wiki, by = c(deezer_id = "deezerID")) %>% 
+  mutate(musicBrainzID = coalesce(musicBrainzID.x, musicBrainzID.y)) %>% 
+  select(-c(musicBrainzID.x, 
+            musicBrainzID.y))
 
 
 # ------------------------------------------------------
@@ -239,11 +240,11 @@ test <- full_artists_mbz %>%
 ## except maybe over name matching?
 
 
-test <- test %>%
+t <- test %>%
   mutate(
     chosen_id_source = case_when(
-      # !is.na(contact_id)    ~ "contact_id",
-      !is.na(musicBrainzID) ~ "musicBrainzID",
+      #!is.na(contact_id)    ~ "contact_id",
+      # !is.na(musicBrainzID) ~ "musicBrainzID",
       !is.na(itemId)        ~ "itemId",
       !is.na(discogsID)     ~ "discogsID",
       !is.na(spotifyID)     ~ "spotifyID",
@@ -252,10 +253,10 @@ test <- test %>%
     )
   )
 
-test <- test %>% 
+t <- t %>% 
   select(deezer_id, name, chosen_id_source, f_n_play)
 
-table(test$chosen_id_source)
+table(t$chosen_id_source)
 
 
 t <- test %>% 
