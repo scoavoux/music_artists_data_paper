@@ -144,17 +144,17 @@ wiki_labels_df <- load_s3("interim/wiki_labels.csv")
 # --------------------------------------------------------------
 
 # outer join all 4 keys
-wiki_ids <- wiki_labels_df %>% 
+wiki <- wiki_labels_df %>% 
   
   full_join(wiki_deezer, by = "itemId") %>% 
   full_join(wiki_mbz, by = "itemId") %>% 
-  full_join(wiki_discogs, by = "itemId") %>%  # leave out for now
-  full_join(wiki_spotify, by = "itemId") %>%  # leave out for now
+  full_join(wiki_discogs, by = "itemId") %>%  
+  full_join(wiki_spotify, by = "itemId") %>%  
   
   sapply(as.character) %>% # convert all to str
   as_tibble() # as tibble
 
-write_s3(wiki_ids, "interim/wiki_ids.csv")
+write_s3(wiki, "interim/wiki_ids.csv")
 
 rm(wiki_labels, wiki_spotify, wiki_discogs, wiki_deezer,
    wiki_labels_df)
@@ -234,44 +234,6 @@ test <- full_artists_mbz %>%
 # ------------------------------------------------------
 
 # START FROM ITEMS --> 98.5%
-
-## interesting: when itemID is NA, musicBrainzID and spotify always are too
-## meaning we cannot link any artist over mbz-wiki and spotify-wiki
-## except maybe over name matching?
-
-
-t <- test %>%
-  mutate(
-    chosen_id_source = case_when(
-      #!is.na(contact_id)    ~ "contact_id",
-      # !is.na(musicBrainzID) ~ "musicBrainzID",
-      !is.na(itemId)        ~ "itemId",
-      !is.na(discogsID)     ~ "discogsID",
-      !is.na(spotifyID)     ~ "spotifyID",
-      # !is.na(deezer_id)     ~ "deezer_id",
-      TRUE                  ~ NA_character_
-    )
-  )
-
-t <- t %>% 
-  select(deezer_id, name, chosen_id_source, f_n_play)
-
-table(t$chosen_id_source)
-
-
-t <- test %>% 
-  filter(chosen_id_source == "musicBrainzID" & 
-           !is.na(deezer_id) &
-           !is.na(f_n_play)) %>% 
-  distinct(deezer_id, .keep_all = T)
-
-sum(t$f_n_play)
-
-test %>% 
-  filter(!is.na(itemId) &
-           !is.na(musicBrainzID) &
-           !is.na(f_n_play)) 
-  
 
 
 

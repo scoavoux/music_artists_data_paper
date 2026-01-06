@@ -1,10 +1,12 @@
+# -------------- inspect duplicate artists
+
 # possible rule: compare completeness of duplicates,
 # i.e. if one duplicate has all ids and the other
 # only has mbz and itemId, take the first one
 
-test <- wiki_ids %>% 
+test <- wiki %>% 
   full_join(mbz_deezer, by = "musicBrainzID") %>% 
-  mutate(deezerID = coalesce(deezerID.x, deezerID.y)) %>% 
+  mutate(deezerID = coalesce(deezerID.x, deezerID.y))
   
 
 dup <- test %>% 
@@ -30,3 +32,7 @@ valid_mbz_dup <- valid_mbz %>%
   summarise(n = n()) %>% 
   filter(n > 1) %>% 
   arrange(desc(n))
+
+
+
+

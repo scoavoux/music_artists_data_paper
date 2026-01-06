@@ -40,25 +40,9 @@ collapsed <- dat[
 ]
 
 
-write_parquet(collapsed, "data/musicbrainz_urls_collapsed.parquet")
+write_s3(collapsed, "interim/musicbrainz_urls_collapsed.csv")
 
 
-collapsed_short <- collapsed %>% 
-  select(-c(spotify, allmusic, discogs)) %>% 
-  distinct(musicbrainz_id, wiki, deezer)
-  
-
-
-wiki_ids <- wiki_ids %>% 
-  mutate(deezerID = as.character(deezerID),
-         itemId = as.character(itemId),
-         musicBrainzID = as.character(musicBrainzID))
-
-
-test <- wiki_ids %>% 
-  inner_join(collapsed_short, by = c(deezerID = "deezer",
-                                     itemId = "wiki",
-                                     musicBrainzID = "musicbrainz_id"))
 
 
 

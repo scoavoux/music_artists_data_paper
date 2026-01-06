@@ -6,7 +6,7 @@ options(scipen = 99)
 
 pop <- function(x){
   sum_pop <- sum(x$f_n_play) * 100
-  cat("f_n_play:", sum_pop,"%.")
+  cat("f_n_play:",sum_pop,"%.")
 }
 
 
@@ -36,31 +36,22 @@ contacts <- contacts %>%
 # JOIN ALL POSSIBLE ITEM ARTISTS TO MBZ AND CONTACTS
 
 all <- artists %>% 
-  full_join(mbz_deezer, by = c(deezer_id = "deezerID")) %>% 
-  full_join(contacts, by = c(musicBrainzID = "mbz_id"))
-
-
-# perfect matches between artists and mbz
-# including duplicates
-clean <- all %>% 
-  filter(!is.na(musicBrainzID) & !is.na(contact_id) & 
-           !is.na(f_n_play) & !is.na(deezer_id)) %>% 
-  distinct(deezer_id, musicBrainzID, contact_id, name, f_n_play) # rm perfect duplicates
+  left_join(mbz_deezer, by = c(deezer_id = "deezerID")) %>% 
+  left_join(contacts, by = c(musicBrainzID = "mbz_id")) %>% 
+  select(name, contact_name, deezer_id, musicBrainzID, contact_id, f_n_play) %>% 
+  distinct(deezer_id, musicBrainzID, contact_id, .keep_all = T)
 
 
 
 
-# how many % of streams are missing
+# --------------- JOIN MBZ FROM WIKI to the cases missing in "all"
+
+# subset artists with missing mbz ids
 mbz_missing <- all %>% 
   filter(is.na(musicBrainzID))
 
-sum(mbz_missing$f_n_play) # 13.8%
 
-
-mbz_missing
-
-# --------------- ADD MBZ FROM WIKI to missing in all
-
+# inner_join of the missing mbz cases with wikidata's mbz
 mbz_from_wiki <- mbz_missing %>% 
   inner_join(wiki, by = c(c(deezer_id = "deezerID"))) %>% 
   mutate(musicBrainzID = musicBrainzID.y) %>% 
@@ -68,45 +59,38 @@ mbz_from_wiki <- mbz_missing %>%
   distinct(deezer_id, musicBrainzID, .keep_all = T) %>% 
   select(deezer_id, name, musicBrainzID, f_n_play)
 
-sum(mbz_from_wiki$f_n_play) # retrieving 1.8% of missing mbz ids
-
-mbz_from_wiki$contact_id <- NA
+sum(mbz_from_wiki$f_n_play) # retrieving 1.8% of missing mbz ids --- immerhin
 
 
-# ADD MISSING MBZ TO CLEAN 
-clean <- clean %>% 
-  rbind(mbz_from_wiki)
-
-# --> no contact_id for the new mbz cases
-clean %>% 
-  filter(is.na(contact_id))
+mbz_from_wiki <- mbz_from_wiki %>% 
+  mutate(contact_id = NA) %>% 
+  select(deezer_id, musicBrainzID)
 
 
-
-# --------------- CHECK IF OTHER WIKI IDS (SPOTIFY ETC) HELP
-
-# mbz ids who are still missing after retrieving a few from wiki
-mbz_missing_after_wiki <- mbz_missing %>% 
-  anti_join(mbz_from_wiki, by = "deezer_id") %>% 
-  select(deezer_id, name, f_n_play)
-
-mbz_missing_after_wiki
-
-# matches between deezer and wiki who are still missing in mbz
-# not many
-t <- mbz_missing_after_wiki %>% 
-  inner_join(wiki, by = c(deezer_id = "deezerID"))
-
-# even less spotify ids
-t %>% 
-  filter(!is.na(spotifyID))
-
-# even less discogs ids
-t %>% 
-  filter(!is.na(discogsID))
+# merge missing mbz ids back into "all" and save
+all <- all %>% 
+  left_join(mbz_from_wiki, by = "deezer_id") %>% 
+  mutate(musicBrainzID = coalesce(musicBrainzID.x,
+                                  musicBrainzID.y)) %>% 
+  select(-c(musicBrainzID.x, musicBrainzID.y))
 
 
-# try matching to mbz_deezer by spotify id
+# write "all" with added mbz ids from wiki to a csv
+write_s3("interim/clean_deezer_mbz_contacts.csv")
+
+
+
+
+# ----- OPTIONAL: extract clean joins
+
+# perfect matches between artists and mbz (including duplicates)
+clean <- all %>% 
+  filter(!is.na(musicBrainzID) & !is.na(contact_id) & 
+           !is.na(f_n_play) & !is.na(deezer_id)) %>% 
+  distinct(deezer_id, musicBrainzID, contact_id, name, f_n_play) # rm perfect duplicates
+
+
+
 
 
 
