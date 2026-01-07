@@ -4,22 +4,16 @@ library(ggplot2)
 
 options(scipen = 99)
 
-pop <- function(x){
-  sum_pop <- sum(x$f_n_play) * 100
-  cat("f_n_play:",sum_pop,"%.")
-}
 
 
 # LOAD RAW -------------------------------------------
 
-## describe data: artists only with playtime
 
 # artists in items
 tar_load(artists)
-mbz_deezer <- load_s3("interim/musicbrainz_urls_collapsed.csv")
-contacts <- load_s3("senscritique/contacts.csv")
 
 # musicbrainz keys
+mbz_deezer <- load_s3("interim/musicbrainz_urls_collapsed.csv")
 mbz_deezer <- tibble(mbz_deezer) %>% 
   filter(!is.na(deezer)) %>% 
   rename(musicBrainzID = "musicbrainz_id",
@@ -27,9 +21,19 @@ mbz_deezer <- tibble(mbz_deezer) %>%
   #select(musicBrainzID, deezerID)
 
 # contacts keys
+contacts <- load_s3("senscritique/contacts.csv")
 contacts <- contacts %>% 
   as_tibble() %>% 
   select(contact_id, contact_name, mbz_id, spotify_id)
+
+
+# sam's manual searches
+manual_search <- read.csv("data/manual_search.csv")
+
+manual_search <- manual_search %>% 
+  as_tibble() %>% 
+  mutate(deezer_id = as.character(artist_id)) %>% 
+  select(-artist_id)
 
 
 # -----------------------------------------------------------
@@ -38,9 +42,17 @@ contacts <- contacts %>%
 all <- artists %>% 
   left_join(mbz_deezer, by = c(deezer_id = "deezerID")) %>% 
   left_join(contacts, by = c(musicBrainzID = "mbz_id")) %>% 
-  select(name, contact_name, deezer_id, musicBrainzID, contact_id, f_n_play) %>% 
+  left_join(manual_search, by = "deezer_id") %>% 
+  mutate(contact_id = coalesce(contact_id.x, contact_id.y)) %>% 
+  select(name, 
+         contact_name, 
+         deezer_id, 
+         musicBrainzID, 
+         contact_id, 
+         f_n_play) %>% 
   distinct(deezer_id, musicBrainzID, contact_id, .keep_all = T)
 
+nrow(all)
 
 
 # --------------- JOIN MBZ FROM WIKI to the cases missing in "all"
@@ -48,7 +60,6 @@ all <- artists %>%
 # subset artists with missing mbz ids
 mbz_missing <- all %>% 
   filter(is.na(musicBrainzID))
-
 
 # inner_join of the missing mbz cases with wikidata's mbz
 mbz_from_wiki <- mbz_missing %>% 
@@ -73,9 +84,6 @@ all <- all %>%
                                   musicBrainzID.y)) %>% 
   select(-c(musicBrainzID.x, musicBrainzID.y))
 
-pop(all %>% distinct(deezer_id, .keep_all = T))
-
-
 
 #### --------------- ADD MBZ NAMES
 
@@ -91,23 +99,111 @@ all <- all %>%
   left_join(mbz_name, by = "musicBrainzID")
 
 
-# write "all" with added mbz ids from wiki to a csv
+
+# -------------------- ADD SC OBTAINED FROM UNIQUE PERFECT MATCHES
+
+# subset missing contact ids
+miss <- all %>% 
+  filter(is.na(contact_id)) %>% 
+  select(-contact_id)
+
+# contacts
+contacts <- contacts %>% 
+  as_tibble() %>% 
+  select(contact_id, contact_name) %>% 
+  anti_join(all, by = "contact_id") # exclude found contact_ids
+
+
+### overview of occurrences
+### DESC ONLY
+matches <- miss %>% 
+  inner_join(contacts, by = c(name = "contact_name")) %>% 
+  group_by(name) %>% 
+  count() %>% 
+  arrange(desc(n))
+
+#### inner join missings with contacts by name
+added_contacts <- miss %>% 
+  inner_join(contacts, by = c(name = "contact_name")) %>% 
+  group_by(name) %>% 
+  mutate(n = n()) %>% 
+  arrange(desc(n)) %>% 
+  select(-contact_name) %>% 
+  filter(n == 1) %>% # keep unique matches only
+  distinct(deezer_id, .keep_all = T)
+
+pop(added_contacts)
+
+
+### MERGE INTO ALL
+added_contacts <- added_contacts %>% 
+  select(deezer_id, contact_id)
+
+## before
+all %>% 
+  filter(!is.na(contact_id)) %>% 
+  nrow()
+
+all <- all %>% 
+  left_join(added_contacts, by = c("deezer_id", "name")) %>% 
+  mutate(contact_id = coalesce(contact_id.x, contact_id.y)) %>% 
+  select(-c(contact_id.x, contact_id.y)) %>% 
+  as_tibble()
+
+## after: 110k more cases
+all %>% 
+  filter(!is.na(contact_id)) %>% 
+  nrow()
+
+
+# write "all" with added mbz and contact ids from wiki to a csv
 write_s3(all, "interim/all_deezer_mbz_contacts.csv")
 
 
+# ---------------- CHECK COMPLETENESS
+
+# contact ids covered
+all %>% 
+  filter(!is.na(contact_id)) %>% 
+  distinct(deezer_id, .keep_all = T) %>% 
+  pop()
+
+# mbz ids covered
+all %>% 
+  filter(!is.na(musicBrainzID)) %>% 
+  distinct(deezer_id, .keep_all = T) %>% 
+  pop()
 
 
-# ----- OPTIONAL: extract clean joins
+# clean cases (all ids)
+all %>% 
+  filter(!is.na(musicBrainzID)) %>% 
+  filter(!is.na(contact_id)) %>% 
+  distinct(deezer_id, .keep_all = T) %>% 
+  pop()
+  
 
-# perfect matches between artists and mbz (including duplicates)
+###
 clean <- all %>% 
-  filter(!is.na(musicBrainzID) & !is.na(contact_id) & 
-           !is.na(f_n_play) & !is.na(deezer_id)) %>% 
-  distinct(deezer_id, musicBrainzID, contact_id, name, f_n_play) # rm perfect duplicates
+  filter(!is.na(musicBrainzID)) %>% 
+  filter(!is.na(contact_id)) %>% 
+  distinct(deezer_id, .keep_all = T) %>% 
+  select(deezer_id, 
+         name, 
+         contact_name, 
+         mbz_name, 
+         musicBrainzID, 
+         contact_id, 
+         f_n_play)
+
+prop_na(clean)
 
 
 
-mbz_deezer[mbz_deezer$deezerID == 2,]
+
+
+
+
 
 
 

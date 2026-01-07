@@ -123,6 +123,26 @@ write_s3 <- function(x, file, FUN = readr::write_csv){
 }
 
 
+### HELPER FUNCTIONS
+
+# view stream share fast
+pop <- function(x){
+  sum_pop <- sum(x$f_n_play) * 100
+  cat("f_n_play:",sum_pop,"%.")
+}
+
+
+# prop of nas inside a dataset
+prop_na <- function(x) {
+  
+  prop_na <- function(){
+    sum(is.na(x)) / length(x)
+  }
+  
+  lapply(x, prop_na)
+  
+}
+  
 
 
 

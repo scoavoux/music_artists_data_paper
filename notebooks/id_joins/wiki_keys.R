@@ -162,16 +162,6 @@ rm(wiki_labels, wiki_spotify, wiki_discogs, wiki_deezer,
 wiki <- load_s3("interim/wiki_ids.csv") 
 
 
-
-# --------------------------------------------------------------
-## inspect matches 
-
-prop_na <- function(x){
-  sum(is.na(x)) / length(x)
-}
-
-lapply(wiki, prop_na)
-
 # ------------------------------------------------------
 
 # LOAD MUSICBRAINZ NEW
