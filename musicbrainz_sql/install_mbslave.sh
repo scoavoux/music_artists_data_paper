@@ -1,8 +1,17 @@
+# install dependencies
 sudo apt install python3 python3-dev pipx postgresql
+# install mbslaves and make sure executable is in path
 pipx install git+https://github.com/acoustid/mbslave.git
 pipx ensurepath
-# restart terminal
+# restart terminal so that $PATH updates and mbslave can be found.
+# RESTART TERMINAL
+# declare the path to mbslave.conf
+# failing to do that generates cryptic errors.
+export MBSLAVE_CONFIG="/home/onyxia/work/music_artists_data_paper/musicbrainz_sql/mbslave.conf"
+# Start postgresql
 sudo service postgresql start
+# setup passwords
+# not sure if the musicbrainz bit is necessary
 sudo -u postgres psql -d postgres
 # \password postgres
 # postgres
@@ -11,9 +20,8 @@ sudo -u postgres psql -d postgres
 # musicbrainz
 # musicbrainz
 # \q
-# modify the config file mbslave.conf to decomment password, et mettre le password admin
-# add ignore=medium for solving a bug https://github.com/acoustid/mbslave/issues/21
-export MBSLAVE_CONFIG="/home/onyxia/work/mauvaisgenre/sql/mbslave.conf"
+# Generates the postgresql dataset
 mbslave init --create-user --create-database
+# Updates the dataset (later)
 mbslave sync
 
