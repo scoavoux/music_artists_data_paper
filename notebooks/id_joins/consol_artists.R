@@ -43,7 +43,6 @@ all <- artists %>%
 
 
 
-
 # --------------- JOIN MBZ FROM WIKI to the cases missing in "all"
 
 # subset artists with missing mbz ids
@@ -59,7 +58,7 @@ mbz_from_wiki <- mbz_missing %>%
   distinct(deezer_id, musicBrainzID, .keep_all = T) %>% 
   select(deezer_id, name, musicBrainzID, f_n_play)
 
-sum(mbz_from_wiki$f_n_play) # retrieving 1.8% of missing mbz ids --- immerhin
+pop(mbz_from_wiki) # retrieving 1.8% of missing mbz ids --- immerhin
 
 
 mbz_from_wiki <- mbz_from_wiki %>% 
@@ -74,9 +73,26 @@ all <- all %>%
                                   musicBrainzID.y)) %>% 
   select(-c(musicBrainzID.x, musicBrainzID.y))
 
+pop(all %>% distinct(deezer_id, .keep_all = T))
+
+
+
+#### --------------- ADD MBZ NAMES
+
+mbid_name <- load_s3("musicbrainz/mbid_name_alias.csv")
+
+mbz_name <- mbid_name %>% 
+  filter(type == "name") %>% 
+  as_tibble() %>% 
+  select(musicBrainzID = "mbid",
+         mbz_name = "name")
+
+all <- all %>% 
+  left_join(mbz_name, by = "musicBrainzID")
+
 
 # write "all" with added mbz ids from wiki to a csv
-write_s3("interim/clean_deezer_mbz_contacts.csv")
+write_s3(all, "interim/all_deezer_mbz_contacts.csv")
 
 
 
@@ -91,12 +107,7 @@ clean <- all %>%
 
 
 
-
-
-
-
-
-
+mbz_deezer[mbz_deezer$deezerID == 2,]
 
 
 
