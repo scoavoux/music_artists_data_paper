@@ -1,0 +1,29 @@
+[project]
+name = "music_artists_data_paper"
+authors = [
+  {name = "Paul Coudry", email = "paul.coudry@ensae.fr"},
+]
+
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+version = "0.1.0"
+
+dependencies = [
+  "ipykernel>=6.29.5",
+  "pandas>=2.2.3",
+  "pyarrow>=20.0.0",
+  "requests>=2.32.3",
+  "transformers>=4.51.3",
+  "openpyxl>=3.1.5",
+  "python-levenshtein>=0.27.3",
+  "fuzzywuzzy>=0.18.0",
+  "senscritique>=0.5.5",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+packages = ["src"]
