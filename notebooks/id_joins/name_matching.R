@@ -71,24 +71,50 @@ all <- all %>%
   select(-c(musicBrainzID.x, musicBrainzID.y)) %>% 
   as_tibble()
 
-## after: 47k more cases
+#####-------------------------------------
+#####-------------------------------------
+
+# FUZZ 
+
+## STILL MISSING
+## DISTINCT FOR NOW FOR THE SAKE OF SIMPLICITY
+
+
+# subset missing contact_ids of names who don't have 
+# a contact_id elsewhere, e.g. balthazar
+names_with_contact <- all %>%
+  filter(!is.na(contact_id)) %>%
+  distinct(name)
+
+missing_contact_after_consol <- all %>%
+  anti_join(names_with_contact, by = "name")
+
+pop(missing_contact_after_consol)
+
+
+
+# already 4-5% within the first 1000-2000 cases
+pop(missing_mbz_after_consol[1:2000,])
+pop(missing_contact_after_consol[1:2000,])
+
+
+write_s3(missing_mbz_after_consol[1:2000,], "interim/missing_mbz_after_consol.csv")
+write_s3(missing_contact_after_consol[1:10000,], "interim/missing_contact_after_consol.csv")
+
+
+missing_contact_after_consol %>% 
+  filter(name == "Young Thug")
+
+
+
+## why does balthazar have a contact_id in all but not
+## in missing contacts??
+
 all %>% 
-  filter(!is.na(musicBrainzID)) %>% 
-  nrow()
+  filter(name == "Balthazar")
 
-
-# mbz ids covered
-all %>% 
-  filter(!is.na(musicBrainzID)) %>% 
-  distinct(deezer_id, .keep_all = T) %>% 
-  pop()
-
-all %>% 
-  filter(!is.na(musicBrainzID)) %>% 
-  filter(!is.na(contact_id)) %>% 
-  distinct(deezer_id, .keep_all = T) %>% 
-  pop()
-
+missing_contact_after_consol %>%
+  filter(name == "Balthazar")
 
 
 

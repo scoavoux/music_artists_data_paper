@@ -36,6 +36,9 @@ manual_search <- manual_search %>%
   select(-artist_id)
 
 
+# my wiki table
+wiki <- load_s3("interim/wiki_ids.csv")
+
 # -----------------------------------------------------------
 # JOIN ALL POSSIBLE ITEM ARTISTS TO MBZ AND CONTACTS
 

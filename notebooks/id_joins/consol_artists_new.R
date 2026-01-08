@@ -1,3 +1,7 @@
+# Load all "raw" id files and bind them to one dataset
+# enrich with mbz ids from wiki,
+# and with mbz ids + contact_ids through unique name matches
+
 
 # LOAD RAW -------------------------------------------
 
@@ -50,10 +54,9 @@ all <- artists %>%
   distinct(deezer_id, musicBrainzID, contact_id, .keep_all = TRUE)
 
 
-## BENCHMARK ALL
+# covered streams
 pop(all)
 cleanpop(all)
-
 
 ## ---------------------------- ADD WIKI-MBZ
 wiki_mbz <- wiki %>% 
@@ -114,7 +117,16 @@ all <- left_join_coalesce(
   col = "musicBrainzID"
 )
 
-cleanpop(all) # 85.94%
+cleanpop(all) # 85.94% of streams covered after operations
+
+# export consolidates artists
+write_s3(all, "interim/consolidated_artists.csv")
+
+
+
+
+
+  
 
 
 
