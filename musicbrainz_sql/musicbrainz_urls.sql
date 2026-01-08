@@ -1,36 +1,38 @@
 COPY (
-SELECT
-    musicbrainz_id,
-    url
-FROM(
-(
-    SELECT 
-    entity0 as artist_id,
-    entity1 as url_id
-FROM l_artist_url        
-) as l_artist_url
-LEFT JOIN
-(
-    SELECT 
-        id as url_id,
-        url
-    FROM url
-) as url
-ON l_artist_url.url_id = url.url_id
-)
-LEFT JOIN
-(
     SELECT
-        id as artist_id,
-        gid as musicbrainz_id
-    FROM artist
-) as artist
-ON l_artist_url.artist_id = artist.artist_id
+        artist.musicbrainz_id,
+        artist.artist_name,
+        url.url
+    FROM
+        (
+            SELECT 
+                entity0 AS artist_id,
+                entity1 AS url_id
+            FROM l_artist_url        
+        ) AS l_artist_url
+    LEFT JOIN
+        (
+            SELECT 
+                id AS url_id,
+                url
+            FROM url
+        ) AS url
+        ON l_artist_url.url_id = url.url_id
+    LEFT JOIN
+        (
+            SELECT
+                id AS artist_id,
+                gid AS musicbrainz_id,
+                name AS artist_name
+            FROM artist
+        ) AS artist
+        ON l_artist_url.artist_id = artist.artist_id
     WHERE 
-        url LIKE '%deezer%'
-     OR url LIKE '%spotify%'
-     OR url LIKE '%wikidata%'
-     OR url LIKE '%discogs%'
-     OR url LIKE '%allmusic%'
+           url.url LIKE '%deezer%'
+        OR url.url LIKE '%spotify%'
+        OR url.url LIKE '%wikidata%'
+        OR url.url LIKE '%discogs%'
+        OR url.url LIKE '%allmusic%'
 )
-TO '/tmp/musicbrainz_urls.csv' WITH CSV DELIMITER ',' HEADER;
+TO STDOUT
+WITH CSV DELIMITER ',' HEADER;

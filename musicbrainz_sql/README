@@ -1,0 +1,11 @@
+This is the workflow to download the last musicbrainz dump, 
+setup a postgresql server, extract the relevant information
+and upload it to s3.
+It is not included in targets partly because it needs some
+manual input and because it would not make sense to run it
+at every iteration of musicbrainz. And also because I (Sam)
+don't see how to do it easily.
+
+Instruction:
+Execute line by line install_mbslave.sh -- careful with the passwords.
+Then cd in musicbrainz_sql and make.

@@ -79,4 +79,4 @@ LEFT JOIN
 ON rgstj.st_id = rgst.st_id
 )
     )
-TO '/tmp/musicbrainz_releases.csv' WITH CSV DELIMITER ',' HEADER;
+TO STDOUT WITH CSV DELIMITER ',' HEADER;

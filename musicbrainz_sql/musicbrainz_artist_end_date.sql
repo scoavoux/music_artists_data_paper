@@ -5,4 +5,4 @@ COPY (
   FROM artist
   WHERE end_date_year IS NOT NULL
 )
-TO '/tmp/musicbrainz_artist_end_date.csv' WITH CSV DELIMITER ',' HEADER;
+TO STDOUT WITH CSV DELIMITER ',' HEADER;

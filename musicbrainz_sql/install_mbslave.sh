@@ -22,6 +22,7 @@ sudo -u postgres psql -d postgres
 # \q
 # Generates the postgresql dataset
 mbslave init --create-user --create-database
+mkdir /home/onyxia/work/music_artists_data_paper/musicbrainz_sql/output
 # Updates the dataset (later)
 mbslave sync
 

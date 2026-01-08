@@ -24,4 +24,4 @@ JOIN(
     FROM area_type) as area_type
     ON areas.type_id = area_type.type_id
 )
-TO '/tmp/musicbrainz_area.csv' WITH CSV DELIMITER ',' HEADER;
+TO STDOUT WITH CSV DELIMITER ',' HEADER;
