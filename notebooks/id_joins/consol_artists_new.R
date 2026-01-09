@@ -3,17 +3,26 @@
 # and with mbz ids + contact_ids through unique name matches
 
 
+# RERUN WITH NEW ARTISTS
+# SWITCH DISTINCTS TO RAW FILES
+
+
+
 # LOAD RAW -------------------------------------------
 
 # artists in items
 tar_load(artists)
 
+artists <- artists %>% 
+  rename(deezer_id = "deezer_feat_id")
+
 # musicbrainz keys
-mbz_deezer <- load_s3("interim/musicbrainz_urls_collapsed.csv")
+mbz_deezer <- load_s3("interim/musicbrainz_urls_collapsed.csv") # implement SQL
 mbz_deezer <- tibble(mbz_deezer) %>% 
   filter(!is.na(deezer)) %>% 
   rename(musicBrainzID = "musicbrainz_id",
-         deezerID = "deezer")
+         deezerID = "deezer") %>% 
+  distinct(deezerID, musicBrainzID)
 
 # mbz names
 mbz_name <- load_s3("musicbrainz/mbid_name_alias.csv") 
@@ -42,6 +51,7 @@ wiki <- wiki %>%
   as_tibble()
 
 
+
 # CREATE ALL
 all <- artists %>% 
   left_join(mbz_deezer, by = c(deezer_id = "deezerID")) %>% 
@@ -50,13 +60,11 @@ all <- artists %>%
   left_join(mbz_name, by = "musicBrainzID") %>% 
   mutate(contact_id = coalesce(contact_id.x, contact_id.y)) %>% 
   select(name, contact_name, mbz_name, deezer_id, 
-         musicBrainzID, contact_id, f_n_play) %>% 
-  distinct(deezer_id, musicBrainzID, contact_id, .keep_all = TRUE)
+         musicBrainzID, contact_id, pop)
 
 
-# covered streams
-pop(all)
-cleanpop(all)
+cleanpop(all) # covered streams
+
 
 ## ---------------------------- ADD WIKI-MBZ
 wiki_mbz <- wiki %>% 
@@ -123,11 +131,15 @@ cleanpop(all) # 85.94% of streams covered after operations
 write_s3(all, "interim/consolidated_artists.csv")
 
 
+all %>% 
+  filter(name == "Lomepal")
 
+artists %>% 
+  count(name) %>% 
+  filter(n > 1)
 
-
-  
-
+contacts %>% 
+  filter(name == "Lomepal")
 
 
 

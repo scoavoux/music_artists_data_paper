@@ -1,28 +1,29 @@
 # helper functions for the artist id issues 
 
-# view stream share fast
-# careful: coerce deezer_ids to unique
-pop <- function(x){
+# quick benchmark of stream shares
+# input x is a dataframe with cols deezer_id, musicBrainzID, contact_id
+cleanpop <- function(x){ 
   
-  x <- x %>% 
+  mbz <- x %>% 
+    filter(!is.na(musicBrainzID)) %>% 
+    distinct(deezer_id, .keep_all = T)
+
+  contacts <- x %>%
+    filter(!is.na(contact_id)) %>% 
     distinct(deezer_id, .keep_all = T)
   
-  sum_pop <- sum(x$f_n_play) * 100
-  cat("f_n_play:",sum_pop,"%.")
-  
-}
-
-# view stream share fast
-# only for complete cases
-cleanpop <- function(x){
-  
-  x <- x %>%
+  both <- x %>%
     filter(!is.na(musicBrainzID)) %>% 
     filter(!is.na(contact_id)) %>% 
     distinct(deezer_id, .keep_all = T)
   
-  sum_pop <- sum(x$f_n_play) * 100
-  cat("f_n_play:",sum_pop,"%.")
+  mbz_clean <- sum(mbz$pop) * 100
+  contacts_clean <- sum(contacts$pop) * 100
+  both_clean <- sum(both$pop) * 100
+  
+  cat("clean mbz ids:",mbz_clean,"%. \n")
+  cat("clean contact ids:",contacts_clean,"%. \n")
+  cat("complete cases:",both_clean,"%.")
   
 }
 
