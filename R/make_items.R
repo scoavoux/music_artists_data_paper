@@ -51,8 +51,8 @@ bind_items <- function(items_old, items_new, streams, names){
   
   ## join to streams and compute weighted popularity
   items <- items %>% 
-   inner_join(streams, by = "song_id") %>% 
-    mutate(weighted_f_n_play = w_feat * f_n_play)
+   inner_join(streams, by = "song_id") #%>% 
+    #mutate(weighted_f_n_play = w_feat * f_n_play) # MOVED TO group_items_by_artist
 
   ## add deezer names to debug joins with other ids
   items <- items %>% 
@@ -85,15 +85,20 @@ bind_names <- function(file_1, file_2){
 group_items_by_artist <- function(items){
   
   artists <- items %>% 
-    mutate(deezer_id = as.character(deezer_id)) %>% 
-    distinct(deezer_id, .keep_all = TRUE) %>% 
-    group_by(deezer_id) %>% 
+    ungroup() %>% 
+    mutate(deezer_feat_id = as.character(deezer_feat_id),
+           w_n_play = w_feat * n_play, # weight n plays by feat
+           w_f_n_play = w_n_play / sum(w_n_play)) %>% # compute weighted f_n_play
+    group_by(deezer_feat_id) %>% 
     summarise(name = first(name),
-              f_n_play = sum(f_n_play)) %>% 
-    arrange(desc(f_n_play))
+              pop = sum(w_f_n_play),
+              .groups = "drop") %>% 
+    arrange(desc(pop))
   
   return(artists)
 }
+
+
 
 
 
