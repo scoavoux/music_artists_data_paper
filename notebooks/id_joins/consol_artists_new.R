@@ -16,6 +16,21 @@ tar_load(artists)
 artists <- artists %>%
   rename(deezer_id = "deezer_feat_id")
 
+
+# IMPORTANT: new join with deezer names to take feats into account
+# because the switch to deezer_feat_id messed the names up
+names <- load_s3("records_w3/items/artists_data.snappy.parquet")
+
+names <- names %>% 
+  mutate(deezer_id = as.character(artist_id)) %>% 
+  select(deezer_id, name)
+
+artists <- artists %>% 
+  left_join(names, by = "deezer_id") %>% 
+  mutate(name = name.y) %>% 
+  select(-c(name.x, name.y))
+
+
 # musicbrainz keys
 mbz_deezer <- load_s3("interim/musicbrainz_urls_collapsed_new.csv") # !! NEW FILE !!
 
@@ -53,7 +68,7 @@ wiki <- wiki %>%
 
 ## check uniqueness of cases
 ## after correcting manual_search, all raw data are unique
-nrow(artists) - nrow(artists %>% distinct(deezer_feat_id))
+nrow(artists) - nrow(artists %>% distinct(deezer_id))
 nrow(mbz_deezer) - nrow(mbz_deezer %>% distinct(musicBrainzID, deezerID))
 nrow(contacts) - nrow(contacts %>% distinct(contact_id, mbz_id))
 nrow(manual_search) - nrow(manual_search %>% distinct(contact_id, deezer_id)) # 66 duplicates
@@ -128,7 +143,7 @@ all <- left_join_coalesce(
   col = "musicBrainzID"
 )
 
-cleanpop(all) # 83% of streams covered after operations
+cleanpop(all) # 84.7% of streams covered after operations
 
 
 ### CHECK DIFFERENT DUPLICATES
@@ -157,16 +172,7 @@ nrow(all %>%
 write_s3(all, "interim/consolidated_artists.csv")
 
 
-### check names
-all %>% 
-  filter(name == "Lomepal")
 
-artists %>% 
-  count(name) %>% 
-  filter(n > 1)
-
-contacts %>% 
-  filter(contact_name == "Lomepal")
 
 
 

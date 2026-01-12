@@ -56,7 +56,7 @@ bind_items <- function(items_old, items_new, streams, names){
 
   ## add deezer names to debug joins with other ids
   items <- items %>% 
-    left_join(names, by = "deezer_id")
+    left_join(names, by = "deezer_id") 
   
   return(items)
 }
