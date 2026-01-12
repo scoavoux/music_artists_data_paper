@@ -166,9 +166,7 @@ nrow(all %>%
                                                filter(!is.na(musicBrainzID)) %>% 
                                                distinct(musicBrainzID, contact_id))
 
-
-
-# export consolidates artists
+# export consolidated artists
 write_s3(all, "interim/consolidated_artists.csv")
 
 
