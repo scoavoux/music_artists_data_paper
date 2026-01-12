@@ -1,4 +1,6 @@
 library(stringr)
+library(data.table)
+library(dplyr)
 
 dat <- load_s3("musicbrainz/musicbrainz_urls.csv")
 
@@ -14,12 +16,12 @@ dat <- tibble(dat) %>%
          spotify = ifelse(str_detect(url, "spotify"), 
                           str_remove(url, "https://open.spotify.com/artist/"), NA)) %>% 
   select(-url) %>% 
-  distinct(musicbrainz_id, discogs, allmusic, wiki, deezer, spotify)
+  distinct(artist_name, musicbrainz_id, discogs, allmusic, wiki, deezer, spotify)
 
 
-library(data.table)
 
 dat <- setDT(dat)
+
 
 collapsed <- dat[
   ,
@@ -40,7 +42,7 @@ collapsed <- dat[
 ]
 
 
-write_s3(collapsed, "interim/musicbrainz_urls_collapsed.csv")
+write_s3(collapsed, "interim/musicbrainz_urls_collapsed_new.csv")
 
 
 

@@ -1,7 +1,7 @@
 # Load all "raw" id files and bind them to one dataset
 # enrich with mbz ids from wiki,
 # and with mbz ids + contact_ids through unique name matches
-
+library(dplyr)
 
 # RERUN WITH NEW ARTISTS
 # SWITCH DISTINCTS TO RAW FILES
@@ -13,23 +13,19 @@
 # artists in items
 tar_load(artists)
 
-artists <- artists %>% 
+artists <- artists %>%
   rename(deezer_id = "deezer_feat_id")
 
 # musicbrainz keys
-mbz_deezer <- load_s3("interim/musicbrainz_urls_collapsed.csv") # implement SQL
+mbz_deezer <- load_s3("interim/musicbrainz_urls_collapsed_new.csv") # !! NEW FILE !!
+
 mbz_deezer <- tibble(mbz_deezer) %>% 
   filter(!is.na(deezer)) %>% 
   rename(musicBrainzID = "musicbrainz_id",
-         deezerID = "deezer") %>% 
-  distinct(deezerID, musicBrainzID)
+         deezerID = "deezer",
+         mbz_name = "artist_name") %>% 
+  distinct(deezerID, musicBrainzID, mbz_name) # need to distinct bc dropping spotify etc leaves ~22k duplicates
 
-# mbz names
-mbz_name <- load_s3("musicbrainz/mbid_name_alias.csv") 
-mbz_name <- mbz_name %>% 
-  filter(type == "name") %>% 
-  transmute(musicBrainzID = mbid, 
-            mbz_name = name)
 
 # contacts keys
 contacts <- load_s3("senscritique/contacts.csv")
@@ -42,14 +38,25 @@ manual_search <- read.csv("data/manual_search.csv")
 manual_search <- manual_search %>% 
   as_tibble() %>% 
   mutate(deezer_id = as.character(artist_id)) %>% 
-  select(-artist_id)
+  select(-artist_id) %>% 
+  distinct(contact_id, deezer_id) # drop 66 perfect duplicates
 
-# my wiki table
+# join mbz name to wiki table
+mbz_name <- mbz_deezer %>% 
+  select(-deezerID)
+
 wiki <- load_s3("interim/wiki_ids.csv") 
 wiki <- wiki %>% 
-  left_join(mbz_name, by = "musicBrainzID") %>% 
+  left_join(mbz_name, by = "musicBrainzID") %>% # ADD deezerID too??
   as_tibble()
 
+
+## check uniqueness of cases
+## after correcting manual_search, all raw data are unique
+nrow(artists) - nrow(artists %>% distinct(deezer_feat_id))
+nrow(mbz_deezer) - nrow(mbz_deezer %>% distinct(musicBrainzID, deezerID))
+nrow(contacts) - nrow(contacts %>% distinct(contact_id, mbz_id))
+nrow(manual_search) - nrow(manual_search %>% distinct(contact_id, deezer_id)) # 66 duplicates
 
 
 # CREATE ALL
@@ -57,14 +64,11 @@ all <- artists %>%
   left_join(mbz_deezer, by = c(deezer_id = "deezerID")) %>% 
   left_join(contacts,  by = c(musicBrainzID = "mbz_id")) %>% 
   left_join(manual_search, by = "deezer_id") %>% 
-  left_join(mbz_name, by = "musicBrainzID") %>% 
   mutate(contact_id = coalesce(contact_id.x, contact_id.y)) %>% 
   select(name, contact_name, mbz_name, deezer_id, 
          musicBrainzID, contact_id, pop)
 
-
 cleanpop(all) # covered streams
-
 
 ## ---------------------------- ADD WIKI-MBZ
 wiki_mbz <- wiki %>% 
@@ -85,7 +89,6 @@ cleanpop(all)
 contacts_ref <- contacts %>% 
   select(contact_id, contact_name) %>% 
   anti_join(all, by = "contact_id")
-
 
 added_contacts <- unique_name_match(
   miss = all %>% filter(is.na(contact_id)),
@@ -125,12 +128,36 @@ all <- left_join_coalesce(
   col = "musicBrainzID"
 )
 
-cleanpop(all) # 85.94% of streams covered after operations
+cleanpop(all) # 83% of streams covered after operations
+
+
+### CHECK DIFFERENT DUPLICATES
+### metrics for deezer-mbz, deezer_contacts, contacts-mbz, deezer-mbz-contacts
+
+nrow(all) - nrow(all %>% 
+                   distinct(deezer_id))
+
+nrow(all) - nrow(all %>% 
+                   distinct(deezer_id, musicBrainzID))
+
+nrow(all) - nrow(all %>% 
+                   distinct(deezer_id, contact_id))
+
+nrow(all) - nrow(all %>% 
+                   distinct(deezer_id, musicBrainzID, contact_id))
+
+nrow(all %>% 
+       filter(!is.na(musicBrainzID))) - nrow(all %>% 
+                                               filter(!is.na(musicBrainzID)) %>% 
+                                               distinct(musicBrainzID, contact_id))
+
+
 
 # export consolidates artists
 write_s3(all, "interim/consolidated_artists.csv")
 
 
+### check names
 all %>% 
   filter(name == "Lomepal")
 
@@ -139,7 +166,7 @@ artists %>%
   filter(n > 1)
 
 contacts %>% 
-  filter(name == "Lomepal")
+  filter(contact_name == "Lomepal")
 
 
 
