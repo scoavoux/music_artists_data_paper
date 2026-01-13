@@ -17,30 +17,17 @@ artists <- artists %>%
   rename(deezer_id = "deezer_feat_id")
 
 
-# IMPORTANT: new join with deezer names to take feats into account
-# because the switch to deezer_feat_id messed the names up
-names <- load_s3("records_w3/items/artists_data.snappy.parquet")
-
-names <- names %>% 
-  mutate(deezer_id = as.character(artist_id)) %>% 
-  select(deezer_id, name)
-
-artists <- artists %>% 
-  left_join(names, by = "deezer_id") %>% 
-  mutate(name = name.y) %>% 
-  select(-c(name.x, name.y))
+# CHECK WHAT IS WITH NAMES!!
+# oh: possibly NA matched NA before, that's bad
+# check that this doesn't happen
 
 
 # musicbrainz keys
 mbz_deezer <- load_s3("interim/musicbrainz_urls_collapsed_new.csv") # !! NEW FILE !!
 
 mbz_deezer <- tibble(mbz_deezer) %>% 
-  filter(!is.na(deezer)) %>% 
-  rename(musicBrainzID = "musicbrainz_id",
-         deezerID = "deezer",
-         mbz_name = "artist_name") %>% 
+  filter(!is.na(deezerID)) %>% 
   distinct(deezerID, musicBrainzID, mbz_name) # need to distinct bc dropping spotify etc leaves ~22k duplicates
-
 
 # contacts keys
 contacts <- load_s3("senscritique/contacts.csv")
@@ -85,6 +72,7 @@ all <- artists %>%
 
 cleanpop(all) # covered streams
 
+
 ## ---------------------------- ADD WIKI-MBZ
 wiki_mbz <- wiki %>% 
   select(deezer_id = deezerID, musicBrainzID) %>% 
@@ -100,14 +88,16 @@ all <- left_join_coalesce(
 
 cleanpop(all)
 
+
 ## -------- ENRICH WITH CONTACTS
 contacts_ref <- contacts %>% 
   select(contact_id, contact_name) %>% 
-  anti_join(all, by = "contact_id")
+  filter(!is.na(contact_name)) %>% # only contacts with names
+  anti_join(all, by = "contact_id") # only contacts not already in all
 
 added_contacts <- unique_name_match(
   miss = all %>% filter(is.na(contact_id)),
-  ref = contacts,
+  ref = contacts_ref,
   miss_name = "name",
   ref_name = "contact_name",
   id_col = "contact_id"
@@ -125,8 +115,8 @@ cleanpop(all)
 ## -------- ENRICH WITH MBZ NAMES FROM WIKI
 wiki_ref <- wiki %>% 
   select(musicBrainzID, mbz_name) %>% 
-  filter(!is.na(mbz_name)) %>% 
-  anti_join(all, by = "musicBrainzID")
+  filter(!is.na(mbz_name)) %>% # only mbz with names
+  anti_join(all, by = "musicBrainzID") # only mbz not already in all
 
 added_mbz <- unique_name_match(
   miss = all %>% filter(is.na(musicBrainzID)),
@@ -143,7 +133,7 @@ all <- left_join_coalesce(
   col = "musicBrainzID"
 )
 
-cleanpop(all) # 84.7% of streams covered after operations
+cleanpop(all) # 84.59% of streams covered after operations (now 84 after https step)
 
 
 ### CHECK DIFFERENT DUPLICATES
