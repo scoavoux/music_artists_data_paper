@@ -12,16 +12,17 @@ contacts <- as_tibble(contacts) %>%
 co_pop_share <- contacts %>% 
   group_by(contact_name) %>% # maybe: name, deezer_id?
   mutate(col_share = collection_count / sum(collection_count),
+         prod_share = product_count / sum(product_count),
          gen_like_share = gen_like_count / sum(gen_like_count),
          gen_pos_share = gen_like_positive_count / sum(gen_like_positive_count))
 
-co_pop_share %>% 
-  filter(col_share > 0.9)
+test <- co_pop_share %>% 
+  filter(col_share > 0.9 | prod_share > 0.9)
 
-### high correlation between metrics
+
+### note: high correlation between metrics
 cor.test(co_pop_share$col_share,
          co_pop_share$gen_pos_share)
-
 
 # ------- join to missing contact_data in all
 
@@ -41,7 +42,7 @@ sum(t$pop)
 View(t)
 
 
-
+mean(co_pop_share$product_count)
 
 
 

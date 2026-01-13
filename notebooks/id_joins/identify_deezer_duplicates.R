@@ -27,6 +27,7 @@ unique_contacts <- contacts %>%
   filter(n == 1) %>% 
   select(-n)
 
+
 added_contacts <- all_pop_share_co %>%
   inner_join(unique_contacts, by = c(name = "contact_name")) %>% 
   mutate(contact_id = contact_id.y) %>% 
