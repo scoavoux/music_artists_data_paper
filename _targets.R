@@ -36,16 +36,24 @@ list(
                command = make_items(to_remove = to_remove_file,
                                     file = "records_w3/items/song.snappy.parquet")),
     
+    tar_target(name = names,
+               command = bind_names(file_1 = "records_w3/items/artists_data.snappy.parquet",
+                                    file_2 = "interim/new_artists_names_from_api.csv")),
+    
     tar_target(name = items,
                command = bind_items(items_old, items_new, streams, names)),
     
     tar_target(name = artists,
-               command = group_items_by_artist(items)),
+               command = group_items_by_artist(items))
     
-    tar_target(name = names,
-               command = bind_names(file_1 = "records_w3/items/artists_data.snappy.parquet",
-                                    file_2 = "./data/new_artists_names_from_api.csv"))
 )
+
+
+
+
+
+
+
 
 
 
