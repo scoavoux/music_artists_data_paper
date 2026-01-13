@@ -5,19 +5,21 @@ library(dplyr)
 dat <- load_s3("musicbrainz/musicbrainz_urls.csv")
 
 dat <- tibble(dat) %>% 
-  mutate(discogs = ifelse(str_detect(url, "discogs"), 
+  mutate(discogsID = ifelse(str_detect(url, "discogs"), 
                           str_remove(url, "https://www.discogs.com/artist/"), NA),
-         allmusic = ifelse(str_detect(url, "allmusic"), 
+         allmusicID = ifelse(str_detect(url, "allmusic"), 
                            str_remove(url, "https://www.allmusic.com/artist/"), NA),
-         wiki = ifelse(str_detect(url, "wiki"), 
+         wikiID = ifelse(str_detect(url, "wiki"), 
                        str_remove(url, "https://www.wikidata.org/wiki/"), NA),
-         deezer = ifelse(str_detect(url, "deezer"), 
+         deezerID = ifelse(str_detect(url, "deezer"), 
                          str_remove(url, "https://www.deezer.com/artist/"), NA),
-         spotify = ifelse(str_detect(url, "spotify"), 
+         spotifyID = ifelse(str_detect(url, "spotify"), 
                           str_remove(url, "https://open.spotify.com/artist/"), NA)) %>% 
   select(-url) %>% 
-  distinct(artist_name, musicbrainz_id, discogs, allmusic, wiki, deezer, spotify)
-
+  rename(musicBrainzID = "musicbrainz_id",
+         mbz_name = "artist_name") %>% 
+  distinct(mbz_name, musicBrainzID, discogsID, allmusicID, 
+           wikiID, deezerID, spotifyID)
 
 
 dat <- setDT(dat)
@@ -38,14 +40,29 @@ collapsed <- dat[
     # Expand only where needed (cartesian product)
     as.data.table(do.call(CJ, c(vals, sorted = FALSE)))
   },
-  by = musicbrainz_id
+  by = musicBrainzID
 ]
 
 
-write_s3(collapsed, "interim/musicbrainz_urls_collapsed_new.csv")
+## clean deezerID
+recoded_http_ids <- collapsed %>% 
+  filter(str_detect(deezerID, "\\D")) %>% # look for non-digits
+  filter(str_detect(deezerID, "artist/")) %>% # preceded by /artist/
+  mutate(deezerID = str_extract(deezerID, "\\d+")) %>%  # extract digits
+  select(deezerID, musicBrainzID)
 
+# remerge into collapsed
+collapsed_clean <- collapsed %>%
+  left_join(recoded_http_ids, by = "musicBrainzID") %>% 
+  mutate(deezerID = coalesce(deezerID.y, deezerID.x)) %>% # take clean ID if possible
+  select(-c(deezerID.x, deezerID.y))
 
+## 77 cases are simply wrong
+## they lead to albums, tracks, or non-deezer profiles
+collapsed_clean %>% 
+  filter(str_detect(deezerID, "\\D"))
 
+write_s3(collapsed_clean, "interim/musicbrainz_urls_collapsed_new.csv")
 
 
 
