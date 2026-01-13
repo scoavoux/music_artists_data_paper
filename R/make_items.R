@@ -51,12 +51,11 @@ bind_items <- function(items_old, items_new, streams, names){
   
   ## join to streams and compute weighted popularity
   items <- items %>% 
-   inner_join(streams, by = "song_id") #%>% 
-    #mutate(weighted_f_n_play = w_feat * f_n_play) # MOVED TO group_items_by_artist
+   inner_join(streams, by = "song_id") 
 
   ## add deezer names to debug joins with other ids
   items <- items %>% 
-    left_join(names, by = "deezer_id") 
+    left_join(names, by = "deezer_feat_id") # CHANGED TO DEEZER_FEAT_ID
   
   return(items)
 }
@@ -65,14 +64,14 @@ bind_items <- function(items_old, items_new, streams, names){
 bind_names <- function(file_1, file_2){
   
   names <- load_s3(file = file_1)
-  scraped_names <- read.csv(file = file_2)
+  scraped_names <- load_s3(file = file_2)
   
   names <- names %>% 
-    rename(deezer_id = "artist_id") %>% 
-    select(deezer_id, name)
+    mutate(deezer_feat_id = as.character(artist_id)) %>% # CHANGED TO DEEZER_FEAT_ID
+    select(deezer_feat_id, name)
   
   scraped_names <- scraped_names %>% 
-    rename(deezer_id = "deezer_id.new")
+    mutate(deezer_feat_id = as.character(deezer_id.new))
   
   names <- names %>% 
     bind_rows(scraped_names)
@@ -97,10 +96,6 @@ group_items_by_artist <- function(items){
   
   return(artists)
 }
-
-
-
-
 
 
 
