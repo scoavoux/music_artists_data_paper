@@ -21,11 +21,13 @@ cleanpop <- function(x){
   contacts_clean <- sum(contacts$pop) * 100
   both_clean <- sum(both$pop) * 100
   
-  cat("clean mbz ids:",mbz_clean,"%. \n")
-  cat("clean contact ids:",contacts_clean,"%. \n")
-  cat("complete cases:",both_clean,"%.")
+  cat("N:",nrow(x %>% distinct(deezer_id)),"\n")
+  cat("clean mbz ids:",mbz_clean,"% // N:",nrow(mbz),"\n")
+  cat("clean contact ids:",contacts_clean,"% // N:",nrow(contacts),"\n")
+  cat("complete cases:",both_clean,"% // N:",nrow(both))
   
 }
+
 
 
 # prop of nas inside a dataset
