@@ -16,12 +16,6 @@ tar_load(artists)
 artists <- artists %>%
   rename(deezer_id = "deezer_feat_id")
 
-
-# CHECK WHAT IS WITH NAMES!!
-# oh: possibly NA matched NA before, that's bad
-# check that this doesn't happen
-
-
 # musicbrainz keys
 mbz_deezer <- load_s3("interim/musicbrainz_urls_collapsed_new.csv") # !! NEW FILE !!
 
@@ -133,7 +127,7 @@ all <- left_join_coalesce(
   col = "musicBrainzID"
 )
 
-cleanpop(all) # 84.59% of streams covered after operations (now 84 after https step)
+cleanpop(all) # 84.5% of streams covered after operations
 
 
 ### CHECK DIFFERENT DUPLICATES
