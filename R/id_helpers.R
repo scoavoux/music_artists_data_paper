@@ -51,9 +51,25 @@ left_join_coalesce <- function(x, y, by, col) {
     select(-all_of(c(paste0(col, ".x"), paste0(col, ".y"))))
 }
 
+left_join_coalesce <- function(x, y, by, cols) {
+  out <- left_join(x, y, by = by, suffix = c(".x", ".y"))
+  
+  for (col in cols) {
+    out[[col]] <- coalesce(
+      out[[paste0(col, ".x")]],
+      out[[paste0(col, ".y")]]
+    )
+  }
+  
+  out %>% select(-ends_with(".x"), -ends_with(".y"))
+}
+
+
 # extract unique name matches between the missing cases of all
 # and enrich all with them
-unique_name_match <- function(miss, ref, miss_name, ref_name, id_col) {
+unique_name_match <- function(miss, ref, miss_name, 
+                              ref_name, id_col, 
+                              out_name = ref_name) {
   miss %>% 
     inner_join(
       ref,
@@ -64,7 +80,11 @@ unique_name_match <- function(miss, ref, miss_name, ref_name, id_col) {
     filter(n() == 1) %>% 
     ungroup() %>% 
     distinct(deezer_id, .keep_all = TRUE) %>% 
-    select(deezer_id, all_of(id_col))
+    transmute(
+      deezer_id,
+      !!id_col := .data[[id_col]],
+      !!out_name := .data[[miss_name]]
+    )
 }
 
 
