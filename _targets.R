@@ -44,10 +44,33 @@ list(
                command = bind_items(items_old, items_new, streams, names)),
     
     tar_target(name = artists,
-               command = group_items_by_artist(items))
+               command = group_items_by_artist(items)),
+    
+    # ID shit
+    ### LOAD RAW
+    tar_target(name = contacts, 
+               command = load_s3("senscritique/contacts.csv")),
+    
+        tar_target(name = musicbrainz_urls,
+               command = load_s3("musicbrainz/musicbrainz_urls.csv")),
+    
+    tar_target(name = manual_search,
+               command = read.csv("data/manual_search.csv")),
+    
+    # transform musicbrainz_urls to mbz_deezer
+    tar_target(name = mbz_deezer,
+               command = make_mbz_deezer(musicbrainz_urls)),
+    
+    # temporary: make a dedicated wiki_labels function some time
+    # code is (commented out) in wiki_keys.R!
+    tar_target(name = wiki_labels,
+               command = load_s3("interim/wiki_labels.csv")),
+
+    tar_target(name = wiki,
+               command = make_wiki_keys(wiki_labels, mbz_deezer))
+    
     
 )
-
 
 
 
