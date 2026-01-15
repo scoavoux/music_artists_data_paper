@@ -21,7 +21,7 @@ tar_source("R")
 # List of targets ------
 list(
   
-    ####### USER DATA ############
+    ### CREATE ARTISTS ----------------------------------------------
     tar_target(name = streams,
                command = load_streams()),
     
@@ -47,7 +47,7 @@ list(
                command = group_items_by_artist(items)),
     
     # ID shit
-    ### LOAD RAW
+    ### LOAD RAW KEYS ----------------------------------------------
     tar_target(name = contacts, 
                command = load_s3("senscritique/contacts.csv")),
     
@@ -57,18 +57,25 @@ list(
     tar_target(name = manual_search,
                command = read.csv("data/manual_search.csv")),
     
+    ### PROCESS KEYS -----------------------------------------------
     # transform musicbrainz_urls to mbz_deezer
     tar_target(name = mbz_deezer,
                command = make_mbz_deezer(musicbrainz_urls)),
     
-    # temporary: make a dedicated wiki_labels function some time
-    # code is (commented out) in wiki_keys.R!
+    # temporary --- make a dedicated wiki_labels function some time
+    # code is (commented out) in wiki_keys.R
     tar_target(name = wiki_labels,
                command = load_s3("interim/wiki_labels.csv")),
 
     tar_target(name = wiki,
-               command = make_wiki_keys(wiki_labels, mbz_deezer))
+               command = make_wiki_keys(wiki_labels, mbz_deezer)),
     
+    
+    ### CONSOLIDATE ARTISTS ----------------------------------------
+    
+    tar_target(name = all,
+               command = consolidate_artists(artists, mbz_deezer,
+                                             contacts, manual_search))
     
 )
 

@@ -17,14 +17,14 @@ cleanpop <- function(x){
     filter(!is.na(contact_id)) %>% 
     distinct(deezer_id, .keep_all = T)
   
-  mbz_clean <- sum(mbz$pop) * 100
-  contacts_clean <- sum(contacts$pop) * 100
-  both_clean <- sum(both$pop) * 100
+  mbz_clean <- sum(mbz$pop)
+  contacts_clean <- sum(contacts$pop)
+  both_clean <- sum(both$pop)
   
   cat("N:",nrow(x %>% distinct(deezer_id)),"\n")
   cat("clean mbz ids:",mbz_clean,"% // N:",nrow(mbz),"\n")
   cat("clean contact ids:",contacts_clean,"% // N:",nrow(contacts),"\n")
-  cat("complete cases:",both_clean,"% // N:",nrow(both))
+  cat("complete cases:",both_clean,"% // N:",nrow(both),"\n")
   
 }
 

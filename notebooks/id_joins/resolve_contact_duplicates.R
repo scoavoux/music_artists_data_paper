@@ -2,7 +2,7 @@
 # among those duplicates, check nr of reviews etc to see if some of them are way more popular
 # same logic as identify_deezer_duplicates.R!
 
-contacts <- load_s3("senscritique/contacts.csv")
+tar_load(contacts)
 
 # for each name in contacts, compute popularity of occurrences
 ## col_share: share of collection_counts

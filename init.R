@@ -1,5 +1,3 @@
-
-
 needed.packages <- c('targets',
                      'tarchetypes',
                      'visNetwork',
@@ -9,7 +7,6 @@ needed.packages <- c('targets',
                      'dplyr',
                      'WikidataQueryServiceR',
                      'rstudioapi')
-
 
 for(pack in needed.packages){
   if(pack %in% rownames(installed.packages()) == FALSE)

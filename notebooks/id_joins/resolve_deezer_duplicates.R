@@ -5,7 +5,8 @@
 options(scipen = 99)
 
 all <- load_s3("interim/consolidated_artists.csv")
-contacts <- load_s3("senscritique/contacts.csv")
+
+tar_load(contacts)
 
 cleanpop(all)
 

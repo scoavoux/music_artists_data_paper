@@ -55,9 +55,10 @@ make_mbz_deezer <- function(musicbrainz_urls) {
   
   # remerge into collapsed
   mbz_deezer <- collapsed %>%
+    as_tibble() %>% 
     left_join(recoded_http_ids, by = "musicBrainzID") %>% 
     mutate(deezerID = coalesce(deezerID.y, deezerID.x)) %>% # take clean ID if possible
-    select(-c(deezerID.x, deezerID.y))
+    select(musicBrainzID, deezerID, mbz_name) # only keep relevant ids + name
   
   # 77 cases are simply wrong --- dropped them
   ## they lead to albums, tracks, or non-deezer profiles
@@ -68,6 +69,16 @@ make_mbz_deezer <- function(musicbrainz_urls) {
 
   return(mbz_deezer)
 }
+
+
+
+
+
+
+
+
+
+
 
 
 

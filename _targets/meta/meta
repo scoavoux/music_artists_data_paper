@@ -25,28 +25,30 @@ make_artist_popularity_data|function|eba21cded9d898c1
 streams|stem|4b4ff13754a7f65c|b42acd4a7802717c|bd1e6c2e8275540d|479841425|bucket=scoavoux*region=NULL*key=music_artist/objects/streams*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20466.5365560438s||0|rds|aws|vector|||160.99||
 names|stem|f9a0d14f710ab84a|7f236566bcbcb4a7|e7fc3054de6534f8|-2108954709|bucket=scoavoux*region=NULL*key=music_artist/objects/names*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20466.5445490928s||0|rds|aws|vector|||9.502||
 items|stem|2087d61f16b5e663|8520e6ccea5e62b6|d81642e3435719bc|-545601299|bucket=scoavoux*region=NULL*key=music_artist/objects/items*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20466.5531431584s||0|rds|aws|vector|||560.525||
-artists|stem|59c62efe18b677d4|c41a7408e4377b10|81f4feb35715bbfb|1571941084|bucket=scoavoux*region=NULL*key=music_artist/objects/artists*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20466.5662197228s||0|rds|aws|vector|||21.416||
 contacts|stem|8f1f0c25c6c37ca7|97200df33bcfe9f8|83c85aa9e6e44528|1129678332|bucket=scoavoux*region=NULL*key=music_artist/objects/contacts*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20468.3150965894s||0|rds|aws|vector|||8.393||
-manual_search|stem|5a281314b5c832cc|6f0990fc1141f2f9|2c530c1562a7fbd1|1110864436|bucket=scoavoux*region=NULL*key=music_artist/objects/manual_search*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20468.3151007476s||0|rds|aws|vector|||0.021||
 wiki_labels_df|stem|a362a2d39580c685|05e56e61d62572f5|83c85aa9e6e44528|-1043670947|bucket=scoavoux*region=NULL*key=music_artist/objects/wiki_labels_df*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20468.4094034728s||0|rds|aws|vector|||2.248||
 wiki_labels|stem|a362a2d39580c685|05e56e61d62572f5|83c85aa9e6e44528|-830746649|bucket=scoavoux*region=NULL*key=music_artist/objects/wiki_labels*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20468.4225701469s||0|rds|aws|vector|||2.472||
+musicbrainz_urls|stem|b120a3a37dab9836|1a898b49813a2c63|83c85aa9e6e44528|-1563632269|bucket=scoavoux*region=NULL*key=music_artist/objects/musicbrainz_urls*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20468.4331835276s||0|rds|aws|vector|||18.937||
+manual_search|stem|e060971c59805a64|6f0990fc1141f2f9|2c530c1562a7fbd1|1110864436|bucket=scoavoux*region=NULL*key=music_artist/objects/manual_search*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20468.6143873516s||0|rds|aws|vector|||1.234||
+mbz_deezer|stem|b0f577d115676bad|fa34827a41588166|6e5c9287fd84c6d0|972018546|bucket=scoavoux*region=NULL*key=music_artist/objects/mbz_deezer*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20468.6265248876s||0|rds|aws|vector|||404.319|Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 11183 of `x` matches multiple rows in `y`. ℹ Row 9 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.|
+wiki|stem|b4627b2901cb0d95|3d34159ce0af4655|f77fa2e6c811946c|-1746218686|bucket=scoavoux*region=NULL*key=music_artist/objects/wiki*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20468.6270685415s||0|rds|aws|vector|||38.812|One or more parsing issues, call `problems()` on your data frame for details, e.g.:   dat <- vroom(...)   problems(dat). Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 88 of `x` matches multiple rows in `y`. ℹ Row 607 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.. Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 33 of `x` matches multiple rows in `y`. ℹ Row 900151 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.|
+artists|stem|fcdb86570b1b5f9d|c41a7408e4377b10|75e35cf7feda7392|1571941084|bucket=scoavoux*region=NULL*key=music_artist/objects/artists*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20468.63261571s||0|rds|aws|vector|||35.01||
 initialize_s3|function|25a2772c1c03257f
 load_streams|function|614a898e2ac1f783
+cleanpop|function|ace378e0b5a7936f
 prop_na|function|c201f9db83a66140
 load_partitioned_s3|function|ef32fd7856f71aa0
-.Random.seed|object|bb42796f4c2b783b
-make_mbz_deezer|function|fb14d3bc3883a0db
+.Random.seed|object|226c2284e3044214
+make_mbz_deezer|function|fb3e98aba1376c63
 bind_items|function|26832133b0fa900a
 make_wiki_keys|function|52dcc2833cd3909e
-cleanpop|function|e6c1be9b3b82f106
 left_join_coalesce|function|c8ec57d04e03404f
-group_items_by_artist|function|577f18af3a945c61
+group_items_by_artist|function|ce4c57a87cdb7cf7
 write_s3|function|15e44e053dc7a6c7
 unique_name_match|function|267f01c3b5fb7ea1
 load_s3_info|function|b201b67fd14b09a5
 load_s3|function|2f0bfd56597701f8
+consolidate_artists|function|8836e34d3e7081e5
 bind_names|function|7e34495b58a28877
 make_items|function|0f0313fcdfc70bc3
-musicbrainz_urls|stem|b120a3a37dab9836|1a898b49813a2c63|83c85aa9e6e44528|-1563632269|bucket=scoavoux*region=NULL*key=music_artist/objects/musicbrainz_urls*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20468.4331835276s||0|rds|aws|vector|||18.937||
-mbz_deezer|stem|835e32537570e1b9|fa34827a41588166|f8ba7eb8bdf6fdc1|972018546|bucket=scoavoux*region=NULL*key=music_artist/objects/mbz_deezer*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20468.4383964217s||0|rds|aws|vector|||427.25|Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 11183 of `x` matches multiple rows in `y`. ℹ Row 9 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.|
-wiki|stem|b3d6192a51c75684|3d34159ce0af4655|62abf758f1b0d990|-1746218686|bucket=scoavoux*region=NULL*key=music_artist/objects/wiki*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20468.4390750304s||0|rds|aws|vector|||46.745|One or more parsing issues, call `problems()` on your data frame for details, e.g.:   dat <- vroom(...)   problems(dat). Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 88 of `x` matches multiple rows in `y`. ℹ Row 413 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.. Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 33 of `x` matches multiple rows in `y`. ℹ Row 900151 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.|
+all|stem|94a924e878b33439|14abb952c838c43d|b7a025c8c7013c71|671959644|bucket=scoavoux*region=NULL*key=music_artist/objects/all*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20468.6349543259s||0|rds|aws|vector|||7.59|Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 445 of `x` matches multiple rows in `y`. ℹ Row 9559 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.. Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 102 of `x` matches multiple rows in `y`. ℹ Row 1347 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.|

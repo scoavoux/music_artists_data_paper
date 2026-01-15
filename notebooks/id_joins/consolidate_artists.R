@@ -7,55 +7,7 @@ library(dplyr)
 # SWITCH DISTINCTS TO RAW FILES
 
 
-
-# LOAD RAW -------------------------------------------
-
-# artists in items
-tar_load(artists)
-artists <- artists %>%
-  rename(deezer_id = "deezer_feat_id")
-
-# musicbrainz keys
-tar_load(mbz_deezer)
-mbz_deezer <- tibble(mbz_deezer) %>% 
-  filter(!is.na(deezerID)) %>% 
-  distinct(deezerID, musicBrainzID, mbz_name) # need to distinct bc dropping spotify etc leaves ~22k duplicates
-
-# contacts keys
-tar_load(contacts)
-contacts <- contacts %>% 
-  as_tibble() %>% 
-  select(contact_id, contact_name, mbz_id, spotify_id)
-
-# sam's manual searches
-tar_load(manual_search)
-manual_search <- manual_search %>% 
-  as_tibble() %>% 
-  mutate(deezer_id = as.character(artist_id)) %>% 
-  select(-artist_id) %>% 
-  distinct(contact_id, deezer_id) # drop 66 perfect duplicates
-
-tar_load(wiki)
-
-## check uniqueness of cases
-## after correcting manual_search, all raw data are unique
-nrow(artists) - nrow(artists %>% distinct(deezer_id))
-nrow(mbz_deezer) - nrow(mbz_deezer %>% distinct(musicBrainzID, deezerID))
-nrow(contacts) - nrow(contacts %>% distinct(contact_id, mbz_id))
-nrow(manual_search) - nrow(manual_search %>% distinct(contact_id, deezer_id)) # 66 duplicates
-
-
-# CREATE ALL
-all <- artists %>% 
-  left_join(mbz_deezer, by = c(deezer_id = "deezerID")) %>% 
-  left_join(contacts,  by = c(musicBrainzID = "mbz_id")) %>% 
-  left_join(manual_search, by = "deezer_id") %>% 
-  mutate(contact_id = coalesce(contact_id.x, contact_id.y)) %>% 
-  select(name, contact_name, mbz_name, deezer_id, 
-         musicBrainzID, contact_id, pop)
-
-cleanpop(all) # covered streams
-
+tar_load(all)
 
 ## ---------------------------- ADD WIKI-MBZ
 wiki_mbz <- wiki %>% 

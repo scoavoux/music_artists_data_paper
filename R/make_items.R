@@ -85,12 +85,12 @@ group_items_by_artist <- function(items){
   
   artists <- items %>% 
     ungroup() %>% 
-    mutate(deezer_feat_id = as.character(deezer_feat_id),
+    mutate(deezer_id = as.character(deezer_feat_id), # ATTENTION: renaming feat_id to id here!!
            w_n_play = w_feat * n_play, # weight n plays by feat
            w_f_n_play = w_n_play / sum(w_n_play)) %>% # compute weighted f_n_play
-    group_by(deezer_feat_id) %>% 
+    group_by(deezer_id) %>% 
     summarise(name = first(name),
-              pop = sum(w_f_n_play),
+              pop = sum(w_f_n_play) * 100, # to %
               .groups = "drop") %>% 
     arrange(desc(pop))
   
@@ -99,12 +99,16 @@ group_items_by_artist <- function(items){
 
 
 
-
-
-
-
-
-
-
-
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
