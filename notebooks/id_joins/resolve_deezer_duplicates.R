@@ -4,6 +4,9 @@
 
 options(scipen = 99)
 
+all <- load_s3("interim/consolidated_artists.csv")
+contacts <- load_s3("senscritique/contacts.csv")
+
 cleanpop(all)
 
 
@@ -17,6 +20,7 @@ all_pop_share_co <- all_pop_share %>%
   filter(pop_share > 0.90) %>% 
   filter(is.na(contact_id))
 
+all_pop_share_co %>% filter(name == "Lomepal")
 
 # ------------------ integrate to all --- try with my custom functions
 
@@ -28,6 +32,8 @@ unique_contacts <- contacts %>%
   filter(n == 1) %>% 
   select(-n)
 
+unique_contacts %>% as_tibble %>% filter(contact_name == "Lomepal")
+
 added_contacts <- unique_name_match(
   miss = all_pop_share_co,
   ref = unique_contacts,
@@ -36,12 +42,17 @@ added_contacts <- unique_name_match(
   id_col = "contact_id"
 )
 
+added_contacts %>% filter(contact_id == 1180989)
+
+
 all <- left_join_coalesce(
   all,
   added_contacts,
   by = "deezer_id",
-  col = "contact_id"
+  cols = c("contact_id", "contact_name")
 )
+
+all %>% filter(name == "Lomepal") %>% as_tibble()
 
 
 # REPEAT FOR MBZ!
@@ -64,8 +75,9 @@ all <- left_join_coalesce(
   all,
   added_mbz,
   by = "deezer_id",
-  col = "musicBrainzID"
+  cols = c("contact_id", "mbz_name")
 )
+
 
 cleanpop(all)
 

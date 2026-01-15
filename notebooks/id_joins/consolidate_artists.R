@@ -12,30 +12,30 @@ library(dplyr)
 
 # artists in items
 tar_load(artists)
-
 artists <- artists %>%
   rename(deezer_id = "deezer_feat_id")
 
 # musicbrainz keys
-mbz_deezer <- load_s3("interim/musicbrainz_urls_collapsed_new.csv") # !! NEW FILE !!
-
+tar_load(mbz_deezer)
 mbz_deezer <- tibble(mbz_deezer) %>% 
   filter(!is.na(deezerID)) %>% 
   distinct(deezerID, musicBrainzID, mbz_name) # need to distinct bc dropping spotify etc leaves ~22k duplicates
 
 # contacts keys
-contacts <- load_s3("senscritique/contacts.csv")
+tar_load(contacts)
 contacts <- contacts %>% 
   as_tibble() %>% 
   select(contact_id, contact_name, mbz_id, spotify_id)
 
 # sam's manual searches
-manual_search <- read.csv("data/manual_search.csv")
+tar_load(manual_search)
 manual_search <- manual_search %>% 
   as_tibble() %>% 
   mutate(deezer_id = as.character(artist_id)) %>% 
   select(-artist_id) %>% 
   distinct(contact_id, deezer_id) # drop 66 perfect duplicates
+
+tar_load(wiki)
 
 ## check uniqueness of cases
 ## after correcting manual_search, all raw data are unique
@@ -142,20 +142,6 @@ nrow(all %>%
 
 # export consolidated artists
 write_s3(all, "interim/consolidated_artists.csv")
-
-
-
-
-
-rstudioapi::writeRStudioPreference("pane_config", list(
-  console = "right",
-  source = "left",
-  tabSet1 = "right",
-  tabSet2 = "right",
-  hiddenTabSet = "none"
-))
-
-rstudioapi::applyTheme("Merbivore Soft")
 
 
 

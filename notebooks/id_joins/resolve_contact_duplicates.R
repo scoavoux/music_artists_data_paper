@@ -51,9 +51,31 @@ all <- left_join_coalesce(
 cleanpop(all)
 
 
-## anti_join etc to subset cases still missing
-all_unique_co %>% 
+## anti_join added contacts with missing in all to subset cases still missing
+t <- all_unique_co %>% 
   anti_join(added_contacts, by = "deezer_id")
+
+cleanpop(all)
+
+sum(t[1:1000,]$pop)
+
+
+
+all %>% filter(name == "Lomepal")
+
+contacts %>% filter(contact_name == "Lomepal")
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
