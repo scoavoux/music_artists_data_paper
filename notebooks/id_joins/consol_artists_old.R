@@ -153,53 +153,6 @@ all <- all %>%
   select(-c(contact_id.x, contact_id.y)) %>% 
   as_tibble()
 
-## after: 110k more cases
-all %>% 
-  filter(!is.na(contact_id)) %>% 
-  nrow()
-
-
-# write "all" with added mbz and contact ids from wiki to a csv
-write_s3(all, "interim/all_deezer_mbz_contacts.csv")
-
-
-# ---------------- CHECK COMPLETENESS
-
-# contact ids covered
-all %>% 
-  filter(!is.na(contact_id)) %>% 
-  distinct(deezer_id, .keep_all = T) %>% 
-  pop()
-
-# mbz ids covered
-all %>% 
-  filter(!is.na(musicBrainzID)) %>% 
-  distinct(deezer_id, .keep_all = T) %>% 
-  pop()
-
-
-# clean cases (all ids)
-all %>% 
-  filter(!is.na(musicBrainzID)) %>% 
-  filter(!is.na(contact_id)) %>% 
-  distinct(deezer_id, .keep_all = T) %>% 
-  pop()
-  
-
-###
-clean <- all %>% 
-  filter(!is.na(musicBrainzID)) %>% 
-  filter(!is.na(contact_id)) %>% 
-  distinct(deezer_id, .keep_all = T) %>% 
-  select(deezer_id, 
-         name, 
-         contact_name, 
-         mbz_name, 
-         musicBrainzID, 
-         contact_id, 
-         f_n_play)
-
-prop_na(clean)
 
 
 

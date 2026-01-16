@@ -50,7 +50,7 @@ all <- left_join_coalesce(
   all,
   added_contacts,
   by = "deezer_id",
-  cols = c("contact_id", "contact_name")
+  col = c("contact_id")
 )
 
 all %>% filter(name == "Lomepal") %>% as_tibble()
@@ -61,6 +61,13 @@ all %>% filter(name == "Lomepal") %>% as_tibble()
 all_pop_share_mbz <- all_pop_share %>% 
   filter(pop_share > 0.90) %>% 
   filter(is.na(musicBrainzID))
+
+unique_mbz <- mbz_deezer %>% 
+  add_count(mbz_name) %>% 
+  filter(n == 1) %>% 
+  filter(is.na(deezerID)) %>% 
+  select(-n)
+
 
 added_mbz <- unique_name_match(
   miss = all_pop_share_mbz,
@@ -76,7 +83,7 @@ all <- left_join_coalesce(
   all,
   added_mbz,
   by = "deezer_id",
-  cols = c("contact_id", "mbz_name")
+  col = c("musicBrainzID")
 )
 
 

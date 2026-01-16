@@ -77,6 +77,16 @@ list(
                command = consolidate_artists(artists, mbz_deezer,
                                              contacts, manual_search))
     
+    # patch_wiki_mbz
+    
+    # patch_mbz_names -- command = patch_names(added_mbz)
+    
+    # patch_contact_names -- command = patch_names(added_contacts)
+    
+    # patch_wiki_mbz_names
+    
+    # duplicates ...
+    
 )
 
 

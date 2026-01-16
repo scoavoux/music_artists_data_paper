@@ -20,7 +20,8 @@ consolidate_artists <- function(artists,
   
   # contacts keys
   contacts <- contacts %>% 
-    mutate_if(is.integer, as.character) %>% 
+    mutate_if(is.integer, as.character) %>%
+    ####
     select(contact_id, contact_name, mbz_id, spotify_id)
   
   # sam's manual searches

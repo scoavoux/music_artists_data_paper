@@ -1,15 +1,21 @@
-# Load all "raw" id files and bind them to one dataset
-# enrich with mbz ids from wiki,
+# enrich the consolidated artists file "all"
+# with mbz ids from wiki
 # and with mbz ids + contact_ids through unique name matches
-library(dplyr)
 
-# RERUN WITH NEW ARTISTS
-# SWITCH DISTINCTS TO RAW FILES
+
+library(dplyr)
 
 
 tar_load(all)
 
-## ---------------------------- ADD WIKI-MBZ
+tar_load(contacts)
+
+contacts <- contacts %>% 
+  as_tibble %>% 
+  mutate_if(is.integer, as.character)
+
+cleanpop(all)
+## ---------------------------- ADD MBZ by wiki_id
 wiki_mbz <- wiki %>% 
   select(deezer_id = deezerID, musicBrainzID) %>% 
   filter(!is.na(musicBrainzID)) %>% 
@@ -25,7 +31,7 @@ all <- left_join_coalesce(
 cleanpop(all)
 
 
-## -------- ENRICH WITH CONTACTS
+## -------- ENRICH WITH unique names from CONTACTS
 contacts_ref <- contacts %>% 
   select(contact_id, contact_name) %>% 
   filter(!is.na(contact_name)) %>% # only contacts with names
@@ -48,6 +54,43 @@ all <- left_join_coalesce(
 
 cleanpop(all)
 
+all %>% 
+  filter(name == "13 Block")
+
+
+## -------- ENRICH WITH MBZ NAMES FROM ...MBZ
+## WOW!! adds a LOT of cases
+
+mbz_ref <- mbz_deezer %>% 
+  select(musicBrainzID, mbz_name) %>% 
+  filter(!is.na(mbz_name)) %>% 
+  anti_join(all, by = "musicBrainzID")
+
+added_mbz <- unique_name_match(
+  miss = all %>% filter(is.na(musicBrainzID)),
+  ref = mbz_ref,
+  miss_name = "name",
+  ref_name = "mbz_name",
+  id_col = "musicBrainzID"
+)
+
+all %>% 
+  filter(name == "YUZMV")
+
+
+cleanpop(all)
+
+all <- left_join_coalesce(
+  all,
+  added_mbz,
+  by = "deezer_id",
+  col = "musicBrainzID"
+)
+
+cleanpop(all)
+
+
+
 ## -------- ENRICH WITH MBZ NAMES FROM WIKI
 wiki_ref <- wiki %>% 
   select(musicBrainzID, mbz_name) %>% 
@@ -61,6 +104,7 @@ added_mbz <- unique_name_match(
   ref_name = "mbz_name",
   id_col = "musicBrainzID"
 )
+
 
 all <- left_join_coalesce(
   all,
