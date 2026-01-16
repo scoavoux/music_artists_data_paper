@@ -54,8 +54,10 @@ list(
         tar_target(name = musicbrainz_urls,
                command = load_s3("musicbrainz/musicbrainz_urls.csv")),
     
+    tar_target(name = manual_search_path,
+               command = "data/manual_search.csv", format = "file"),
     tar_target(name = manual_search,
-               command = read.csv("data/manual_search.csv")),
+               command = read.csv(manual_search_path)),
     
     ### PROCESS KEYS -----------------------------------------------
     # transform musicbrainz_urls to mbz_deezer
@@ -88,9 +90,6 @@ list(
     # duplicates ...
     
 )
-
-
-
 
 
 
