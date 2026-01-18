@@ -1,4 +1,15 @@
 
+
+## IDENTIFY DUPLICATES LEADING TO DIFFERENT ARTISTS!!
+
+## --> maybe we shouldn't care about duplicate ids so much
+## and focus on duplicate ids who point to different artists
+## meaning: look at name differences too!
+
+## also: maybe create a column for duplicates to flag
+## original duplicates (before the joins)?
+
+
 # --------------------- CONTACTS
 tar_load(contacts)
 
@@ -12,20 +23,23 @@ contacts <- contacts %>%
   select(contact_id, mbz_id, contact_name, n_co, n_mbz)
 
 
-# no contact_id dups!
-# meaning that mbz_id is always unique
+# contact_id dups: 0
+# --> mbz_id is always unique
 co_dups_contact_id <- contacts %>% 
   filter(n_co > 1)
 
-# mbz_dups
+# mbz_id dups: 686 (for 1458 contact_ids)
+# extract
 co_dups_mbz_id <- contacts %>% 
   filter(!is.na(mbz_id)) %>% 
-  filter(n_mbz > 1)
+  filter(n_mbz > 1) %>% 
+  arrange(desc(mbz_id))
+
+max(co_dups_mbz_id$n_mbz)
 
 
 # --------------------- MANUAL SEARCH
-manual_search %>% 
-  filter(contact_id == 53)
+tar_load(manual_search)
 
 manual_search <- manual_search %>% 
   rename(deezer_id = "artist_id") %>% 
@@ -33,10 +47,14 @@ manual_search <- manual_search %>%
   add_count(deezer_id, name = "n_deezer") %>% 
   as_tibble()
 
-manual_search
+# 552 contact_ids for 1511 deezer ids
+man_dups_contact_id <- manual_search %>% 
+  filter(n_co > 1) %>% 
+  arrange(desc(contact_id))
 
 
 # ----------------------- MBZ_DEEZER
+tar_load(mbz_deezer)
 
 mbz_deezer <- mbz_deezer %>% 
   distinct(deezerID, musicBrainzID, .keep_all = T) %>% 
@@ -67,6 +85,15 @@ t <- artists %>%
 
 t %>% 
   arrange(desc(pop))
+
+
+
+
+
+
+
+
+
 
 
 
