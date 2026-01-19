@@ -163,10 +163,13 @@ make_wiki_keys <- function(wiki_labels, mbz_deezer) {
   # ADD MBZ NAMES
   
   mbz_name <- mbz_deezer %>% 
-    select(musicBrainzID, mbz_name)
+    select(musicbrainz_id, mbz_name)
   
   wiki <- wiki %>% 
-    left_join(mbz_name, by = "musicBrainzID") %>% 
+    rename(deezer_id = "deezerID",
+           musicbrainz_id = "musicBrainzID",
+           wiki_name = "label") %>% 
+    left_join(mbz_name, by = "musicbrainz_id") %>% 
     as_tibble()
   
   # write_s3(wiki, "interim/wiki_ids.csv")

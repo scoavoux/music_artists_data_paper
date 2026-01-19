@@ -14,28 +14,30 @@ consolidate_artists <- function(artists,
   
   # musicbrainz keys
   mbz_deezer <- mbz_deezer %>% 
-    filter(!is.na(deezerID)) %>%
+    filter(!is.na(deezer_id)) %>%
     mutate_if(is.integer, as.character) %>% 
-    distinct(deezerID, musicBrainzID, mbz_name) # need to distinct bc dropping spotify etc leaves ~22k duplicates
+    distinct(deezer_id, musicbrainz_id, mbz_name) # need to distinct bc dropping spotify etc leaves ~22k duplicates
   
   # contacts keys
   contacts <- contacts %>% 
     mutate_if(is.integer, as.character) %>%
-    ####
-    select(contact_id, contact_name, mbz_id, spotify_id)
+    rename(musicbrainz_id = "mbz_id") %>% 
+    select(contact_id, contact_name, musicbrainz_id, spotify_id)
   
   # sam's manual searches
   manual_search <- manual_search %>% 
-    mutate_if(is.integer, as.character) 
-  
+    mutate_if(is.integer, as.character) %>% 
+    rename(deezer_id = "artist_id")
+
+
   # JOIN ALL ---------------------------------------------
   all <- artists %>% 
-    left_join(mbz_deezer, by = c(deezer_id = "deezerID")) %>% 
-    left_join(contacts,  by = c(musicBrainzID = "mbz_id")) %>% 
+    left_join(mbz_deezer, by = "deezer_id") %>% 
+    left_join(contacts, by = "musicbrainz_id") %>% 
     left_join(manual_search, by = "deezer_id") %>% 
     mutate(contact_id = coalesce(contact_id.x, contact_id.y)) %>% 
     select(name, contact_name, mbz_name, deezer_id, 
-           musicBrainzID, contact_id, pop) %>% 
+           musicbrainz_id, contact_id, pop) %>% 
     as_tibble()
 
   cleanpop_1 <- cleanpop(all)

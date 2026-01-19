@@ -1,4 +1,4 @@
-
+library(dplyr)
 
 ## IDENTIFY DUPLICATES LEADING TO DIFFERENT ARTISTS!!
 
@@ -9,6 +9,8 @@
 ## also: maybe create a column for duplicates to flag
 ## original duplicates (before the joins)?
 
+
+## LEAVE THIS FOR NOW, IGNORE THE ISSUE AND COME BACK LATER
 
 # --------------------- CONTACTS
 tar_load(contacts)
@@ -35,7 +37,7 @@ co_dups_mbz_id <- contacts %>%
   filter(n_mbz > 1) %>% 
   arrange(desc(mbz_id))
 
-max(co_dups_mbz_id$n_mbz)
+max(co_dups_mbz_id$n_mbz) # max 8 contact_ids for one mbz
 
 
 # --------------------- MANUAL SEARCH
@@ -51,6 +53,16 @@ manual_search <- manual_search %>%
 man_dups_contact_id <- manual_search %>% 
   filter(n_co > 1) %>% 
   arrange(desc(contact_id))
+
+#
+man_dups_deezer_id <- manual_search %>% 
+  filter(n_deezer > 1) %>% 
+  arrange(desc(deezer_id))
+
+max(man_dups_contact_id$n_deezer)
+
+
+
 
 
 # ----------------------- MBZ_DEEZER
@@ -74,17 +86,10 @@ mbz_dups_mbz_id <- mbz_deezer %>%
   arrange(desc(musicBrainzID))
 
 
+mbz_dups_deezer_id %>% 
+  distinct(mbz_name)
 
-t <- artists %>% 
-  inner_join(mbz_dups_mbz_id, by = c(deezer_id = "deezerID")) %>% 
-  distinct(deezer_id, .keep_all = T)
 
-t <- artists %>% 
-  inner_join(mbz_dups_deezer_id, by = c(deezer_id = "deezerID")) %>% 
-  distinct(deezer_id, .keep_all = T)
-
-t %>% 
-  arrange(desc(pop))
 
 
 

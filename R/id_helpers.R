@@ -1,11 +1,11 @@
 # helper functions for the artist id issues 
 
 # quick benchmark of stream shares
-# input x is a dataframe with cols deezer_id, musicBrainzID, contact_id
+# input x is a dataframe with cols deezer_id, musicbrainz_id, contact_id
 cleanpop <- function(x){ 
   
   mbz <- x %>% 
-    filter(!is.na(musicBrainzID)) %>% 
+    filter(!is.na(musicbrainz_id)) %>% 
     distinct(deezer_id, .keep_all = T)
 
   contacts <- x %>%
@@ -13,7 +13,7 @@ cleanpop <- function(x){
     distinct(deezer_id, .keep_all = T)
   
   both <- x %>%
-    filter(!is.na(musicBrainzID)) %>% 
+    filter(!is.na(musicbrainz_id)) %>% 
     filter(!is.na(contact_id)) %>% 
     distinct(deezer_id, .keep_all = T)
   

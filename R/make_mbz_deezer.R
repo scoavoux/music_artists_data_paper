@@ -7,21 +7,20 @@ make_mbz_deezer <- function(musicbrainz_urls) {
   library(dplyr)
   
   dat <- tibble(musicbrainz_urls) %>% 
-    mutate(discogsID = ifelse(str_detect(url, "discogs"), 
+    mutate(discogs_id = ifelse(str_detect(url, "discogs"), 
                               str_remove(url, "https://www.discogs.com/artist/"), NA),
-           allmusicID = ifelse(str_detect(url, "allmusic"), 
+           allmusic_id = ifelse(str_detect(url, "allmusic"), 
                                str_remove(url, "https://www.allmusic.com/artist/"), NA),
-           wikiID = ifelse(str_detect(url, "wiki"), 
+           wiki_id = ifelse(str_detect(url, "wiki"), 
                            str_remove(url, "https://www.wikidata.org/wiki/"), NA),
-           deezerID = ifelse(str_detect(url, "deezer"), 
+           deezer_id = ifelse(str_detect(url, "deezer"), 
                              str_remove(url, "https://www.deezer.com/artist/"), NA),
-           spotifyID = ifelse(str_detect(url, "spotify"), 
+           spotify_id = ifelse(str_detect(url, "spotify"), 
                               str_remove(url, "https://open.spotify.com/artist/"), NA)) %>% 
     select(-url) %>% 
-    rename(musicBrainzID = "musicbrainz_id",
-           mbz_name = "artist_name") %>% 
-    distinct(mbz_name, musicBrainzID, discogsID, allmusicID, 
-             wikiID, deezerID, spotifyID)
+    rename(mbz_name = "artist_name") %>% 
+    distinct(mbz_name, musicbrainz_id, discogs_id, allmusic_id, 
+             wiki_id, deezer_id, spotify_id)
   
   
   dat <- setDT(dat)
@@ -42,28 +41,28 @@ make_mbz_deezer <- function(musicbrainz_urls) {
       # Expand only where needed (cartesian product)
       as.data.table(do.call(CJ, c(vals, sorted = FALSE)))
     },
-    by = musicBrainzID
+    by = musicbrainz_id
   ]
   
   
-  ## clean deezerID
+  ## clean deezer_id
   recoded_http_ids <- collapsed %>% 
-    filter(str_detect(deezerID, "\\D")) %>% # look for non-digits
-    filter(str_detect(deezerID, "artist/")) %>% # preceded by /artist/
-    mutate(deezerID = str_extract(deezerID, "\\d+")) %>%  # extract digits
-    select(deezerID, musicBrainzID)
+    filter(str_detect(deezer_id, "\\D")) %>% # look for non-digits
+    filter(str_detect(deezer_id, "artist/")) %>% # preceded by /artist/
+    mutate(deezer_id = str_extract(deezer_id, "\\d+")) %>%  # extract digits
+    select(deezer_id, musicbrainz_id)
   
   # remerge into collapsed
   mbz_deezer <- collapsed %>%
     as_tibble() %>% 
-    left_join(recoded_http_ids, by = "musicBrainzID") %>% 
-    mutate(deezerID = coalesce(deezerID.y, deezerID.x)) %>% # take clean ID if possible
-    select(musicBrainzID, deezerID, mbz_name) # only keep relevant ids + name
+    left_join(recoded_http_ids, by = "musicbrainz_id") %>% 
+    mutate(deezer_id = coalesce(deezer_id.y, deezer_id.x)) %>% # take clean ID if possible
+    select(musicbrainz_id, deezer_id, mbz_name) # only keep relevant ids + name
   
   # 77 cases are simply wrong --- dropped them
   ## they lead to albums, tracks, or non-deezer profiles
   # collapsed_clean %>% 
-    # filter(str_detect(deezerID, "\\D"))
+    # filter(str_detect(deezer_id, "\\D"))
   
   # write_s3(collapsed_clean, "interim/musicbrainz_urls_collapsed_new.csv")
 
