@@ -4,6 +4,8 @@
 # input x is a dataframe with cols deezer_id, musicbrainz_id, contact_id
 cleanpop <- function(x){ 
   
+  require(dplyr)
+
   mbz <- x %>% 
     filter(!is.na(musicbrainz_id)) %>% 
     distinct(deezer_id, .keep_all = T)
@@ -28,6 +30,23 @@ cleanpop <- function(x){
   
 }
 
+# pop of patches
+pop <- function(x, 
+                deezer=artists){
+  
+  require(stringr)
+  
+  patch <- deezer %>% 
+    inner_join(x, by = "deezer_id") %>% 
+    distinct(deezer_id, .keep_all = T)
+  
+  len <- nrow(patch)
+  streams <- round(sum(patch$pop), digits = 4)
+  
+  print(str_glue("N: {len} \n"))
+  print(str_glue("pop: {streams} % \n"))
+  
+}
 
 
 # prop of nas inside a dataset
@@ -86,6 +105,28 @@ unique_name_match <- function(miss, ref, miss_name,
       !!out_name := .data[[miss_name]]
     )
 }
+
+
+# wrapper for tar_source("R") and tar_make()
+make <- function(){
+  
+  require(targets)
+  require(tarchetypes)
+  
+  tar_source("R")
+  
+  tar_make()
+  
+}
+
+
+
+
+
+
+
+
+
 
 
 

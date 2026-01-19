@@ -80,15 +80,71 @@ list(
                                              contacts, manual_search)),
     
 
-    tar_target(name = contact_names_patch,
-               command = patch_contact_names(contacts, all)),
+    # unique names matches between deezer and contact names
+    tar_target(name = contacts_names_patch,
+               command = patch_names(all = all,
+                                     ref = contacts,
+                                     ref_id = "contact_id",
+                                     ref_name = "contact_name",
+                                     all_name = "name",
+                                     all_id = "contact_id")),
     
+    tar_target(name = mbz_names_patch,
+               command = patch_names(all = all,
+                                     ref = mbz_deezer,
+                                     ref_id = "musicbrainz_id",
+                                     ref_name = "mbz_name",
+                                     all_name = "name",
+                                     all_id = "musicbrainz_id")),
     
-    tar_target(name = added_contact_names,
-               command = patch_to_all(patch = contact_names_patch, 
-                                      all = all))
-
+    tar_target(name = wiki_mbz_names_patch,
+               command = patch_names(all = all,
+                                     ref = wiki,
+                                     ref_id = "musicbrainz_id",
+                                     ref_name = "mbz_name",
+                                     all_name = "name",
+                                     all_id = "musicbrainz_id")),
+    
+    tar_target(name = wiki_names_patch,
+               command = patch_names(all = all,
+                                     ref = wiki,
+                                     ref_id = "musicbrainz_id",
+                                     ref_name = "wiki_name",
+                                     all_name = "name",
+                                     all_id = "musicbrainz_id")),
+    
+    tar_target(name = wiki_mbz_ids_patch,
+               command = mbz_from_wiki(all, wiki, mbz_patch, wiki_mbz_patch))
+    
+    # integrate to contacts?
+    # tar_target(name = deezer_dup_patch,
+    #            command = deduplicate_deezer(all, 
+    #                                        ref = contacts, 
+    #                                        ref_id = "contact_id", 
+    #                                        ref_names = "wiki_name"))
+               
+    
 )
+
+cleanpop(all)
+
+t <- all %>% 
+  rows_update(contacts_names_patch, by = "deezer_id") %>% 
+  rows_update(mbz_names_patch, by = "deezer_id") %>% 
+  rows_update(wiki_mbz_names_patch, by = "deezer_id") %>% 
+  rows_update(wiki_names_patch, by = "deezer_id")
+
+cleanpop(t)
+
+
+
+
+
+
+
+
+
+
 
 
 
