@@ -114,22 +114,26 @@ list(
                                      all_id = "musicbrainz_id")),
     
     tar_target(name = wiki_mbz_ids_patch,
-               command = mbz_from_wiki(all, wiki, mbz_patch, wiki_mbz_patch)),
+               command = mbz_from_wiki(all, wiki)),
     
     tar_target(name = all_enriched,
                command = all %>% 
                  update_rows(contacts_names_patch) %>%
-                 update_rows
-                 )
+                 update_rows(mbz_names_patch) %>% 
+                 update_rows(wiki_mbz_names_patch) %>% 
+                 update_rows(wiki_names_patch) %>% 
+                 update_rows(wiki_mbz_ids_patch)
+               ),
+    
+    tar_target(name = dup_deezer_co_patch,
+               command = patch_deezer_dups(ref = contacts, 
+                                           ref_id = "contact_id", 
+                                           ref_name = "contact_name",
+                                           all_id = "contact_id",
+                                           all = all))
     
     
 )
-
-
-
-
-
-
 
 
 

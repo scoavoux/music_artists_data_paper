@@ -1,7 +1,8 @@
 # some contact_names cannot be safely linked to a deezer name because there are duplicates
-# among those duplicates, check nr of reviews etc to see if some of them are way more popular
+# contact_ids. check nr of reviews etc to see if some of them are way more popular
 # same logic as identify_deezer_duplicates.R!
 
+tar_load(all)
 tar_load(contacts)
 
 # for each name in contacts, compute popularity of occurrences
@@ -55,15 +56,6 @@ cleanpop(all)
 t <- all_unique_co %>% 
   anti_join(added_contacts, by = "deezer_id")
 
-cleanpop(all)
-
-sum(t[1:1000,]$pop)
-
-
-
-all %>% filter(name == "Lomepal")
-
-contacts %>% filter(contact_name == "Lomepal")
 
 
 

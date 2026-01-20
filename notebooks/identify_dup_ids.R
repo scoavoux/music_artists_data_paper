@@ -69,25 +69,23 @@ max(man_dups_contact_id$n_deezer)
 tar_load(mbz_deezer)
 
 mbz_deezer <- mbz_deezer %>% 
-  distinct(deezerID, musicBrainzID, .keep_all = T) %>% 
-  add_count(musicBrainzID, name = "n_mbz") %>% 
-  add_count(deezerID, name = "n_deezer")
+  distinct(deezer_id, musicbrainz_id, .keep_all = T) %>% 
+  add_count(musicbrainz_id, name = "n_mbz") %>% 
+  add_count(deezer_id, name = "n_deezer")
 
 # multiple mbz_ids for one deezer_id
 mbz_dups_deezer_id <- mbz_deezer %>% 
-  filter(!is.na(deezerID)) %>% 
+  filter(!is.na(deezer_id)) %>% 
   filter(n_deezer > 1) %>% 
-  arrange(desc(deezerID))
+  arrange(desc(deezer_id))
 
-# multiple deezerIDs for one mbz_id
+# multiple deezer_ids for one mbz_id
 mbz_dups_mbz_id <- mbz_deezer %>% 
-  filter(!is.na(musicBrainzID)) %>% 
+  filter(!is.na(musicbrainz_id)) %>% 
   filter(n_mbz > 1) %>% 
-  arrange(desc(musicBrainzID))
+  arrange(desc(musicbrainz_id))
 
 
-mbz_dups_deezer_id %>% 
-  distinct(mbz_name)
 
 
 

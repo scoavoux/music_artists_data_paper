@@ -14,8 +14,9 @@ items|stem|items|0|skipped
 wiki|stem|wiki|0|skipped
 artists|stem|artists|0|skipped
 all|stem|all|0|skipped
-wiki_names_patch|stem|wiki_names_patch|0|skipped
-wiki_mbz_names_patch|stem|wiki_mbz_names_patch|0|skipped
 contacts_names_patch|stem|contacts_names_patch|0|skipped
-wiki_mbz_ids_patch|stem|wiki_mbz_ids_patch|0|skipped
 mbz_names_patch|stem|mbz_names_patch|0|skipped
+wiki_mbz_ids_patch|stem|wiki_mbz_ids_patch|0|skipped
+wiki_mbz_names_patch|stem|wiki_mbz_names_patch|0|skipped
+wiki_names_patch|stem|wiki_names_patch|0|skipped
+dup_deezer_co_patch|stem|dup_deezer_co_patch|0|dispatched
