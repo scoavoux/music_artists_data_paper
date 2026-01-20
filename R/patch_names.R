@@ -59,53 +59,37 @@ mbz_from_wiki <- function(all, wiki, mbz_patch, wiki_mbz_patch){
   # inner_join of the missing mbz cases with wikidata's mbz
   mbz_from_wiki <- mbz_missing %>% 
     inner_join(wiki, by = "deezer_id") %>% 
-    mutate(musicbrainz_id = musicbrainz_id.y) %>% 
     filter(!is.na(musicbrainz_id)) %>% 
-    
+    count(deezer_id, musicbrainz_id.y) %>%
+    group_by(deezer_id) %>%
+    filter(n() == 1) %>%
+    ungroup() %>%
+    mutate(musicbrainz_id = musicbrainz_id.y) %>% 
+
     #filter(name != wiki_name) %>% # name matches are handled by patch_names already!
     distinct(deezer_id, musicbrainz_id, .keep_all = T) %>% 
-    select(deezer_id, name, wiki_name, musicbrainz_id)
+    select(deezer_id, name, musicbrainz_id)
   
   return(mbz_from_wiki)
 }
 
 
- 
-
-# patch_contact_names <- function(contacts, all){
-#   
-#   ## prepare contacts
-#   contacts_ref <- contacts %>%
-#     as_tibble %>%
-#     mutate_if(is.integer, as.character) %>%   # contact_id to str
-#     select(contact_id, contact_name) %>% # id cols only
-#     filter(!is.na(contact_name)) %>% # contacts with names only
-#     anti_join(all, by = "contact_id") # contacts not already in all only
-#   
-#   
-#   # prepare all
-#   miss <- all %>% 
-#     filter(is.na(contact_id))
-#   
-#   # make ALL unique matches --- filter by missing in all later
-#   contact_names_patch <- miss %>% # changed miss to all!
-#     inner_join(contacts, by = c(name = "contact_name")) %>%
-#     group_by(name) %>%
-#     mutate(n = n()) %>%
-#     arrange(desc(n)) %>%
-#     filter(n == 1) %>%  # keep unique matches only
-#     select(name, 
-#            contact_id = "contact_id.y",
-#            deezer_id)
-#   # distinct(deezer_id, .keep_all = T) # leave out for now
-#   
-#   return(contact_names_patch)
-# }
-
-
-
-
-
+update_rows <- function(all, patch, by = "deezer_id"){
+  
+  require(dplyr)
+  require(logging)
+  require(stringr)
+  
+  loginfo(str_glue("patching {patch} to all \n\n"))
+  
+  enriched_all <- all %>% 
+    rows_update(patch, by = by)
+  
+  loginfo(str_glue("{cleanpop(enriched_all)} \n\n"))
+  
+  loginfo("\n\n")
+  
+}
 
 
 
