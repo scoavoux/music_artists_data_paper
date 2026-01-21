@@ -102,7 +102,6 @@ make_wiki_keys <- function(wiki_labels, mbz_deezer) {
   
   ## ADD WIKI LABELS
   # TIME-INTENSIVE, uncomment some time later to rerun 
-  # (ctrl + shift + C!)
   
   # batch_size <- 250
   # 
@@ -140,8 +139,6 @@ make_wiki_keys <- function(wiki_labels, mbz_deezer) {
   # wiki_labels <- bind_rows(wiki_labels) %>%
   #   distinct(itemId, .keep_all = TRUE) %>% 
   #   as_tibble()
-  # 
-  # write_s3(wiki_labels, "interim/wiki_labels.csv")
   
   # --------------------------------------------------------------
 
@@ -161,7 +158,6 @@ make_wiki_keys <- function(wiki_labels, mbz_deezer) {
   # ------------------------------------------------------
   
   # ADD MBZ NAMES
-  
   mbz_name <- mbz_deezer %>% 
     select(musicbrainz_id, mbz_name)
   
@@ -171,9 +167,6 @@ make_wiki_keys <- function(wiki_labels, mbz_deezer) {
            wiki_name = "label") %>% 
     left_join(mbz_name, by = "musicbrainz_id") %>% 
     as_tibble()
-  
-  # write_s3(wiki, "interim/wiki_ids.csv")
-  
   
   return(wiki)
   

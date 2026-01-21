@@ -102,12 +102,12 @@ list(
                                      ref_name = "mbz_name",
                                      all_name = "name")),
     
-    tar_target(name = wiki_names_patch,
-               command = patch_names(all = all,
-                                     ref = wiki,
-                                     ref_id = "musicbrainz_id",
-                                     ref_name = "wiki_name",
-                                     all_name = "name")),
+    # tar_target(name = wiki_names_patch,
+    #            command = patch_names(all = all,
+    #                                  ref = wiki,
+    #                                  ref_id = "musicbrainz_id",
+    #                                  ref_name = "wiki_name",
+    #                                  all_name = "name")),
     
     tar_target(name = wiki_mbz_ids_patch,
                command = mbz_from_wiki(all, wiki)),
@@ -118,9 +118,10 @@ list(
                                      dup_deezer_mbz_patch = contact_names_patch,
                                      dup_deezer_co_patch = dup_deezer_co_patch,
                                      mbz_names_patch = mbz_names_patch,
-                                     wiki_names_patch = wiki_names_patch,
+                                     #wiki_names_patch = wiki_names_patch,
                                      wiki_mbz_names_patch = wiki_mbz_names_patch,
-                                     wiki_mbz_ids_patch = wiki_mbz_ids_patch)),
+                                     wiki_mbz_ids_patch = wiki_mbz_ids_patch,
+                                     dup_contacts_patch = dup_contacts_patch)),
     
     tar_target(name = dup_deezer_co_patch,
                command = patch_deezer_dups(ref = contacts, 
@@ -131,7 +132,9 @@ list(
                command = patch_deezer_dups(ref = mbz_deezer, 
                                            ref_id = "musicbrainz_id", 
                                            ref_name = "mbz_name",
-                                           all = all))
+                                           all = all)),
+    tar_target(name = dup_contacts_patch,
+               command = patch_contact_dups(all, contacts))
 )
 
 
