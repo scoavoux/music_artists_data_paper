@@ -6,21 +6,15 @@ patch_deezer_dups <- function(ref,
                               ref_id, 
                               ref_name,
                               all, 
-                              all_id = "deezer_id", 
                               all_name = "name"){
   
   require(dplyr)
   require(logging)
   
-  loginfo("allgood")
-  
   ref_id   <- rlang::sym(ref_id)
   ref_name <- rlang::sym(ref_name)
   all_name <- rlang::sym(all_name)
-  all_id   <- rlang::sym(all_id)
-  
-  loginfo("allgood")
-  
+
   # for each name in all, compute fraction of streams held by one homonym
   # and filter the clear cases missing contact_ids
   all_pop_share <- all %>% 
@@ -29,22 +23,17 @@ patch_deezer_dups <- function(ref,
     filter(pop_share > 0.90) %>% 
     filter(is.na(!!ref_id))
   
-  loginfo("allgood")
-  
   ## subset unique ref names
   unique_ref <- ref %>% 
     add_count(!!ref_name) %>% 
     filter(n == 1) %>% # unique names only
     select(!!ref_id, !!ref_name)
   
-  loginfo("allgood")
-  
   matches <- patch_names(all = all_pop_share,
               ref = unique_ref,
               ref_id = ref_id,
               ref_name = ref_name,
-              all_name = all_name,
-              all_id = all_id)
+              all_name = all_name)
   
   return(matches)
 

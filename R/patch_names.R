@@ -5,14 +5,18 @@ patch_names <- function(all,
                         ref,
                         ref_id,
                         ref_name,
-                        all_name,
-                        all_id) {
+                        all_name) {
 
+  require(logging)
+  
+  loginfo("up and running")
+  
   ref_id   <- rlang::sym(ref_id)
   ref_name <- rlang::sym(ref_name)
   all_name <- rlang::sym(all_name)
-  all_id   <- rlang::sym(all_id)
 
+  loginfo("up and running")
+  
   ## prepare reference table
   ref_clean <- ref %>%
     as_tibble() %>%
@@ -20,12 +24,16 @@ patch_names <- function(all,
     select(!!ref_id, !!ref_name) %>%
     filter(!is.na(!!ref_name)) %>%
     anti_join(all, by = setNames(rlang::as_string(ref_id),
-                                 rlang::as_string(all_id)))
+                                 rlang::as_string(ref_id)))
 
+  loginfo("up and running")
+  
   ## rows in all missing IDs
   miss <- all %>%
-    filter(is.na(!!all_id))
+    filter(is.na(!!ref_id))
 
+  loginfo("up and running")
+  
   ## unique name-based matches
   matches <- miss %>%
     inner_join(ref_clean,
@@ -36,18 +44,35 @@ patch_names <- function(all,
     filter(n == 1) %>%
     ungroup()
   
+  loginfo("up and running")
+  
+  
   # subset wanted cols
   id_y <- paste0(rlang::as_string(ref_id), ".y")
+  
+  loginfo("up and running")
   
   matches <- matches %>%
     select(
       !!all_name,
       !!rlang::as_string(ref_id) := !!rlang::sym(id_y),
       deezer_id
-    )    
-
+    ) 
+    # add ref_name so it gets updated too
+    # left_join it (instead of select) because wiki_name
+    # does not exist in all
+  
+  loginfo("up and running")
+  
+  
   return(matches)
-}
+  
+  }
+  
+
+
+  
+  
 
 
 
@@ -78,29 +103,31 @@ mbz_from_wiki <- function(all, wiki){
 }
 
 
+
 ## improve format of logs, export logs to csv
-update_rows <- function(all, patch, by = "deezer_id"){
+update_rows <- function(all, ..., by = "deezer_id"){
   
   require(dplyr)
   require(logging)
   require(stringr)
   
-  enriched_all <- all %>% 
-    rows_update(patch, by = by)
+  patches <- list(...)
   
-  cat(str_glue("{cleanpop(enriched_all)} \n\n\n\n"))
-  
-  return(enriched_all)
+  for(i in 1:length(patches)){
+    
+    loginfo("adding patch %d", deparse(substitute(i)))
+    
+    all <- all %>% 
+      rows_update(patches[[i]], by = by)
+    
+    loginfo(cleanpop(all))
+    loginfo(strrep("-", 40))
+    
+  }
+    
+  return(all)
   
 }
-
-
-
-
-
-
-
-
 
 
 
