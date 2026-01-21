@@ -44,8 +44,7 @@ patch_names <- function(all,
                by = setNames(rlang::as_string(ref_name),
                              rlang::as_string(all_name))) %>%
     add_count(!!all_name, name = "n_all") %>%
-    add_count(!!ref_name, name = "n_ref") %>% # breaks because of wiki...
-
+    add_count(!!ref_name, name = "n_ref") %>% 
     filter(n_all == 1, n_ref == 1)
   
   loginfo("allgood")
@@ -58,13 +57,11 @@ patch_names <- function(all,
   matches <- matches %>%
     select(
       !!all_name,
-      !!ref_name, ## add ref_name until i solve the wiki names thing
+      !!ref_name, 
       !!rlang::as_string(ref_id) := !!rlang::sym(id_y),
       deezer_id
     ) 
   
-    # ADD ref_name SO IT GETS UPDATED TOO!
-
   return(matches)
   
   }

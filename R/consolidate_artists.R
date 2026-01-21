@@ -3,7 +3,8 @@
 consolidate_artists <- function(artists, 
                                 mbz_deezer, 
                                 contacts, 
-                                manual_search) {
+                                manual_search,
+                                wiki) {
   
   library(dplyr)
   library(stringr)
@@ -28,15 +29,19 @@ consolidate_artists <- function(artists,
   manual_search <- manual_search %>% 
     mutate_if(is.integer, as.character) %>% 
     rename(deezer_id = "artist_id")
-
-
+  
+  # wiki names
+  wiki <- wiki %>% 
+    select(deezer_id, wiki_name)
+  
   # JOIN ALL ---------------------------------------------
   all <- artists %>% 
     left_join(mbz_deezer, by = "deezer_id") %>% 
     left_join(contacts, by = "musicbrainz_id") %>% 
     left_join(manual_search, by = "deezer_id") %>% 
+    left_join(wiki, by = "deezer_id") %>% # added wiki for names
     mutate(contact_id = coalesce(contact_id.x, contact_id.y)) %>% 
-    select(name, contact_name, mbz_name, deezer_id, 
+    select(name, contact_name, mbz_name, wiki_name, deezer_id, 
            musicbrainz_id, contact_id, pop) %>% 
     as_tibble()
 
