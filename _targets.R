@@ -114,13 +114,13 @@ list(
     
     tar_target(name = all_enriched,
                command = update_rows(all, 
-                                     contact_names_patch,
-                                     dup_deezer_mbz_patch,
-                                     dup_deezer_co_patch,
-                                     mbz_names_patch,
-                                     wiki_names_patch,
-                                     wiki_mbz_names_patch,
-                                     wiki_mbz_ids_patch)),
+                                     contact_names_patch = contact_names_patch,
+                                     dup_deezer_mbz_patch = contact_names_patch,
+                                     dup_deezer_co_patch = dup_deezer_co_patch,
+                                     mbz_names_patch = mbz_names_patch,
+                                     wiki_names_patch = wiki_names_patch,
+                                     wiki_mbz_names_patch = wiki_mbz_names_patch,
+                                     wiki_mbz_ids_patch = wiki_mbz_ids_patch)),
     
     tar_target(name = dup_deezer_co_patch,
                command = patch_deezer_dups(ref = contacts, 
@@ -136,7 +136,7 @@ list(
 
 
 
-
+## subset contacts to reviews > 0
 
 
 

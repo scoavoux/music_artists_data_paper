@@ -40,8 +40,8 @@ consolidate_artists <- function(artists,
            musicbrainz_id, contact_id, pop) %>% 
     as_tibble()
 
-  cleanpop_1 <- cleanpop(all)
-  loginfo(str_glue("stream share after first consolidation: {cleanpop_1}"))
+  loginfo("stream share after first consolidation:")
+  cleanpop(all)
 
   return(all)
 }

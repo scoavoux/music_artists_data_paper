@@ -23,7 +23,6 @@ mbz_wiki_ids|stem|e303027549cf0ef6|0420a432da0622db|e20a79a63e64ca7f|-1521828037
 newpatch|stem|65a86a8ad306c337|b6edf9a9162f9285|2bb2a85cd8e0d9b1|118715156|bucket=scoavoux*region=NULL*key=music_artist/objects/newpatch*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20472.5670493968s||0|rds|aws|vector|||4.506|Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 1 of `x` matches multiple rows in `y`. ℹ Row 60359 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.|
 artists|stem|fcdb86570b1b5f9d|c41a7408e4377b10|e403a25a86085f82|1571941084|bucket=scoavoux*region=NULL*key=music_artist/objects/artists*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20472.5819126768s||0|rds|aws|vector|||42.33||
 deezer_dup_patch|stem||178bbd670711f87e|07912e1ddf20538e|1363602||t20472.6367272724s||0|rds|aws|vector|||0.007||could not find function 'deduplicate_deezer'
-all|stem|21850559d6553b0a|14abb952c838c43d|5eb0050ce3c8a0c5|671959644|bucket=scoavoux*region=NULL*key=music_artist/objects/all*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20473.4634971338s||0|rds|aws|vector|||9.868|Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 445 of `x` matches multiple rows in `y`. ℹ Row 9559 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.. Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 102 of `x` matches multiple rows in `y`. ℹ Row 1347 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.|
 wiki_mbz_ids_patch|stem|23195c45db079d05|84428039b4cd04a9|17845d0dfb077d16|-1891922533|bucket=scoavoux*region=NULL*key=music_artist/objects/wiki_mbz_ids_patch*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20473.5126895924s||0|rds|aws|vector|||2.772|Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 24 of `x` matches multiple rows in `y`. ℹ Row 340157 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.|
 all_dup_deezer|stem|fe36e35cd2500898|9144ff725532a722|82b517310bba02a1|1685424255|bucket=scoavoux*region=NULL*key=music_artist/objects/all_dup_deezer*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20474.3978037578s||0|rds|aws|vector|||0.551||
 contacts_names_patch|stem|d202858f9705b7b4|5003be46b2f1c6ca|c5c9a0a35e91005c|2017333426|bucket=scoavoux*region=NULL*key=music_artist/objects/contacts_names_patch*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20474.4382799536s||0|rds|aws|vector|||7.495|Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 2 of `x` matches multiple rows in `y`. ℹ Row 7605 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.|
@@ -32,8 +31,10 @@ mbz_names_patch|stem|d73cf77cce6a0246|4a5b0aec367c6a6f|11058bcf723b52dc|15759243
 wiki_mbz_names_patch|stem|e2a431bc7a00e42e|14d4e81cdbf9ac8a|9b56025ecbaa7688|-292486489|bucket=scoavoux*region=NULL*key=music_artist/objects/wiki_mbz_names_patch*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20474.4404871504s||0|rds|aws|vector|||2.944|Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 1 of `x` matches multiple rows in `y`. ℹ Row 7518 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.|
 wiki_names_patch|stem|65a86a8ad306c337|0ea1e5af5735df78|9b56025ecbaa7688|-1562572403|bucket=scoavoux*region=NULL*key=music_artist/objects/wiki_names_patch*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20474.4405738897s||0|rds|aws|vector|||2.275|Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 1 of `x` matches multiple rows in `y`. ℹ Row 60359 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.|
 dup_deezer_mbz_patch|stem|f11f6290fc83ef19|1331fbe7dc8df102|ebf1bf4bffcf761b|1432415813|bucket=scoavoux*region=NULL*key=music_artist/objects/dup_deezer_mbz_patch*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20474.442705818s||0|rds|aws|vector|||46.899||
-.Random.seed|object|8f339323e929084a
-cleanpop|function|9cf14aae32551f18
+contact_names_patch|stem|d202858f9705b7b4|5003be46b2f1c6ca|c5c9a0a35e91005c|693695616|bucket=scoavoux*region=NULL*key=music_artist/objects/contact_names_patch*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20474.4607667377s||0|rds|aws|vector|||7.727|Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 2 of `x` matches multiple rows in `y`. ℹ Row 7605 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.|
+all_enriched|stem|9212490fa6d4f810|e018e103b4c7f2e1|94755f201f71fc6e|-934401586|bucket=scoavoux*region=NULL*key=music_artist/objects/all_enriched*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20474.5594781945s||0|rds|aws|vector|||4.793||
+.Random.seed|object|84894078a3a2e033
+cleanpop|function|e3c7fca0f2658ad6
 initialize_s3|function|25a2772c1c03257f
 pop|function|3a1a1516ee3a8ab4
 write_s3|function|15e44e053dc7a6c7
@@ -45,17 +46,16 @@ make_wiki_keys|function|420336bcf27da1f0
 load_streams|function|614a898e2ac1f783
 make_mbz_deezer|function|1e44c011740b946c
 load_partitioned_s3|function|ef32fd7856f71aa0
+patch_contact_dups|function|c59c549867d23772
 bind_items|function|26832133b0fa900a
 left_join_coalesce|function|c8ec57d04e03404f
 unique_name_match|function|267f01c3b5fb7ea1
-update_rows|function|5ba893f8393b9d1f
+update_rows|function|9262bc9aba2d5c3d
 load_s3|function|2f0bfd56597701f8
 load_s3_info|function|b201b67fd14b09a5
-consolidate_artists|function|afd18bd35ee1dc02
+consolidate_artists|function|805c35232257ae6c
 group_items_by_artist|function|a009e09c9ad77cd4
 patch_deezer_dups|function|1d555a59b4c598c1
-patch_contact_dups|function|174de8d8620248a3
 bind_names|function|7e34495b58a28877
 make_items|function|0f0313fcdfc70bc3
-contact_names_patch|stem|d202858f9705b7b4|5003be46b2f1c6ca|c5c9a0a35e91005c|693695616|bucket=scoavoux*region=NULL*key=music_artist/objects/contact_names_patch*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20474.4607667377s||0|rds|aws|vector|||7.727|Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 2 of `x` matches multiple rows in `y`. ℹ Row 7605 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.|
-all_enriched|stem|0cd8eedffaa215d4|361f9e63554f7505|f770eab9b2f82b75|-934401586|bucket=scoavoux*region=NULL*key=music_artist/objects/all_enriched*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20474.4609429311s||0|rds|aws|vector|||4.797||
+all|stem|21850559d6553b0a|14abb952c838c43d|013e90a6406a37b5|671959644|bucket=scoavoux*region=NULL*key=music_artist/objects/all*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20474.5622351096s||0|rds|aws|vector|||5.45|Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 445 of `x` matches multiple rows in `y`. ℹ Row 9559 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.. Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 102 of `x` matches multiple rows in `y`. ℹ Row 1347 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.|

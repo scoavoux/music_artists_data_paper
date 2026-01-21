@@ -23,12 +23,21 @@ cleanpop <- function(x){
   contacts_clean <- sum(contacts$pop)
   both_clean <- sum(both$pop)
   
-  cat("N:",nrow(x %>% distinct(deezer_id)),"\n")
-  cat("clean mbz ids:",mbz_clean,"% // N:",nrow(mbz),"\n")
-  cat("clean contact ids:",contacts_clean,"% // N:",nrow(contacts),"\n")
-  cat("complete cases:",both_clean,"% // N:",nrow(both),"\n")
+  #cat("N:",nrow(x %>% distinct(deezer_id)),"\n")
+  #cat("clean mbz ids:",mbz_clean,"% // N:",nrow(mbz),"\n")
+  #cat("clean contact ids:",contacts_clean,"% // N:",nrow(contacts),"\n")
+  #cat("complete cases:",both_clean,"% // N:",nrow(both),"\n")
+  
+  dat <- tibble(clean_ids = c("mbz:", "contacts:", "all:", "total cases:"),
+         
+         stream_share = c(mbz_clean, contacts_clean, both_clean, "100"),
+         
+         N = c(nrow(mbz), nrow(contacts), nrow(both), nrow(x)))
+  
+  print(dat)
   
 }
+
 
 # pop of patches
 pop <- function(x, 

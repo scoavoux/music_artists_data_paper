@@ -112,15 +112,16 @@ update_rows <- function(all, ..., by = "deezer_id"){
   require(stringr)
   
   patches <- list(...)
+  patch_names <- names(patches)
   
-  for(i in 1:length(patches)){
+  for(i in seq_along(patches)){
     
-    loginfo("adding patch %d", deparse(substitute(i)))
+    loginfo("patching %s to all", patch_names[i])
     
     all <- all %>% 
       rows_update(patches[[i]], by = by)
     
-    loginfo(cleanpop(all))
+    cleanpop(all)
     loginfo(strrep("-", 40))
     
   }
@@ -128,7 +129,6 @@ update_rows <- function(all, ..., by = "deezer_id"){
   return(all)
   
 }
-
 
 
 

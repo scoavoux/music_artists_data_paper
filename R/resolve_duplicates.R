@@ -40,35 +40,33 @@ patch_deezer_dups <- function(ref,
 }
 
 
-patch_contact_dups <- function(all, ref, ref_id, ref_names){
+patch_contact_dups <- function(all, contacts){
   
-  ref_id   <- rlang::ensym(ref_id)
-  ref_name <- rlang::ensym(ref_name)
-  all_name <- rlang::ensym(all_name)
-  all_id   <- rlang::ensym(all_id)
+  
+  # ------------ prepare contacts
+  
+  co_unique <- contacts %>% 
+    filter(collection_count > 0) %>% # remove irrelevant artists 
+    group_by(contact_name) %>% 
+    mutate(col_share = collection_count / sum(collection_count),
+           prod_share = product_count / sum(product_count),
+           gen_like_share = gen_like_count / sum(gen_like_count)) %>% 
+    filter(col_share > 0.9) %>% 
+    select(contact_name, contact_id)
+  
+  
   
   # ------- join to missing contact_data in all
   
   # keep this condition for now: adding the other variables adds like 30 cases
   # but unsure about the cases (e.g., there are weird ones with very few albums)
-  ref_unique <- ref %>% 
-    filter(col_share > 0.9) %>% 
-    select(!!ref_name, !!ref_id)
-  
+
   # important: subset all to unique names missing in contacts
-  all_unique_ref <- all %>% 
+  all_unique_co <- all %>% 
     add_count(name) %>% 
     filter(n == 1) %>% 
-    filter(is.na(!!ref_id))
+    filter(is.na(contact_id))
   
-  ## this is handled by patch_names...
-  added_contacts <- patch_names(
-    miss = all_unique_co,
-    ref = co_unique,
-    all_name = "name",
-    ref_name = "contact_name",
-    ref_id = "contact_id"
-  )
 
   return(contacts_dup_patch)
 }
@@ -76,9 +74,25 @@ patch_contact_dups <- function(all, ref, ref_id, ref_names){
 
 
 
-
-
-
+# 
+# co_unique <- contacts %>% 
+#   filter(collection_count > 0) %>% # remove irrelevant artists 
+#   group_by(contact_name) %>% 
+#   mutate(col_share = collection_count / sum(collection_count),
+#          prod_share = product_count / sum(product_count),
+#          gen_like_share = gen_like_count / sum(gen_like_count)) %>% 
+#   filter(col_share > 0.9) %>% 
+#   select(contact_name, contact_id)
+# 
+# 
+# # PLACE THIS DOWNSTREAM TO DEEZER_DUP SOLVING???
+# # // implement deezer deduplication in this function!
+# # important: subset all to unique names missing in contacts
+# all_unique_co <- all %>% 
+#   add_count(name) %>% 
+#   filter(n == 1) %>% 
+#   filter(is.na(contact_id))
+# 
 
 
 
