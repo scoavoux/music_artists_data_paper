@@ -28,7 +28,8 @@ patch_names <- function(all,
     select(!!ref_id, !!ref_name) %>%
     filter(!is.na(!!ref_name)) %>%
     anti_join(all, by = setNames(rlang::as_string(ref_id),
-                                 rlang::as_string(ref_id)))
+                                 rlang::as_string(ref_id))) # %>% 
+    # distinct() # distinct perfect duplicates!!
 
   loginfo("allgood")
   
@@ -43,9 +44,8 @@ patch_names <- function(all,
     inner_join(ref_clean,
                by = setNames(rlang::as_string(ref_name),
                              rlang::as_string(all_name))) %>%
-    add_count(!!all_name, name = "n_all") %>%
-    add_count(!!ref_name, name = "n_ref") %>% 
-    filter(n_all == 1, n_ref == 1)
+    add_count(!!all_name, name = "n_all") %>% 
+    filter(n_all == 1) # CRUCIAL: keep only unique names
   
   loginfo("allgood")
   
@@ -90,7 +90,7 @@ mbz_from_wiki <- function(all, wiki){
     filter(n_deezer == 1, n_mbz == 1) %>% 
     
     mutate(musicbrainz_id = musicbrainz_id.y) %>% 
-    distinct(deezer_id, musicbrainz_id, .keep_all = T) %>% 
+    # distinct(deezer_id, musicbrainz_id, .keep_all = T) %>% 
     select(deezer_id, name, musicbrainz_id)
   
   return(mbz_from_wiki)
@@ -128,7 +128,8 @@ patch_deezer_dups <- function(ref,
   unique_ref <- ref %>% 
     add_count(!!ref_name) %>% 
     filter(n == 1) %>% # unique names only
-    select(!!ref_id, !!ref_name)
+    select(!!ref_id, !!ref_name) # %>% 
+    # distinct() # distinct perfect duplicates!!
   
   matches <- patch_names(all = all_pop_share,
                          ref = unique_ref,
@@ -209,8 +210,6 @@ update_rows <- function(all, ..., by = "deezer_id"){
   return(all)
   
 }
-
-
 
 
 

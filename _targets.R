@@ -121,7 +121,8 @@ list(
                                      wiki_names_patch = wiki_names_patch,
                                      wiki_mbz_names_patch = wiki_mbz_names_patch,
                                      wiki_mbz_ids_patch = wiki_mbz_ids_patch,
-                                     dup_contacts_patch = dup_contacts_patch)),
+                                     dup_contacts_patch = dup_contacts_patch
+                                     )),
     
     tar_target(name = dup_deezer_co_patch,
                command = patch_deezer_dups(ref = contacts, 

@@ -43,11 +43,14 @@ consolidate_artists <- function(artists,
     mutate(contact_id = coalesce(contact_id.x, contact_id.y)) %>% 
     select(name, contact_name, mbz_name, wiki_name, deezer_id, 
            musicbrainz_id, contact_id, pop) %>% 
+    distinct() %>%  # !!!!!!!!!!!!!!!!!!!!!!
     as_tibble()
 
   loginfo("stream share after first consolidation:")
   cleanpop(all)
-
+  
+  print("helloworld")
+  
   return(all)
 }
 
