@@ -21,7 +21,7 @@ tar_source("R")
 # List of targets ------
 list(
   
-    ####### USER DATA ############
+    ### CREATE ARTISTS ----------------------------------------------
     tar_target(name = streams,
                command = load_streams()),
     
@@ -36,37 +36,137 @@ list(
                command = make_items(to_remove = to_remove_file,
                                     file = "records_w3/items/song.snappy.parquet")),
     
-    tar_target(name = conflicts,
-               command = make_conflict_items(items_old, items_new, streams)),
-    
     tar_target(name = names,
-               command = load_s3(file = "records_w3/items/artists_data.snappy.parquet")),
-  
-    tar_target(name = new_names,
-               command = read.csv("./data/interim/names_from_api.csv")),
+               command = bind_names(file_1 = "records_w3/items/artists_data.snappy.parquet",
+                                    file_2 = "interim/new_artists_names_from_api.csv")),
     
-    tar_target(name = conflicts_names,
-               command = names_to_conflicts(conflicts, names, new_names)),
+    tar_target(name = items,
+               command = bind_items(items_old, items_new, streams, names)),
     
-    tar_target(name = conflicts_to_match,
-               command = filter_conflicts_to_match(conflicts_names)),
+    tar_target(name = artists,
+               command = group_items_by_artist(items)),
     
-    tar_target(name = matched_names,
-               command = read.csv("data/interim/matched_scores.csv", sep = ";"))
+    # ID shit
+    ### LOAD RAW KEYS ----------------------------------------------
+    tar_target(name = contacts, 
+               command = load_s3("senscritique/contacts.csv")),
     
+        tar_target(name = musicbrainz_urls,
+               command = load_s3("musicbrainz/musicbrainz_urls.csv")),
+    
+    tar_target(name = manual_search_path,
+               command = "data/manual_search.csv", format = "file"),
+    tar_target(name = manual_search,
+               command = read.csv(manual_search_path)),
+    
+    ### PROCESS KEYS -----------------------------------------------
+    # transform musicbrainz_urls to mbz_deezer
+    tar_target(name = mbz_deezer,
+               command = make_mbz_deezer(musicbrainz_urls)),
+    
+    # temporary --- make a dedicated wiki_labels function some time
+    # code is (commented out) in wiki_keys.R
+    tar_target(name = wiki_labels,
+               command = load_s3("interim/wiki_labels.csv")),
+
+    tar_target(name = wiki,
+               command = make_wiki_keys(wiki_labels, mbz_deezer)),
+    
+    
+    ### CONSOLIDATE ARTISTS ----------------------------------------
+    
+    tar_target(name = all,
+               command = consolidate_artists(artists, mbz_deezer,
+                                             contacts, manual_search, wiki)),
+    
+
+    # unique names matches between deezer and contact names
+    tar_target(name = contact_names_patch,
+               command = patch_names(all = all,
+                                     ref = contacts,
+                                     ref_id = "contact_id",
+                                     ref_name = "contact_name",
+                                     all_name = "name")),
+    
+    tar_target(name = mbz_names_patch,
+               command = patch_names(all = all,
+                                     ref = mbz_deezer,
+                                     ref_id = "musicbrainz_id",
+                                     ref_name = "mbz_name",
+                                     all_name = "name")),
+    
+    tar_target(name = wiki_mbz_names_patch,
+               command = patch_names(all = all,
+                                     ref = wiki,
+                                     ref_id = "musicbrainz_id",
+                                     ref_name = "mbz_name",
+                                     all_name = "name")),
+    
+    tar_target(name = wiki_names_patch,
+               command = patch_names(all = all,
+                                     ref = wiki,
+                                     ref_id = "musicbrainz_id",
+                                     ref_name = "wiki_name",
+                                     all_name = "name")),
+    
+    tar_target(name = wiki_mbz_ids_patch,
+               command = mbz_from_wiki(all, wiki)),
+    
+    tar_target(name = all_enriched,
+               command = update_rows(all, 
+                                     contact_names_patch = contact_names_patch,
+                                     dup_deezer_mbz_patch = contact_names_patch,
+                                     dup_deezer_co_patch = dup_deezer_co_patch,
+                                     mbz_names_patch = mbz_names_patch,
+                                     wiki_names_patch = wiki_names_patch,
+                                     wiki_mbz_names_patch = wiki_mbz_names_patch,
+                                     wiki_mbz_ids_patch = wiki_mbz_ids_patch,
+                                     dup_contacts_patch = dup_contacts_patch
+                                     )),
+    
+    tar_target(name = dup_deezer_co_patch,
+               command = patch_deezer_dups(ref = contacts, 
+                                           ref_id = "contact_id", 
+                                           ref_name = "contact_name",
+                                           all = all)),
+    tar_target(name = dup_deezer_mbz_patch,
+               command = patch_deezer_dups(ref = mbz_deezer, 
+                                           ref_id = "musicbrainz_id", 
+                                           ref_name = "mbz_name",
+                                           all = all)),
+    tar_target(name = dup_contacts_patch,
+               command = patch_contact_dups(all, contacts))
 )
 
 
-
-
-
-
-
-
-
-
-
-
+# ## export biggest missings to csv for handcoding
+# 
+# missing <- all_enriched %>% 
+#   filter(is.na(contact_id) | is.na(musicbrainz_id)) %>% 
+#   slice(1:1000)
+# 
+# missing_mbz <- all_enriched %>% 
+#   filter(is.na(musicbrainz_id)) %>% 
+#   slice(1:1000)
+#            
+# missing_contacts <- all_enriched %>% 
+#   filter(is.na(contact_id)) %>% 
+#   slice(1:1000)
+# 
+# cleanpop(missing)
+# cleanpop(missing_mbz)
+# cleanpop(missing_contacts)
+# 
+# write_s3(missing, "interim/missings_to_handcode/missing_either.csv")
+# write_s3(missing_mbz, "interim/missings_to_handcode/missing_mbz.csv")
+# write_s3(missing_contacts, "interim/missings_to_handcode/missing_contacts.csv")
+# 
+# 
+# df <- load_s3("interim/missings_to_handcode/missing_either.csv")
+# 
+# df <- load_s3("interim/missings_to_handcode/missing_either.csv")
+# 
+# 
 
 
 

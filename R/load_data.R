@@ -110,23 +110,17 @@ load_s3_info <- function(file, bucket = "scoavoux", ...) {
 
 
 ### export data
-write_s3 <- function(file){
+write_s3 <- function(x, file, FUN = readr::write_csv){
+  
   aws.s3::s3write_using(
-    df,
-    FUN = readr::write_csv,
+    x,
+    FUN = FUN,
     object = file,
     bucket = "scoavoux",
     opts = list("region" = "")
   )
-}
   
-
-
-
-
-
-
-
+}
 
 
 

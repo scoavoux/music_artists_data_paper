@@ -1,6 +1,7 @@
-library(logging)
 
-basicConfig()
+#library(logging)
 
-addHandler(writeToFile, file="logfile.log")
+#basicConfig()
+
+#addHandler(writeToFile, file="logfile.log")
 

@@ -26,8 +26,9 @@ load_streams <- function() {
            year == 2022,
            song_id > 0) %>% 
     group_by(song_id) %>% 
-    summarize(n_play = n()) %>% 
-    select(song_id, n_play)
+    summarize(n_play = n(),
+              listening_time = sum(listening_time)) %>% 
+    select(song_id, n_play, listening_time)
   
   # load and filter streams_long
   data_cloud <- arrow::open_dataset(
@@ -49,8 +50,9 @@ load_streams <- function() {
            year != 2022,
            song_id > 0) %>% # negative song_ids
     group_by(song_id) %>% 
-    summarize(n_play = n()) %>% 
-    select(song_id, n_play)
+    summarize(n_play = n(),
+              listening_time = sum(listening_time)) %>% 
+    select(song_id, n_play, listening_time)
   
   long_streams <- collect(query_short)
   short_streams <- collect(query_long)
@@ -58,10 +60,11 @@ load_streams <- function() {
   # bind rows and compute popularity (fraction of all plays)
   streams <- bind_rows(short_streams, long_streams) %>%
     group_by(song_id) %>%
-    summarize(n_play = sum(n_play)) %>%
-    mutate(f_n_play = n_play / sum(n_play))
+    summarize(n_play = sum(n_play),
+              l_play = sum(listening_time)) %>%
+    #mutate(f_n_play = n_play / sum(n_play)) # DON'T MAKE F_N_PLAY YET!
   
-  loginfo(cat("streams loaded, with", nrow(streams), "rows."))
+  #loginfo(cat("streams loaded, with", nrow(streams), "rows."))
   
   return(streams)
 }
@@ -69,9 +72,6 @@ load_streams <- function() {
 # write it to interim
 # write_parquet(streams, "data/interim/clean_streams.parquet", compression = "snappy")
 # loginfo("clean_streams.parquet written".)
-
-
-
 
 
 
