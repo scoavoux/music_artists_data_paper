@@ -49,7 +49,7 @@ list(
     # ID shit
     ### LOAD RAW KEYS ----------------------------------------------
     tar_target(name = contacts, 
-               command = load_s3("senscritique/contacts.csv")),
+               command = clean_contacts(file="senscritique/contacts.csv")),
     
         tar_target(name = musicbrainz_urls,
                command = load_s3("musicbrainz/musicbrainz_urls.csv")),

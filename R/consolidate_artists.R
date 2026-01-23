@@ -76,6 +76,3 @@ consolidate_artists <- function(artists,
 
 
 
-
-
-
