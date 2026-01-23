@@ -46,10 +46,8 @@ consolidate_artists <- function(artists,
     distinct() %>%  # !!!!!!!!!!!!!!!!!!!!!!
     as_tibble()
 
-  loginfo("stream share after first consolidation:")
-  cleanpop(all)
-  
-  print("helloworld")
+  #loginfo("stream share after first consolidation:")
+  #cleanpop(all)
   
   return(all)
 }

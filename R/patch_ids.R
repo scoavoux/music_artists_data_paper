@@ -27,6 +27,11 @@ patch_names <- function(all,
     mutate(across(where(is.integer), as.character)) %>%
     select(!!ref_id, !!ref_name) %>%
     filter(!is.na(!!ref_name)) %>%
+    
+    ## SHIT: FORGOT THIS??? ofc we want unique names in ref too
+    add_count(!!ref_name) %>% 
+    filter(n == 1) %>% 
+    
     anti_join(all, by = setNames(rlang::as_string(ref_id),
                                  rlang::as_string(ref_id))) # %>% 
     # distinct() # distinct perfect duplicates!!
@@ -60,7 +65,11 @@ patch_names <- function(all,
       !!ref_name, 
       !!rlang::as_string(ref_id) := !!rlang::sym(id_y),
       deezer_id
-    ) 
+    ) %>%
+    # paste name to contact/mbz_name to update those too in all
+    mutate(!!ref_name := !!all_name) # works because we have unique name matches here
+  
+  
   
   return(matches)
   

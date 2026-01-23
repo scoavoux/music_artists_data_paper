@@ -13,7 +13,8 @@ mbz_deezer|stem|mbz_deezer|0|skipped
 items|stem|items|0|skipped
 wiki|stem|wiki|0|skipped
 artists|stem|artists|0|skipped
-all|stem|all|0|skipped
+all|stem|all|0|dispatched
+all|stem|all|0|completed
 contact_names_patch|stem|contact_names_patch|0|dispatched
 contact_names_patch|stem|contact_names_patch|0|completed
 dup_contacts_patch|stem|dup_contacts_patch|0|dispatched
@@ -22,8 +23,7 @@ dup_deezer_co_patch|stem|dup_deezer_co_patch|0|dispatched
 dup_deezer_co_patch|stem|dup_deezer_co_patch|0|completed
 mbz_names_patch|stem|mbz_names_patch|0|dispatched
 mbz_names_patch|stem|mbz_names_patch|0|completed
-wiki_mbz_ids_patch|stem|wiki_mbz_ids_patch|0|dispatched
-wiki_mbz_ids_patch|stem|wiki_mbz_ids_patch|0|completed
+wiki_mbz_ids_patch|stem|wiki_mbz_ids_patch|0|skipped
 wiki_mbz_names_patch|stem|wiki_mbz_names_patch|0|dispatched
 wiki_mbz_names_patch|stem|wiki_mbz_names_patch|0|completed
 wiki_names_patch|stem|wiki_names_patch|0|dispatched
