@@ -1,9 +1,12 @@
 
 
+
+library(sjmisc)
+
 tar_load(all_enriched)
 
 all_count <- all_enriched %>% 
-  filter(!is.na(musicbrainz_id) | !is.na(contact_id)) %>% 
+  filter(!is.na(musicbrainz_id) & !is.na(contact_id)) %>% 
   add_count(deezer_id, name = "n_deezer") %>% 
   add_count(musicbrainz_id, name = "n_mbz") %>% 
   add_count(contact_id, name = "n_co")
@@ -14,35 +17,26 @@ all_dups <- all_count %>%
            n_mbz > 1 |
            n_co > 1)
 
+t <- all_dups %>% 
+  distinct(deezer_id, .keep_all = T)
 
-View(all_dups)
+
+
+### MERGE PERFECT NAME DUPLICATES
+
+#### extract them
+
 
 ### perfect name duplicates
-all_dups %>% 
+### equal to deezer duplicates, logically
+all_dups_name <- all_dups %>% 
+  filter(n_mbz > 1 & n_deezer == 1) %>% 
+  arrange(desc(musicbrainz_id))
+
+all_dups_name %>% 
   group_by(deezer_id, name) %>% 
-  add_count() %>% 
-  filter(n > 1)
+  summarise(contact_id = max(contact_id),
+            musicbrainz_id = max(musicbrainz_id))
 
-
-string <- c("&", " et ", " and")
-
-all_enriched %>% 
-  filter(str_detect(name, string) | str_detect(" and ") | str_detect(" et "))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+frq(all_dups_name$n_deezer)
 

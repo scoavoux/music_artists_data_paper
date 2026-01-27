@@ -49,9 +49,9 @@ bind_items <- function(items_old, items_new, streams, names){
     group_by(song_id) %>%
     mutate(w_feat = 1 / n_distinct(deezer_feat_id))
   
-  ## join to streams and compute weighted popularity
+  ## join to streams
   items <- items %>% 
-   inner_join(streams, by = "song_id") 
+   inner_join(streams, by = "song_id") ## inner_join appropriate??
 
   ## add deezer names to debug joins with other ids
   items <- items %>% 
@@ -98,10 +98,35 @@ group_items_by_artist <- function(items){
 }
 
 
+## unique artists for now --- because of f_n_play
+group_items_by_artist <- function(items){
+  
+  artists <- items %>% 
+    ungroup() %>% 
+    mutate(deezer_id = as.character(deezer_feat_id), # ATTENTION: renaming feat_id to id here!!
+           w_n_play = w_feat * n_play, # weight n plays by feat
+           w_f_n_play = w_n_play / sum(w_n_play)) %>% # compute weighted f_n_play
+    group_by(deezer_id) %>% 
+    summarise(n_play = first(n_play),
+              w_n_play = first(n_play),
+              name = first(name),
+              pop = sum(w_f_n_play) * 100, # to %
+              .groups = "drop") %>% 
+    arrange(desc(pop))
+  
+  return(artists)
+}
 
+
+
+
+dat <- tibble(song_id = c(1,1),
+              deezer_feat_id = c(88,99),
+              name = c("eminem", "nate dogg"),
+              n_play = c(1000, 1000),
+              w_feat = c(0.5, 0.5))
   
-  
-  
+
   
   
   

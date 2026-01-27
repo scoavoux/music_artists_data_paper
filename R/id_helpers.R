@@ -32,12 +32,21 @@ cleanpop <- function(x){
   #cat("clean contact ids:",contacts_clean,"% // N:",nrow(contacts),"\n")
   #cat("complete cases:",both_clean,"% // N:",nrow(both),"\n")
   
-  dat <- tibble(clean_ids = c("mbz:", "contacts:", "all:", "total:"),
+  dat <- tibble(clean_ids = c("mbz:", 
+                              "contacts:", 
+                              "all:", 
+                              "total:"),
          
-         stream_share = c(mbz_clean, contacts_clean, both_clean, deezer_clean),
+         stream_share = c(mbz_clean, 
+                          contacts_clean, 
+                          both_clean, 
+                          deezer_clean),
          
-         N = c(nrow(mbz), nrow(contacts), nrow(both), nrow(x)))
-  
+         N = c(nrow(mbz), 
+               nrow(contacts), 
+               nrow(both), 
+               nrow(x %>% distinct(deezer_id))))
+
   print(dat)
   
 }
