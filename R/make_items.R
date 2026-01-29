@@ -118,15 +118,6 @@ group_items_by_artist <- function(items){
 }
 
 
-
-
-dat <- tibble(song_id = c(1,1),
-              deezer_feat_id = c(88,99),
-              name = c("eminem", "nate dogg"),
-              n_play = c(1000, 1000),
-              w_feat = c(0.5, 0.5))
-  
-
   
   
   
