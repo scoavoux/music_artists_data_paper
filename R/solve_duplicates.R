@@ -34,30 +34,27 @@ dedup <- function(all, id, contacts = NULL, score, threshold){
 
 dedup_all_ids <- function(all, contacts, threshold = 0.9) {
   
-  list(
-    deezer = dedup(
-      all = all,
+  all %>%
+    dedup(
       id = "deezer_id",
       contacts = contacts,
       score = "collection_count",
       threshold = threshold
-    ),
-    contact = dedup(
-      all = all_enriched,
+    ) %>%
+    dedup(
       id = "contact_id",
-      contacts = contacts,
+      contacts = NULL,
       score = "pop",
       threshold = threshold
-    ),
-    musicbrainz = dedup(
-      all = all_enriched,
+    ) %>%
+    dedup(
       id = "musicbrainz_id",
-      contacts = contacts,
+      contacts = NULL,
       score = "pop",
       threshold = threshold
     )
-  )
 }
+
 
 
 

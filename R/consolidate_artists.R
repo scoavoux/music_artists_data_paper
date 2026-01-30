@@ -18,14 +18,19 @@ consolidate_artists <- function(artists,
     filter(!is.na(deezer_id)) %>%
     distinct(deezer_id, musicbrainz_id, mbz_name) # need to distinct bc dropping spotify etc leaves ~22k duplicates
   
+  # join mbz and contacts beforehand
+  mbz_deezer_contacts <- mbz_deezer %>% 
+    left_join(contacts, by = "musicbrainz_id")
+  
   # wiki names
   wiki <- wiki %>% 
+    filter(!is.na(deezer_id)) %>%
     select(deezer_id, wiki_name)
   
   # JOIN ALL ---------------------------------------------
   all <- artists %>% 
-    left_join(mbz_deezer, by = "deezer_id") %>% 
-    left_join(contacts, by = "musicbrainz_id") %>% 
+    left_join(mbz_deezer_contacts, by = "deezer_id") %>% 
+    # left_join(contacts, by = "musicbrainz_id") %>% 
     left_join(manual_search, by = "deezer_id") %>% 
     left_join(wiki, by = "deezer_id") %>% # added wiki for names
     mutate(contact_id = coalesce(contact_id.x, contact_id.y)) %>% 
@@ -39,15 +44,6 @@ consolidate_artists <- function(artists,
   
   return(all)
 }
-
-
-
-
-
-
-
-
-
 
 
 

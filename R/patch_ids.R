@@ -171,6 +171,7 @@ patch_contact_dups <- function(all, contacts){
   co_unique <- contacts %>% 
     # keep the condition like this for now: adding the other variables adds like 30 cases
     # but unsure about the cases (e.g., there are weird ones with very few albums)
+    mutate(collection_count = as.integer(collection_count)) %>% 
     filter(collection_count > 0) %>% # remove irrelevant artists 
     group_by(contact_name) %>% 
     mutate(col_share = collection_count / sum(collection_count)) %>% 

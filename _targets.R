@@ -76,7 +76,7 @@ list(
                command = dedup_all_ids(all = all_before_dedup, 
                                        contacts = contacts,
                                        threshold = 0.9)),
-
+ 
     # unique names matches between deezer and contact names
     tar_target(name = contact_names_patch,
                command = patch_names(all = all,
@@ -167,14 +167,14 @@ list(
 
 
 
+t <- all_enriched %>% 
+  filter(!is.na(contact_id) & !is.na(musicbrainz_id)) %>% 
+  add_count(deezer_id, name = "n_deezer") %>% 
+  add_count(contact_id, name = "n_co") %>% 
+  add_count(musicbrainz_id, name = "n_mbz")
 
-
-
-
-
-
-
-
+dups <- t %>% 
+  filter(n_deezer > 1 | n_co > 1 | n_mbz > 1)
 
 
 

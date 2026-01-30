@@ -15,9 +15,11 @@ load_manual_search <- function(file){
   
   manual_search <- manual_search %>% 
     rename(deezer_id = "artist_id") %>% 
+    mutate_if(is.integer, as.character) %>% 
     distinct(deezer_id, contact_id) %>% 
     as_tibble()
   
+
   return(manual_search)
 }
 
@@ -66,7 +68,7 @@ load_mbz_deezer <- function(file) {
   require(data.table)
   require(dplyr)
   
-  dat <- load_s3(file) # load musicbrainz urls
+  musicbrainz_urls <- load_s3(file) # load musicbrainz urls
   
   dat <- tibble(musicbrainz_urls) %>% 
     mutate(discogs_id = ifelse(str_detect(url, "discogs"), 
@@ -300,6 +302,7 @@ load_wiki <- function(wiki_labels, mbz_deezer) {
            wiki_name = "label") %>% 
     left_join(mbz_name, by = "musicbrainz_id") %>% 
     mutate_if(is.integer, as.character) %>% # ids to str for clean joins
+    mutate_if(is.double, as.character) %>% # ids to str for clean joins
     as_tibble()
   
   return(wiki)
