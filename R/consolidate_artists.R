@@ -18,11 +18,6 @@ consolidate_artists <- function(artists,
     filter(!is.na(deezer_id)) %>%
     distinct(deezer_id, musicbrainz_id, mbz_name) # need to distinct bc dropping spotify etc leaves ~22k duplicates
   
-  # sam's manual searches
-  manual_search <- manual_search %>% 
-    mutate_if(is.integer, as.character) %>% 
-    rename(deezer_id = "artist_id")
-  
   # wiki names
   wiki <- wiki %>% 
     select(deezer_id, wiki_name)

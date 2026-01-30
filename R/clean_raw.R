@@ -114,7 +114,7 @@ load_mbz_deezer <- function(file) {
     filter(str_detect(deezer_id, "\\D")) %>% # look for non-digits
     filter(str_detect(deezer_id, "artist/")) %>% # preceded by /artist/
     mutate(deezer_id = str_extract(deezer_id, "\\d+")) %>%  # extract digits
-    filter(!str_detect(deezer_id, "https")) # remove rest of URLs
+    filter(!str_detect(deezer_id, "https")) %>%  # remove rest of URLs
     select(deezer_id, musicbrainz_id)
   
   # remerge into collapsed

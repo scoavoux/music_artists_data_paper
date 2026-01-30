@@ -3,7 +3,7 @@ dedup <- function(all, id, contacts = NULL, score, threshold){
   id <- rlang::sym(id)
   score <- rlang::sym(score)
   
-
+  
   if(!is.null(contacts)) {
     coll_count <- coll_count <- contacts %>% 
       mutate(collection_count = as.integer(collection_count)) %>% 
@@ -12,7 +12,7 @@ dedup <- function(all, id, contacts = NULL, score, threshold){
     all <- all %>% 
       left_join(coll_count, by = "contact_id")
   }
-
+  
   all_dup <- all %>% 
     add_count(!!id) %>% 
     filter(n > 1) %>% # duplicates
