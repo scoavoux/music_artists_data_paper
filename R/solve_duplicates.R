@@ -18,7 +18,9 @@ dedup <- function(all, id, contacts = NULL, score, threshold){
     filter(n > 1) %>% # duplicates
     group_by(!!id) %>%
     mutate(max_score = max(!!score, na.rm = TRUE), # create score_share
-           score_share = !!score / sum(!!score)) %>%
+           score_share = if_else(is.na(!!score), # NA to 0!!
+                                 0, 
+                                 !!score / sum(!!score, na.rm = TRUE))) %>%
     arrange(desc(max_score), desc(!!score))
   
   to_keep <- all_dup %>% 
@@ -54,6 +56,25 @@ dedup_all_ids <- function(all, contacts, threshold = 0.9) {
       threshold = threshold
     )
 }
+
+
+# remaining duplicates after these steps are
+# 1. deezer dups with equivalent collection_counts
+# 2. 
+
+solve_remaining_dups <- function(){}
+  
+## if both collection_count > ...
+## merge artists, keep co and mbz with higher collection count
+
+
+
+
+
+
+
+
+
 
 
 

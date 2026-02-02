@@ -1,63 +1,60 @@
-dedup <- function(all, id, contacts = NULL, score, threshold){
-  
-  id <- rlang::sym(id)
-  score <- rlang::sym(score)
-  
+## identify remaining deezer duplicates -- not many!
 
-  if(!is.null(contacts)) {
-    coll_count <- coll_count <- contacts %>% 
-      mutate(collection_count = as.integer(collection_count)) %>% 
-      select(contact_id, collection_count)
-    
-    all <- all %>% 
-      left_join(coll_count, by = "contact_id")
-  }
+alldup <- all_enriched %>%
+  filter(!is.na(contact_id) & !is.na(musicbrainz_id)) %>% # needed
+  add_count(deezer_id, name = "n_deezer") %>%
+  add_count(contact_id, name = "n_co") %>%
+  add_count(musicbrainz_id, name = "n_mbz") %>% 
+  filter(n_deezer > 1 | n_co > 1 | n_mbz > 1)
 
-  all_dup <- all %>% 
-    add_count(!!id) %>% 
-    filter(n > 1) %>% # duplicates
-    group_by(!!id) %>%
-    mutate(max_score = max(!!score, na.rm = TRUE), # create score_share
-           score_share = !!score / sum(!!score)) %>%
-    arrange(desc(max_score), desc(!!score))
-  
-  to_keep <- all_dup %>% 
-    filter(score_share > threshold) %>% 
-    select(-c(score_share, collection_count, max_score, n))
-  
-  all <- all %>% 
-    anti_join(to_keep, by = rlang::as_string(id)) %>% 
-    bind_rows(to_keep)
-  
-  return(all)
-}
+t <- alldup %>% 
+  distinct(deezer_id, .keep_all = T)
 
-dedup_all_ids <- function(all, contacts, threshold = 0.9) {
-  
-  list(
-    deezer = dedup(
-      all = all,
-      id = "deezer_id",
-      contacts = contacts,
-      score = "collection_count",
-      threshold = threshold
-    ),
-    contact = dedup(
-      all = all_enriched,
-      id = "contact_id",
-      contacts = contacts,
-      score = "pop",
-      threshold = threshold
-    ),
-    musicbrainz = dedup(
-      all = all_enriched,
-      id = "musicbrainz_id",
-      contacts = contacts,
-      score = "pop",
-      threshold = threshold
-    )
-  )
-}
+sum(t$pop) # remaining stream share
+
+
+
+deezer_dups <- alldup %>% 
+  filter(n_co == 1 & n_mbz == 1) %>% 
+  arrange(desc(pop))
+
+deezer_dups <- deezer_dups %>% 
+  filter(collection_count > 0) %>% 
+  group_by(deezer_id) %>% 
+  mutate(col_share = if_else(is.na(collection_count),
+                             0, 
+                             collection_count / sum(collection_count)))
+
+
+## do the same for mbz and contacts
+
+co_dups <- alldup %>% 
+  filter(n_co > 1) %>% 
+  arrange(desc(contact_id))
+
+mbz_dups <- alldup %>% 
+  filter(n_mbz > 1) %>% 
+  arrange(desc(musicbrainz_id))
+
+deezer_dups <- deezer_dups %>% 
+  filter(collection_count > 0) %>% 
+  group_by(deezer_id) %>% 
+  mutate(col_share = if_else(is.na(collection_count),
+                             0, 
+                             collection_count / sum(collection_count)))
+
+
+
+
+
+
+
+
+write.csv2(dups, "data/remaining_dups.csv")
+
+
+
+
 
 
 
