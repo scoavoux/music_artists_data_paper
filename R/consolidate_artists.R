@@ -33,10 +33,13 @@ consolidate_artists <- function(artists,
     # left_join(contacts, by = "musicbrainz_id") %>% 
     left_join(manual_search, by = "deezer_id") %>% 
     left_join(wiki, by = "deezer_id") %>% # added wiki for names
-    mutate(contact_id = coalesce(contact_id.x, contact_id.y)) %>% 
+    mutate(contact_id = coalesce(contact_id.x, contact_id.y),
+           collection_count = as.integer(collection_count),
+           collection_count = ifelse(is.na(collection_count), 0, collection_count)
+    ) %>% 
     select(name, contact_name, mbz_name, wiki_name, deezer_id, 
-           musicbrainz_id, contact_id, pop) %>% 
-    distinct() %>%  # !!!!!!!!!!!!!!!!!!!!!!
+           musicbrainz_id, contact_id, pop, collection_count) %>% 
+    distinct(deezer_id, contact_id, musicbrainz_id, .keep_all = TRUE) %>%  # !!!
     as_tibble()
 
   #loginfo("stream share after first consolidation:")

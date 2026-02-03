@@ -33,14 +33,29 @@ load_contacts <- function(file){
   require(stringr)
   
   contacts <- load_s3(file)
+  contacts_albums_link <- load_s3("senscritique/contacts_albums_link.csv")
+  ratings <- load_s3("senscritique/ratings.csv")
+  
+  # compute ratings to append
+  ratings <- ratings %>% 
+    group_by(product_id) %>% 
+    summarise(rating = sum(rating)) %>% 
+    inner_join(contacts_albums_link, by = "product_id") %>% 
+    group_by(contact_id) %>% 
+    summarise(rating = sum(rating)) %>% 
+    select(contact_id, rating)
   
   clean_contacts <- contacts %>% 
+    
+    left_join(ratings, by = "contact_id") %>% 
     
     # set "" names as NA
     mutate(
       mbz_id = na_if(mbz_id, ""),
-      contact_name = na_if(contact_name, "") 
-    ) %>% 
+      contact_name = na_if(contact_name, ""),
+      collection_count = ifelse(is.na(collection_count), 0, collection_count)
+      ) %>% 
+
     
     # id cols to character for clean joins
     mutate_if(is.integer, as.character) %>%
@@ -50,7 +65,7 @@ load_contacts <- function(file){
 
     rename(musicbrainz_id = "mbz_id") %>% 
       
-  select(contact_id, contact_name, collection_count, musicbrainz_id) %>% 
+  select(contact_id, contact_name, collection_count, rating, musicbrainz_id) %>% 
   as_tibble()
   
   return(clean_contacts)

@@ -74,7 +74,6 @@ list(
     
     tar_target(name = all, 
                command = dedup_all_ids(all = all_before_dedup, 
-                                       contacts = contacts,
                                        threshold = 0.9)),
  
     # unique names matches between deezer and contact names

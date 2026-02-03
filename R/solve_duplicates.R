@@ -1,31 +1,19 @@
-dedup <- function(all, id, contacts = NULL, score, threshold){
+dedup <- function(all, id, score, threshold){
+  
+  require(logging)
   
   id <- rlang::sym(id)
   score <- rlang::sym(score)
-  
-  
-  if(!is.null(contacts)) {
-    coll_count <- coll_count <- contacts %>% 
-      mutate(collection_count = as.integer(collection_count)) %>% 
-      select(contact_id, collection_count)
-    
-    all <- all %>% 
-      left_join(coll_count, by = "contact_id")
-  }
   
   all_dup <- all %>% 
     add_count(!!id) %>% 
     filter(n > 1) %>% # duplicates
     group_by(!!id) %>%
-    mutate(max_score = max(!!score, na.rm = TRUE), # create score_share
-           score_share = if_else(is.na(!!score), # NA to 0!!
-                                 0, 
-                                 !!score / sum(!!score, na.rm = TRUE))) %>%
-    arrange(desc(max_score), desc(!!score))
+    mutate(score_share = !!score / sum(!!score)) # create score_share 
   
   to_keep <- all_dup %>% 
     filter(score_share > threshold) %>% 
-    select(-c(score_share, collection_count, max_score, n))
+    select(-c(score_share, collection_count, n))
   
   all <- all %>% 
     anti_join(to_keep, by = rlang::as_string(id)) %>% 
@@ -34,24 +22,21 @@ dedup <- function(all, id, contacts = NULL, score, threshold){
   return(all)
 }
 
-dedup_all_ids <- function(all, contacts, threshold = 0.9) {
+dedup_all_ids <- function(all, threshold = 0.9) {
   
   all %>%
     dedup(
       id = "deezer_id",
-      contacts = contacts,
       score = "collection_count",
       threshold = threshold
     ) %>%
     dedup(
       id = "contact_id",
-      contacts = NULL,
       score = "pop",
       threshold = threshold
     ) %>%
     dedup(
       id = "musicbrainz_id",
-      contacts = NULL,
       score = "pop",
       threshold = threshold
     )
@@ -66,7 +51,6 @@ solve_remaining_dups <- function(){}
   
 ## if both collection_count > ...
 ## merge artists, keep co and mbz with higher collection count
-
 
 
 
