@@ -78,8 +78,7 @@ list(
                                              contacts, manual_search, wiki)),
     
     tar_target(name = all, 
-               command = dedup_all_ids(all = all_before_dedup, 
-                                       threshold = 0.9)),
+               command = dedup_all_ids(all = all_before_dedup)),
  
     # unique names matches between deezer and contact names
     tar_target(name = contact_names_patch,
@@ -136,13 +135,11 @@ list(
                              wiki_mbz_names_patch = wiki_mbz_names_patch,
                              wiki_mbz_ids_patch = wiki_mbz_ids_patch,
                              dup_contacts_patch = dup_contacts_patch) %>% 
-                 left_join(ratings, by = "contact_id")) # add ratings after all consolidation steps
-                # one issue: n_ratings crashes cleanpop before it is in all
-
-)
+                 left_join(ratings, by = "contact_id")))
 
 
-
+# add ratings after all consolidation steps
+# one issue: n_ratings crashes cleanpop before it is in all
 
 
 
