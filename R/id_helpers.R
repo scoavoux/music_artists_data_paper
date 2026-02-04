@@ -19,9 +19,11 @@ cleanpop <- function(x){
     filter(!is.na(contact_id)) %>% 
     distinct(deezer_id, .keep_all = T)
   
-  both_rating <- both %>% 
-    filter(!is.na(n_ratings)) %>% 
-    distinct(deezer_id, .keep_all = T)
+    both_rating <- both %>% 
+      #filter(!is.na(n_ratings)) 
+      distinct(deezer_id, .keep_all = T)
+  
+  
   
   mbz_clean <- sum(mbz$pop)
   contacts_clean <- sum(contacts$pop)

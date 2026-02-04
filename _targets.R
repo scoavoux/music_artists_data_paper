@@ -135,9 +135,9 @@ list(
                              wiki_names_patch = wiki_names_patch,
                              wiki_mbz_names_patch = wiki_mbz_names_patch,
                              wiki_mbz_ids_patch = wiki_mbz_ids_patch,
-                             dup_contacts_patch = dup_contacts_patch
-                             ) %>% 
+                             dup_contacts_patch = dup_contacts_patch) %>% 
                  left_join(ratings, by = "contact_id")) # add ratings after all consolidation steps
+                # one issue: n_ratings crashes cleanpop before it is in all
 
 )
 

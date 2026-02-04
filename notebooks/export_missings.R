@@ -1,6 +1,10 @@
 
 ## export biggest missings to csv for handcoding
 
+tar_load(all_enriched)
+
+library(stringr)
+
 missing <- all_enriched %>%
   filter(is.na(contact_id) | is.na(musicbrainz_id)) %>%
   slice(1:1000)
