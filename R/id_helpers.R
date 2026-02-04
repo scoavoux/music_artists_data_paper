@@ -13,15 +13,20 @@ cleanpop <- function(x){
   contacts <- x %>%
     filter(!is.na(contact_id)) %>% 
     distinct(deezer_id, .keep_all = T)
-  
+
   both <- x %>%
     filter(!is.na(musicbrainz_id)) %>% 
     filter(!is.na(contact_id)) %>% 
     distinct(deezer_id, .keep_all = T)
   
+  both_rating <- both %>% 
+    filter(!is.na(n_ratings)) %>% 
+    distinct(deezer_id, .keep_all = T)
+  
   mbz_clean <- sum(mbz$pop)
   contacts_clean <- sum(contacts$pop)
   both_clean <- sum(both$pop)
+  both_rating_clean <- sum(both_rating$pop)
   
   deezer <- x %>% 
     distinct(deezer_id, pop)
@@ -34,18 +39,21 @@ cleanpop <- function(x){
   
   dat <- tibble(clean_ids = c("mbz:", 
                               "contacts:", 
-                              "all:", 
+                              "all:",
+                              "all w/ rating:",
                               "total:"),
          
          stream_share = c(mbz_clean, 
                           contacts_clean, 
                           both_clean, 
+                          both_rating_clean,
                           deezer_clean),
          
          N = c(nrow(mbz), 
                nrow(contacts), 
                nrow(both), 
-               nrow(x %>% distinct(deezer_id))))
+               nrow(both_rating), 
+               nrow(deezer)))
 
   print(dat)
   
@@ -97,7 +105,14 @@ make <- function(){
 
 
 
-
+# t <- all_enriched %>% 
+#   rows_update(ratings, by = "contact_id")
+# 
+# 
+# t <- all_enriched %>% 
+#   filter(!is.na(musicbrainz_id)) %>% 
+#   filter(!is.na(contact_id)) %>% 
+#   filter(!is.na(rating))
 
 
 

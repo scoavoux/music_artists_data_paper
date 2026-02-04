@@ -49,8 +49,13 @@ list(
     
     # -------- load and process raw ID data
     tar_target(name = contacts, 
-               command = load_contacts(file="senscritique/contacts.csv")),
+               command = load_contacts(file="senscritique/contacts.csv",
+                                       ratings)),
     
+    tar_target(name = ratings,
+               command = load_ratings(ratings_file = "senscritique/ratings.csv",
+                                      contacts_albums_file = "senscritique/contacts_albums_link.csv")),
+
     tar_target(name = manual_search,
                command = load_manual_search(file="data/manual_search.csv")),
 
@@ -108,18 +113,6 @@ list(
     tar_target(name = wiki_mbz_ids_patch,
                command = mbz_from_wiki(all, wiki)),
     
-    tar_target(name = all_enriched,
-               command = update_rows(all, 
-                                     contact_names_patch = contact_names_patch,
-                                     dup_deezer_mbz_patch = contact_names_patch,
-                                     dup_deezer_co_patch = dup_deezer_co_patch,
-                                     mbz_names_patch = mbz_names_patch,
-                                     wiki_names_patch = wiki_names_patch,
-                                     wiki_mbz_names_patch = wiki_mbz_names_patch,
-                                     wiki_mbz_ids_patch = wiki_mbz_ids_patch,
-                                     dup_contacts_patch = dup_contacts_patch
-                                     )),
-    
     tar_target(name = dup_deezer_co_patch,
                command = patch_deezer_dups(ref = contacts, 
                                            ref_id = "contact_id", 
@@ -131,46 +124,22 @@ list(
                                            ref_name = "mbz_name",
                                            all = all)),
     tar_target(name = dup_contacts_patch,
-               command = patch_contact_dups(all, contacts))
+               command = patch_contact_dups(all, contacts)),
+    
+    tar_target(name = all_enriched,
+               command = all %>% 
+                 update_rows(contact_names_patch = contact_names_patch,
+                             dup_deezer_mbz_patch = contact_names_patch,
+                             dup_deezer_co_patch = dup_deezer_co_patch,
+                             mbz_names_patch = mbz_names_patch,
+                             wiki_names_patch = wiki_names_patch,
+                             wiki_mbz_names_patch = wiki_mbz_names_patch,
+                             wiki_mbz_ids_patch = wiki_mbz_ids_patch,
+                             dup_contacts_patch = dup_contacts_patch
+                             ) %>% 
+                 left_join(ratings, by = "contact_id")) # add ratings after all consolidation steps
+
 )
-
-
-
-# ## export biggest missings to csv for handcoding
-# 
-# missing <- all_enriched %>% 
-#   filter(is.na(contact_id) | is.na(musicbrainz_id)) %>% 
-#   slice(1:1000)
-# 
-# missing_mbz <- all_enriched %>% 
-#   filter(is.na(musicbrainz_id)) %>% 
-#   slice(1:1000)
-#            
-# missing_contacts <- all_enriched %>% 
-#   filter(is.na(contact_id)) %>% 
-#   slice(1:1000)
-# 
-# cleanpop(missing)
-# cleanpop(missing_mbz)
-# cleanpop(missing_contacts)
-# 
-# write_s3(missing, "interim/missings_to_handcode/missing_either.csv")
-# write_s3(missing_mbz, "interim/missings_to_handcode/missing_mbz.csv")
-# write_s3(missing_contacts, "interim/missings_to_handcode/missing_contacts.csv")
-# 
-# 
-# df <- load_s3("interim/missings_to_handcode/missing_either.csv")
-# 
-# df <- load_s3("interim/missings_to_handcode/missing_either.csv")
-# 
-# 
-
-
-
-
-
-
-
 
 
 
