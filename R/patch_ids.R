@@ -193,7 +193,7 @@ patch_contact_dups <- function(all, contacts){
 
 # ----------------------------------------------------------
 
-# wrapper for dplyr::rows_update: takes a list of patches as arg,
+# wrapper for dplyr::rows_update: takes a list of patches,
 # passes them to all with rows_update sequentially, and returns
 # the enriched dataset with metrics on the stream share
 update_rows <- function(all, ..., by = "deezer_id"){

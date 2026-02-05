@@ -73,13 +73,11 @@ list(
     
     ### CONSOLIDATE ARTISTS ----------------------------------------
     
-    tar_target(name = all_before_dedup,
+    tar_target(name = all,
                command = consolidate_artists(artists, mbz_deezer,
                                              contacts, manual_search, wiki)),
     
-    tar_target(name = all, 
-               command = dedup_all_ids(all = all_before_dedup)),
- 
+
     # unique names matches between deezer and contact names
     tar_target(name = contact_names_patch,
                command = patch_names(all = all,
@@ -135,7 +133,11 @@ list(
                              wiki_mbz_names_patch = wiki_mbz_names_patch,
                              wiki_mbz_ids_patch = wiki_mbz_ids_patch,
                              dup_contacts_patch = dup_contacts_patch) %>% 
-                 left_join(ratings, by = "contact_id")))
+                 left_join(ratings, by = "contact_id")),
+  
+  tar_target(name = all_deduped, 
+             command = dedup_col(all_enriched))
+)
 
 
 # add ratings after all consolidation steps

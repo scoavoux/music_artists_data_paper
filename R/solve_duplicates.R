@@ -40,88 +40,42 @@ dedup_all_ids <- function(all) {
 }
 
 
-# remaining duplicates after these steps are
-# 1. deezer dups with equivalent collection_counts
-# 2. 
-
-solve_remaining_dups <- function(){}
-  
-## if both collection_count > ...
-## merge artists, keep co and mbz with higher collection count
-
-
-
-tar_load(all_before_dedup)
-
-test <- all_before_dedup %>%
-  dedup(
-    id = "deezer_id",
-    score = "collection_count"
-  )
-
-
-
-wailers <- all_before_dedup %>% 
-  filter(str_detect(name, "Wailers"))
-wailers
-
-
 dedup_col <- function(all){
   
-  all_dup <- all %>% 
+  # compute score share columns
+  # could add mbz too, but it concerns almost no cases
+  all <- all %>% 
+    #filter(!is.na(contact_id)) %>%
+    group_by(deezer_id) %>% 
+    mutate(dz_col_share = collection_count / sum(collection_count)) %>% 
+    ungroup() %>% 
+    group_by(contact_id) %>% 
+    mutate(co_pop_share = pop / sum(pop)) %>% 
+    ungroup() 
+  
+  to_keep_dz <- all %>% 
     add_count(deezer_id) %>% 
     filter(n > 1) %>% # duplicates
     group_by(deezer_id) %>%
-    mutate(col_share = collection_count / sum(collection_count)) # create score_share 
+    mutate(dz_col_share = collection_count / sum(collection_count)) %>% # create score_share 
+    filter(dz_col_share == max(dz_col_share)) ## formerly score_share > threshold
+    
+  to_keep_co <- all %>% 
+    add_count(contact_id) %>% 
+    filter(n > 1) %>% # duplicates
+    group_by(deezer_id) %>%
+    mutate(co_pop_share = collection_count / sum(collection_count)) %>%
+    filter(co_pop_share == max(co_pop_share))
   
-  to_keep <- all_dup %>% 
-    filter(col_share == max(col_share)) %>% ## formerly score_share > threshold
-    select(-c(collection_count, n))
-  
+  # bind "winners"
   all <- all %>% 
-    mutate(col_share = NA_real_) %>%
-    anti_join(to_keep, by = "deezer_id") %>% 
-    bind_rows(to_keep)
+    anti_join(to_keep_dz, by = "deezer_id") %>% 
+    bind_rows(to_keep_dz) %>% 
+    anti_join(to_keep_co, by = "deezer_id") %>% 
+    bind_rows(to_keep_co)
   
   return(all)
 }
-
-
-
-wailers <- all_before_dedup %>% 
-  filter(str_detect(name, "Wailers"))
-wailers
-
-test <- dedup_col(all = wailers)
-test
-
-
-
-all_dup <- wailers %>% 
-  add_count(deezer_id) %>% 
-  filter(n > 1) %>% # duplicates
-  group_by(deezer_id) %>%
-  mutate(col_share = collection_count / sum(collection_count)) # create score_share 
-
-to_keep <- all_dup %>% 
-  filter(col_share == max(col_share)) %>% ## formerly score_share > threshold
-  select(-c(collection_count, n))
-
-all <- wailers %>% 
-  anti_join(to_keep, by = "deezer_id") %>% 
-  bind_rows(to_keep)
-
-
-
-## DELETE COLLECTION_COUNT == 0 before 
-
-
-
-
-
-
-
-
 
 
 
