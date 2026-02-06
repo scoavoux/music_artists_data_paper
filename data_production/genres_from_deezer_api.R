@@ -84,4 +84,4 @@ artists_genre <- al |>
   summarize(n = sum(w)) |> 
   left_join(genres) |> 
   ungroup()
-write.csv(artists_genre, "artists_genre.csv")
+write_csv(artists_genre, "artists_genre.csv")
