@@ -68,7 +68,7 @@ list(
                command = load_s3("interim/wiki_labels.csv")),
 
     tar_target(name = wiki,
-               command = load_wiki(wiki_labels, mbz_deezer)),
+               command = load_wiki(mbz_deezer)),
     
     
     ### CONSOLIDATE ARTISTS ----------------------------------------
@@ -135,14 +135,9 @@ list(
                              dup_contacts_patch = dup_contacts_patch) %>% 
                  left_join(ratings, by = "contact_id")),
   
-  tar_target(name = all_deduped, 
-             command = dedup_col(all_enriched))
+  tar_target(name = all_dedup, 
+             command = deduplicate_ids(all_enriched))
 )
-
-
-# add ratings after all consolidation steps
-# one issue: n_ratings crashes cleanpop before it is in all
-
 
 
 

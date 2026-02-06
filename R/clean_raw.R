@@ -19,7 +19,18 @@ load_manual_search <- function(file){
     distinct(deezer_id, contact_id) %>% 
     as_tibble()
   
-
+  ## manual searches by paul on 06.02
+  manual_co_1 <- load_s3("interim/missings_to_handcode/06.02-handcoded_contacts.csv")
+  
+  manual_co_1 <- manual_co_1 %>% 
+    as_tibble() %>% 
+    filter(!is.na(contact_id)) %>% 
+    mutate_if(is.integer, as.character) %>% 
+    select(deezer_id, contact_id)
+  
+  manual_search <- manual_search %>% 
+    bind_rows(manual_co_1)
+  
   return(manual_search)
 }
 
@@ -165,7 +176,7 @@ load_mbz_deezer <- function(file) {
 
 # ------------------- WIKI ---------------------------
 
-load_wiki <- function(wiki_labels, mbz_deezer) {
+load_wiki <- function(mbz_deezer) {
   
   library(WikidataQueryServiceR)
   
@@ -265,46 +276,44 @@ load_wiki <- function(wiki_labels, mbz_deezer) {
   # 
   
   # --------------------------------------------------------------
-  
+
   ## ADD WIKI LABELS
-  # TIME-INTENSIVE, uncomment some time later to rerun 
-  
-  # batch_size <- 250
-  # 
-  # all_ids <- unique(c(wiki_mbz$itemId, 
-  #                     wiki_deezer$itemId, 
-  #                     wiki_discogs$itemId, 
-  #                     wiki_spotify$itemId))
-  # 
-  # # Split into batches
-  # batches <- split(all_ids, ceiling(seq_along(all_ids)/batch_size))
-  # 
-  # wiki_labels <- vector("list", lQength(batches))
-  # 
-  # for (i in seq_along(batches)) {
-  #   
-  #   id_list <- paste0("wd:", batches[[i]])
-  #   
-  #   query <- sprintf(
-  #     'SELECT ?itemId ?label WHERE {
-  #        VALUES ?item { %s }
-  #        BIND(STRAFTER(STR(?item), "entity/") AS ?itemId)
-  #        OPTIONAL {
-  #          ?item rdfs:label ?label .
-  #          FILTER(LANG(?label) = "en")
-  #        }
-  #      }',
-  #     paste(id_list, collapse = " ")
-  #   )
-  #   
-  #   wiki_labels[[i]] <- query_wikidata(query)
-  #   
-  #   Sys.sleep(0.2)  # be nice to WDQS
-  # }
-  # 
-  # wiki_labels <- bind_rows(wiki_labels) %>%
-  #   distinct(itemId, .keep_all = TRUE) %>% 
-  #   as_tibble()
+  # TIME-INTENSIVE, uncomment some time later to rerun
+
+  batch_size <- 250
+
+  all_ids <- unique(c(wiki_mbz$itemId,
+                      wiki_deezer$itemId))
+
+  # Split into batches
+  batches <- split(all_ids, ceiling(seq_along(all_ids)/batch_size))
+
+  wiki_labels <- vector("list", length(batches))
+
+  for (i in seq_along(batches)) {
+
+    id_list <- paste0("wd:", batches[[i]])
+
+    query <- sprintf(
+      'SELECT ?itemId ?label WHERE {
+         VALUES ?item { %s }
+         BIND(STRAFTER(STR(?item), "entity/") AS ?itemId)
+         OPTIONAL {
+           ?item rdfs:label ?label .
+           FILTER(LANG(?label) = "en")
+         }
+       }',
+      paste(id_list, collapse = " ")
+    )
+
+    wiki_labels[[i]] <- query_wikidata(query)
+
+    Sys.sleep(0.2)  # be nice to WDQS
+  }
+
+  wiki_labels <- bind_rows(wiki_labels) %>%
+    distinct(itemId, .keep_all = TRUE) %>%
+    as_tibble()
   
   # --------------------------------------------------------------
   
