@@ -7,15 +7,19 @@ library(stringr)
 
 missing <- all_dedup %>%
   filter(is.na(contact_id) | is.na(musicbrainz_id)) %>%
-  slice(1:1000)
+  slice(1:1000) %>% 
+  select(name, deezer_id, musicbrainz_id, pop, contact_id)
 
 missing_mbz <- all_dedup %>%
   filter(is.na(musicbrainz_id)) %>%
-  slice(1:1000)
+  slice(1:1000) %>% 
+  select(name, deezer_id, musicbrainz_id, pop, contact_id)
+
 
 missing_contacts <- all_dedup %>%
   filter(is.na(contact_id)) %>%
-  slice(1:1000)
+  slice(1:1000) %>% 
+  select(name, deezer_id, musicbrainz_id, pop, contact_id)
 
 cleanpop(missing)
 cleanpop(missing_mbz)
@@ -23,6 +27,7 @@ cleanpop(missing_contacts)
 
 
 write.csv2(missing_contacts, "data/missing_contacts.csv")
+write.csv2(missing_mbz, "data/missing_mbz.csv")
 
 write_s3(missing, "interim/missings_to_handcode/missing_either.csv")
 write_s3(missing_mbz, "interim/missings_to_handcode/missing_mbz.csv")
@@ -69,7 +74,10 @@ test <- test %>%
 
 
 
+tar_load(items)
 
+items %>% 
+  filter(deezer_id == 266370672)
 
 
 

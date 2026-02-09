@@ -13,6 +13,12 @@ for(pack in needed.packages){
   {install.packages(pack)}
 }
 
+# special installation for this which is not on CRAN anymore
+install.packages("WikidataQueryServiceR", repos = c(
+  "https://wikimedia.r-universe.dev",
+  "https://cloud.r-project.org"
+))
+
 
 # set theme and pane layout 
 

@@ -1,5 +1,5 @@
 ### load items_old and/or items_new
-make_items <- function(to_remove = to_remove_file,
+make_songs <- function(to_remove = to_remove_file,
                        file = "records_w3/items/songs.snappy.parquet") {
   df <- load_s3(file,
                 col_select = c("song_id",
@@ -11,53 +11,53 @@ make_items <- function(to_remove = to_remove_file,
     
     select(song_id,
            song_title,
-           deezer_feat_id = "artists_ids",
-           deezer_id = "artist_id")
+           dz_artist_feat_id = "artists_ids",
+           dz_artist_id = "artist_id")
   
   return(df)
 }
 
 
-bind_items <- function(items_old, items_new, streams, names){
+bind_songs <- function(dz_songs_old, dz_songs_new, dz_streams, dz_names){
   
   # bind items_old and items_new
   # prioritize deezer_id of items_new
-  items <- items_new %>% 
+  songs <- dz_songs_new %>% 
     bind_rows(
-      items_old %>% 
-        anti_join(items_new, by = "song_id")
+      dz_songs_old %>% 
+        anti_join(dz_songs_new, by = "song_id")
     )
   
   # remove 3 NAs
-  items <-  items %>% 
-    filter(!is.na(items$deezer_id))
+  songs <-  songs %>% 
+    filter(!is.na(songs$dz_artist_id))
   
   # separate rows of featurings
-  items <- items %>% 
-    mutate(deezer_feat_id = map_chr(deezer_feat_id, 
+  songs <- songs %>% 
+    mutate(dz_artist_feat_id = map_chr(dz_artist_feat_id, 
                                     ~ paste(as.integer(.x), 
                                             collapse = ","))) %>% 
-    filter(!is.na(deezer_id)) %>% 
-    separate_rows(deezer_feat_id, sep = ",") %>% 
+    filter(!is.na(dz_artist_id)) %>% 
+    separate_rows(dz_artist_feat_id, sep = ",") %>% 
     select(song_id,
            song_title,
-           deezer_id,
-           deezer_feat_id)
+           dz_artist_id,
+           dz_artist_feat_id)
   
   ## new col to weight by n featured artists
-  items <- items %>%
+  songs <- songs %>%
     group_by(song_id) %>%
-    mutate(w_feat = 1 / n_distinct(deezer_feat_id))
+    mutate(w_feat = 1 / n_distinct(dz_artist_feat_id))
   
   ## join to streams
-  items <- items %>% 
-   inner_join(streams, by = "song_id") ## inner_join appropriate??
+  songs <- songs %>% 
+   inner_join(dz_streams, by = "song_id") ## inner_join appropriate??
 
   ## add deezer names to debug joins with other ids
-  items <- items %>% 
-    left_join(names, by = "deezer_feat_id") # CHANGED TO DEEZER_FEAT_ID
+  songs <- songs %>% 
+    left_join(dz_names, by = "dz_artist_feat_id") # CHANGED TO DEEZER_FEAT_ID
   
-  return(items)
+  return(songs)
 }
 
 
@@ -67,34 +67,36 @@ bind_names <- function(file_1, file_2){
   scraped_names <- load_s3(file = file_2)
   
   names <- names %>% 
-    mutate(deezer_feat_id = as.character(artist_id)) %>% # CHANGED TO DEEZER_FEAT_ID
-    select(deezer_feat_id, name)
+    mutate(dz_artist_feat_id = as.character(artist_id),
+           dz_name = name) %>% # CHANGED TO DEEZER_FEAT_ID
+    select(dz_artist_feat_id, dz_name)
   
   scraped_names <- scraped_names %>% 
-    mutate(deezer_feat_id = as.character(deezer_id.new))
+    mutate(dz_artist_feat_id = as.character(deezer_id.new))
   
   names <- names %>% 
-    bind_rows(scraped_names)
+    bind_rows(scraped_names) %>% 
+    select(-deezer_id.new)
   
   return(names)
 
 }
 
 ## unique artists for now --- because of f_n_play
-group_items_by_artist <- function(items){
+group_items_by_artist <- function(songs){
   
-  artists <- items %>% 
+  dz_artists <- songs %>% 
     ungroup() %>% 
-    mutate(deezer_id = as.character(deezer_feat_id), # ATTENTION: renaming feat_id to id here!!
+    mutate(dz_artist_id = as.character(dz_artist_feat_id), # ATTENTION: renaming feat_id to id here!!
            w_n_play = w_feat * n_play, # weight n plays by feat
            w_f_n_play = w_n_play / sum(w_n_play)) %>% # compute weighted f_n_play
-    group_by(deezer_id) %>% 
-    summarise(name = first(name),
+    group_by(dz_artist_id) %>% 
+    summarise(dz_name = first(dz_name),
               pop = sum(w_f_n_play) * 100, # to %
               .groups = "drop") %>% 
     arrange(desc(pop))
   
-  return(artists)
+  return(dz_artists)
 }
 
 

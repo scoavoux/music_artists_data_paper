@@ -1,6 +1,6 @@
 # find unique name matches between all and refs
-# ref_clean <=> reference (contacts/mbz/...), which is anti-joined with all 
-# by deezer_id to select missings only
+# ref_clean <=> reference (senscritique/mbz/...), which is anti-joined with all 
+# by dz_artist_id to select missings only
 # miss is a subset of all missing ref_id
 # matches makes name-based matches between all and ref and retains
 # unique matches only, excluding one-to-many and many-to-many matches
@@ -64,7 +64,7 @@ patch_names <- function(all,
       !!all_name,
       !!ref_name, 
       !!rlang::as_string(ref_id) := !!rlang::sym(id_y),
-      deezer_id
+      dz_artist_id
     ) %>%
     # paste name to contact/mbz_name to update those too in all
     mutate(!!ref_name := !!all_name) # works because we have unique name matches here
@@ -79,28 +79,28 @@ patch_names <- function(all,
 # --------------------------------------------------------------
 
 # extra function to get some mbz_ids from wikidata
-# take missing musicbrainz_ids in all, 
+# take missing mbz_artist_ids in all, 
 
 mbz_from_wiki <- function(all, wiki){
   
   mbz_missing <- all %>% 
-    filter(is.na(musicbrainz_id)) 
+    filter(is.na(mbz_artist_id)) 
   
   # inner_join of the missing mbz cases with wikidata's mbz
   mbz_from_wiki <- mbz_missing %>% 
     
-    inner_join(wiki, by = "deezer_id") %>% 
-    filter(!is.na(musicbrainz_id.y)) %>% 
+    inner_join(wiki, by = "dz_artist_id") %>% 
+    filter(!is.na(mbz_artist_id.y)) %>% 
     
     # keep unique matches only
     # REVIEW THIS!
-    add_count(deezer_id, name = "n_deezer") %>%
-    add_count(musicbrainz_id.y, name = "n_mbz") %>%
+    add_count(dz_artist_id, name = "n_deezer") %>%
+    add_count(mbz_artist_id.y, name = "n_mbz") %>%
     filter(n_deezer == 1, n_mbz == 1) %>% 
     
-    mutate(musicbrainz_id = musicbrainz_id.y) %>% 
-    # distinct(deezer_id, musicbrainz_id, .keep_all = T) %>% 
-    select(deezer_id, name, musicbrainz_id)
+    mutate(mbz_artist_id = mbz_artist_id.y) %>% 
+    # distinct(dz_artist_id, mbz_artist_id, .keep_all = T) %>% 
+    select(dz_artist_id, dz_name, mbz_artist_id)
   
   return(mbz_from_wiki)
 }
@@ -109,14 +109,14 @@ mbz_from_wiki <- function(all, wiki){
 # --------------------------------------------------
 
 # among the duplicate deezer names for which there is one single contact_name 
-# and contact_id, find the cases where one duplicate is much more popular than the others
+# and sc_artist_id, find the cases where one duplicate is much more popular than the others
 # try different thresholds
 
 patch_deezer_dups <- function(ref, 
                               ref_id, 
                               ref_name,
                               all, 
-                              all_name = "name"){
+                              all_name = "dz_name"){
   
   require(dplyr)
   require(logging)
@@ -126,9 +126,9 @@ patch_deezer_dups <- function(ref,
   all_name <- rlang::sym(all_name)
   
   # for each name in all, compute fraction of streams held by one homonym
-  # and filter the clear cases missing contact_ids
+  # and filter the clear cases missing sc_artist_ids
   all_pop_share <- all %>% 
-    group_by(name) %>% # maybe: name, deezer_id?
+    group_by(!!all_name) %>%
     mutate(pop_share = pop / sum(pop)) %>% 
     filter(pop_share > 0.90) %>% 
     filter(is.na(!!ref_id))
@@ -154,37 +154,37 @@ patch_deezer_dups <- function(ref,
 
 # resolve contact name duplicates by share of collection_count they have
 # then patch them to unique* deezer names
-patch_contact_dups <- function(all, contacts){
+patch_contact_dups <- function(all, senscritique){
   
-  # ----------- subset all to unique names missing contact_ids
+  # ----------- subset all to unique names missing sc_artist_ids
   ## *added 0.9 filtering condition to include some deezer dups!
-  all_unique_co <- all %>%
-    group_by(name) %>% # maybe: name, deezer_id?
+  all_unique_scr <- all %>%
+    group_by(dz_name) %>% # maybe: name, dz_artist_id?
     mutate(pop_share = pop / sum(pop)) %>% 
     filter(pop_share > 0.90) %>% 
-    add_count(name) %>%
+    add_count(dz_name) %>%
     filter(n == 1) %>%
-    filter(is.na(contact_id)) %>% 
-    select(name, contact_name, deezer_id, contact_id)
+    filter(is.na(sc_artist_id)) %>% 
+    select(dz_name, sc_name, dz_artist_id, sc_artist_id)
   
-  # ------------ prepare contacts
-  co_unique <- contacts %>% 
+  # ------------ prepare senscritique
+  sc_unique <- senscritique %>% 
     # keep the condition like this for now: adding the other variables adds like 30 cases
     # but unsure about the cases (e.g., there are weird ones with very few albums)
     mutate(collection_count = as.integer(collection_count)) %>% 
     filter(collection_count > 0) %>% # remove irrelevant artists 
-    group_by(contact_name) %>% 
+    group_by(sc_name) %>% 
     mutate(col_share = collection_count / sum(collection_count)) %>% 
     filter(col_share > 0.9) %>% 
-    select(contact_name, contact_id)
+    select(sc_name, sc_artist_id)
   
   
   # ------- patch to missing contact_data in all
-  matches <- patch_names(all = all_unique_co,
-                         ref = co_unique,
-                         ref_id = "contact_id",
-                         ref_name = "contact_name",
-                         all_name = "name")
+  matches <- patch_names(all = all_unique_scr,
+                         ref = sc_unique,
+                         ref_id = "sc_artist_id",
+                         ref_name = "sc_name",
+                         all_name = "dz_name")
   
   return(matches)
 }
@@ -196,7 +196,7 @@ patch_contact_dups <- function(all, contacts){
 # wrapper for dplyr::rows_update: takes a list of patches,
 # passes them to all with rows_update sequentially, and returns
 # the enriched dataset with metrics on the stream share
-update_rows <- function(all, ..., by = "deezer_id"){
+update_rows <- function(all, ..., by = "dz_artist_id"){
   
   require(dplyr)
   require(logging)

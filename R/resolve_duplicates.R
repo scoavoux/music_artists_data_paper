@@ -4,15 +4,15 @@ deduplicate_ids <- function(all){
   
   all <- all %>% 
     
-    group_by(deezer_id) %>% 
+    group_by(dz_artist_id) %>% 
     mutate(dz_col_share = collection_count / sum(collection_count, na.rm = TRUE))  %>% 
     ungroup() %>% 
     
-    group_by(contact_id) %>%
-    mutate(co_pop_share = pop / sum(pop, na.rm = TRUE)) %>%
+    group_by(sc_artist_id) %>%
+    mutate(sc_pop_share = pop / sum(pop, na.rm = TRUE)) %>%
     ungroup() %>%
     
-    group_by(musicbrainz_id) %>%
+    group_by(mbz_artist_id) %>%
     mutate(mbz_pop_share = pop / sum(pop, na.rm = TRUE)) %>%
     ungroup()
   
@@ -20,34 +20,34 @@ deduplicate_ids <- function(all){
   
   # only keep conflicts to speed up conflict identification
   dz_conflicts <- all %>% 
-    add_count(deezer_id, name = "n_dz") %>% 
-    mutate(keep_dz = is.na(deezer_id) | n_dz == 1) %>% 
+    add_count(dz_artist_id, name = "n_dz") %>% 
+    mutate(keep_dz = is.na(dz_artist_id) | n_dz == 1) %>% 
     filter(keep_dz == FALSE)
   
-  co_conflicts <- all %>% 
-    add_count(contact_id, name = "n_co") %>% 
-    mutate(keep_co = is.na(contact_id) | n_co == 1) %>% 
-    filter(keep_co == FALSE)
+  sc_conflicts <- all %>% 
+    add_count(sc_artist_id, name = "n_sc") %>% 
+    mutate(keep_sc = is.na(sc_artist_id) | n_sc == 1) %>% 
+    filter(keep_sc == FALSE)
   
   mbz_conflicts <- all %>% 
-    add_count(musicbrainz_id, name = "n_mbz") %>% 
-    mutate(keep_mbz = is.na(musicbrainz_id) | n_mbz == 1) %>% 
+    add_count(mbz_artist_id, name = "n_mbz") %>% 
+    mutate(keep_mbz = is.na(mbz_artist_id) | n_mbz == 1) %>% 
     filter(keep_mbz == FALSE)
   
   # ---------------------------------------------------------
   
   dz_losers <- dz_conflicts %>% 
-    group_by(deezer_id) %>% 
+    group_by(dz_artist_id) %>% 
     mutate(keep_dz = dz_col_share == max(dz_col_share, na.rm = TRUE)) %>% 
     filter(keep_dz == FALSE)
   
-  co_losers <- co_conflicts %>% 
-    group_by(contact_id) %>% 
-    mutate(keep_co = co_pop_share == max(co_pop_share, na.rm = TRUE)) %>% 
-    filter(keep_co == FALSE)
+  sc_losers <- sc_conflicts %>% 
+    group_by(sc_artist_id) %>% 
+    mutate(keep_sc = sc_pop_share == max(sc_pop_share, na.rm = TRUE)) %>% 
+    filter(keep_sc == FALSE)
   
   mbz_losers <- mbz_conflicts %>% 
-    group_by(musicbrainz_id) %>% 
+    group_by(mbz_artist_id) %>% 
     mutate(keep_mbz = mbz_pop_share == max(mbz_pop_share, na.rm = TRUE)) %>% 
     filter(keep_mbz == FALSE)
   
@@ -56,33 +56,33 @@ deduplicate_ids <- function(all){
   # remove from all
   
   all_dedup <- all %>% 
-    anti_join(dz_losers, by = c("deezer_id", "contact_id", "musicbrainz_id")) %>% 
-    anti_join(co_losers, by = c("deezer_id", "contact_id", "musicbrainz_id")) %>% 
-    anti_join(mbz_losers, by = c("deezer_id", "contact_id", "musicbrainz_id")) %>% 
+    anti_join(dz_losers, by = c("dz_artist_id", "sc_artist_id", "mbz_artist_id")) %>% 
+    anti_join(sc_losers, by = c("dz_artist_id", "sc_artist_id", "mbz_artist_id")) %>% 
+    anti_join(mbz_losers, by = c("dz_artist_id", "sc_artist_id", "mbz_artist_id")) %>% 
     
     # count remaining duplicates
-    add_count(deezer_id, name = "n_deezer") %>% 
-    add_count(contact_id, name = "n_co") %>% 
-    add_count(musicbrainz_id, name = "n_mbz") %>% 
+    add_count(dz_artist_id, name = "n_deezer") %>% 
+    add_count(sc_artist_id, name = "n_sc") %>% 
+    add_count(mbz_artist_id, name = "n_mbz") %>% 
     
     # set NAs on n counts
     mutate(
       n_deezer = ifelse(n_deezer > 1000, NA, n_deezer),
-      n_co = ifelse(n_co > 1000, NA, n_co),
+      n_sc = ifelse(n_sc > 1000, NA, n_sc),
       n_mbz = ifelse(n_mbz > 1000, NA, n_mbz)
     ) %>% 
     
     # keep unique only
     filter(n_deezer == 1 | is.na(n_deezer)) %>% 
-    filter(n_co == 1 | is.na(n_co)) %>% 
+    filter(n_sc == 1 | is.na(n_sc)) %>% 
     filter(n_mbz == 1 | is.na(n_mbz)) %>% 
     
-    select(-c(n_deezer, n_co, n_mbz))
+    select(-c(n_deezer, n_sc, n_mbz))
   
   ## check filtered out cases
   ## save to csv somewhere
   removed_duplicates <- all %>% 
-    anti_join(all_dedup, by = c("deezer_id", "contact_id", "musicbrainz_id"))
+    anti_join(all_dedup, by = c("dz_artist_id", "sc_artist_id", "mbz_artist_id"))
 
   write_s3(removed_duplicates, "interim/removed_duplicates.csv")
   

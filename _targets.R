@@ -22,39 +22,38 @@ tar_source("R")
 list(
   
     ### CREATE (deezer) ARTISTS ----------------------------------------------
-    tar_target(name = streams,
+    tar_target(name = dz_streams,
                command = load_streams()),
     
     tar_target(name = to_remove_file,
                command = read.csv("data/artists_to_remove.csv")),
     
-    tar_target(name = items_old,
-               command = make_items(to_remove = to_remove_file,
+    tar_target(name = dz_songs_old,
+               command = make_songs(to_remove = to_remove_file,
                                     file = "records_w3/items/songs.snappy.parquet")),
     
-    tar_target(name = items_new,
-               command = make_items(to_remove = to_remove_file,
+    tar_target(name = dz_songs_new,
+               command = make_songs(to_remove = to_remove_file,
                                     file = "records_w3/items/song.snappy.parquet")),
     
-    tar_target(name = names,
+    tar_target(name = dz_names,
                command = bind_names(file_1 = "records_w3/items/artists_data.snappy.parquet",
                                     file_2 = "interim/new_artists_names_from_api.csv")),
     
-    tar_target(name = items,
-               command = bind_items(items_old, items_new, streams, names)),
+    tar_target(name = dz_songs,
+               command = bind_songs(dz_songs_old, dz_songs_new, dz_streams, dz_names)),
     
-    tar_target(name = artists,
-               command = group_items_by_artist(items)),
+    tar_target(name = dz_artists,
+               command = group_items_by_artist(dz_songs)),
     
     
     # -------- load and process raw ID data
-    tar_target(name = contacts, 
-               command = load_contacts(file="senscritique/contacts.csv",
-                                       ratings)),
+    tar_target(name = senscritique, 
+               command = load_senscritique(file="senscritique/contacts.csv")),
     
-    tar_target(name = ratings,
-               command = load_ratings(ratings_file = "senscritique/ratings.csv",
-                                      contacts_albums_file = "senscritique/contacts_albums_link.csv")),
+    tar_target(name = sc_ratings,
+               command = load_ratings(sc_ratings_file = "senscritique/ratings.csv",
+                                      sc_albums_file = "senscritique/contacts_albums_link.csv")),
 
     tar_target(name = manual_search,
                command = load_manual_search(file="data/manual_search.csv")),
@@ -74,73 +73,71 @@ list(
     ### CONSOLIDATE ARTISTS ----------------------------------------
     
     tar_target(name = all,
-               command = consolidate_artists(artists, mbz_deezer,
-                                             contacts, manual_search, wiki)),
+               command = consolidate_artists(dz_artists, mbz_deezer,
+                                             senscritique, manual_search, wiki)),
     
 
-    # unique names matches between deezer and contact names
-    tar_target(name = contact_names_patch,
+    # unique names matches between deezer and senscritique names
+    tar_target(name = sc_names_patch,
                command = patch_names(all = all,
-                                     ref = contacts,
-                                     ref_id = "contact_id",
-                                     ref_name = "contact_name",
-                                     all_name = "name")),
+                                     ref = senscritique,
+                                     ref_id = "sc_artist_id",
+                                     ref_name = "sc_name",
+                                     all_name = "dz_name")),
     
     tar_target(name = mbz_names_patch,
                command = patch_names(all = all,
                                      ref = mbz_deezer,
-                                     ref_id = "musicbrainz_id",
+                                     ref_id = "mbz_artist_id",
                                      ref_name = "mbz_name",
-                                     all_name = "name")),
+                                     all_name = "dz_name")),
     
     tar_target(name = wiki_mbz_names_patch,
                command = patch_names(all = all,
                                      ref = wiki,
-                                     ref_id = "musicbrainz_id",
+                                     ref_id = "mbz_artist_id",
                                      ref_name = "mbz_name",
-                                     all_name = "name")),
+                                     all_name = "dz_name")),
     
     tar_target(name = wiki_names_patch,
                command = patch_names(all = all,
                                      ref = wiki,
-                                     ref_id = "musicbrainz_id",
+                                     ref_id = "mbz_artist_id",
                                      ref_name = "wiki_name",
-                                     all_name = "name")),
+                                     all_name = "dz_name")),
     
     tar_target(name = wiki_mbz_ids_patch,
                command = mbz_from_wiki(all, wiki)),
     
-    tar_target(name = dup_deezer_co_patch,
-               command = patch_deezer_dups(ref = contacts, 
-                                           ref_id = "contact_id", 
-                                           ref_name = "contact_name",
+    tar_target(name = dup_dz_sc_patch,
+               command = patch_deezer_dups(ref = senscritique, 
+                                           ref_id = "sc_artist_id", 
+                                           ref_name = "sc_name",
                                            all = all)),
-    tar_target(name = dup_deezer_mbz_patch,
+    tar_target(name = dup_dz_mbz_patch,
                command = patch_deezer_dups(ref = mbz_deezer, 
-                                           ref_id = "musicbrainz_id", 
+                                           ref_id = "mbz_artist_id", 
                                            ref_name = "mbz_name",
                                            all = all)),
-    tar_target(name = dup_contacts_patch,
-               command = patch_contact_dups(all, contacts)),
+    tar_target(name = dup_sc_patch,
+               command = patch_contact_dups(all, senscritique)),
     
     tar_target(name = all_enriched,
                command = all %>% 
-                 update_rows(contact_names_patch = contact_names_patch,
-                             dup_deezer_mbz_patch = contact_names_patch,
-                             dup_deezer_co_patch = dup_deezer_co_patch,
+                 update_rows(sc_names_patch = sc_names_patch,
+                             dup_dz_mbz_patch = dup_dz_mbz_patch,
+                             dup_dz_sc_patch = dup_dz_sc_patch,
                              mbz_names_patch = mbz_names_patch,
                              wiki_names_patch = wiki_names_patch,
                              wiki_mbz_names_patch = wiki_mbz_names_patch,
                              wiki_mbz_ids_patch = wiki_mbz_ids_patch,
-                             dup_contacts_patch = dup_contacts_patch) %>% 
-                 left_join(ratings, by = "contact_id")),
+                             dup_sc_patch = dup_sc_patch) %>% 
+                 left_join(ratings, by = "sc_artist_id")),
   
   tar_target(name = all_dedup, 
              command = deduplicate_ids(all_enriched))
 )
 
-
-
-
+make()
 
 
