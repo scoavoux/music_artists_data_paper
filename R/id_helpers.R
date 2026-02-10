@@ -7,60 +7,61 @@ cleanpop <- function(x){
   require(dplyr)
 
   mbz <- x %>% 
-    filter(!is.na(musicbrainz_id)) %>% 
-    distinct(deezer_id, .keep_all = T)
+    filter(!is.na(mbz_artist_id)) %>% 
+    distinct(dz_artist_id, .keep_all = T)
 
-  contacts <- x %>%
-    filter(!is.na(contact_id)) %>% 
-    distinct(deezer_id, .keep_all = T)
+  sc <- x %>%
+    filter(!is.na(sc_artist_id)) %>% 
+    distinct(dz_artist_id, .keep_all = T)
 
-  both <- x %>%
-    filter(!is.na(musicbrainz_id)) %>% 
-    filter(!is.na(contact_id)) %>% 
-    distinct(deezer_id, .keep_all = T)
-  
-    both_rating <- both %>% 
-      #filter(!is.na(n_ratings)) 
-      distinct(deezer_id, .keep_all = T)
+  mbz_sc <- x %>%
+    filter(!is.na(mbz_artist_id)) %>% 
+    filter(!is.na(sc_artist_id)) %>% 
+    distinct(dz_artist_id, .keep_all = T)
+
+  if(length(x$n_ratings) != 0){
+    mbz_sc_rating <- x %>% 
+      filter(!is.na(mbz_artist_id)) %>% 
+      filter(!is.na(sc_artist_id)) %>% 
+      filter(!is.na(n_ratings)) %>% 
+      distinct(dz_artist_id, .keep_all = T)
+  }
+  else{
+    mbz_sc_rating <- mbz_sc
+  }
   
   
   
   mbz_clean <- sum(mbz$pop)
-  contacts_clean <- sum(contacts$pop)
-  both_clean <- sum(both$pop)
-  both_rating_clean <- sum(both_rating$pop)
+  sc_clean <- sum(sc$pop)
+  mbz_sc_clean <- sum(mbz_sc$pop)
+  mbz_sc_rating_clean <- sum(mbz_sc_rating$pop)
   
   deezer <- x %>% 
-    distinct(deezer_id, pop)
+    distinct(dz_artist_id, pop)
   deezer_clean <- sum(deezer$pop)
   
-  #cat("N:",nrow(x %>% distinct(deezer_id)),"\n")
-  #cat("clean mbz ids:",mbz_clean,"% // N:",nrow(mbz),"\n")
-  #cat("clean contact ids:",contacts_clean,"% // N:",nrow(contacts),"\n")
-  #cat("complete cases:",both_clean,"% // N:",nrow(both),"\n")
-  
-  dat <- tibble(clean_ids = c("mbz:", 
-                              "contacts:", 
-                              "all:",
-                              "all w/ rating:",
-                              "total:"),
+  dat <- tibble(clean_ids = c("musicbrainz:", 
+                              "senscritique:", 
+                              "clean:",
+                              "clean with ratings:",
+                              "N total:"),
          
          stream_share = c(mbz_clean, 
-                          contacts_clean, 
-                          both_clean, 
-                          both_rating_clean,
+                          sc_clean, 
+                          mbz_sc_clean, 
+                          mbz_sc_rating_clean,
                           deezer_clean),
          
          N = c(nrow(mbz), 
-               nrow(contacts), 
-               nrow(both), 
-               nrow(both_rating), 
+               nrow(sc), 
+               nrow(mbz_sc), 
+               nrow(mbz_sc_rating), 
                nrow(deezer)))
 
   print(dat)
   
 }
-
 
 # show stream share of patches
 pop <- function(x, 

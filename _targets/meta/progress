@@ -15,5 +15,13 @@ dz_artists|stem|dz_artists|0|skipped
 all|stem|all|0|skipped
 dup_dz_sc_patch|stem|dup_dz_sc_patch|0|skipped
 dup_dz_mbz_patch|stem|dup_dz_mbz_patch|0|skipped
-dup_sc_patch|stem|dup_sc_patch|0|dispatched
-dup_sc_patch|stem|dup_sc_patch|0|errored
+dup_sc_patch|stem|dup_sc_patch|0|skipped
+mbz_names_patch|stem|mbz_names_patch|0|skipped
+sc_names_patch|stem|sc_names_patch|0|skipped
+wiki_mbz_ids_patch|stem|wiki_mbz_ids_patch|0|skipped
+wiki_mbz_names_patch|stem|wiki_mbz_names_patch|0|skipped
+wiki_names_patch|stem|wiki_names_patch|0|skipped
+all_enriched|stem|all_enriched|0|dispatched
+all_enriched|stem|all_enriched|0|completed
+all_dedup|stem|all_dedup|0|dispatched
+all_dedup|stem|all_dedup|0|completed

@@ -120,7 +120,7 @@ list(
                                            ref_name = "mbz_name",
                                            all = all)),
     tar_target(name = dup_sc_patch,
-               command = patch_contact_dups(all, senscritique)),
+               command = patch_sc_dups(all, senscritique)),
     
     tar_target(name = all_enriched,
                command = all %>% 
@@ -132,12 +132,16 @@ list(
                              wiki_mbz_names_patch = wiki_mbz_names_patch,
                              wiki_mbz_ids_patch = wiki_mbz_ids_patch,
                              dup_sc_patch = dup_sc_patch) %>% 
-                 left_join(ratings, by = "sc_artist_id")),
+                 left_join(sc_ratings, by = "sc_artist_id")),
   
   tar_target(name = all_dedup, 
              command = deduplicate_ids(all_enriched))
 )
 
-make()
+
+
+
+
+
 
 

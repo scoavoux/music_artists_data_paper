@@ -154,11 +154,11 @@ patch_deezer_dups <- function(ref,
 
 # resolve contact name duplicates by share of collection_count they have
 # then patch them to unique* deezer names
-patch_contact_dups <- function(all, senscritique){
+patch_sc_dups <- function(all, senscritique){
   
   # ----------- subset all to unique names missing sc_artist_ids
   ## *added 0.9 filtering condition to include some deezer dups!
-  all_unique_scr <- all %>%
+  all_unique_sc <- all %>%
     group_by(dz_name) %>% # maybe: name, dz_artist_id?
     mutate(pop_share = pop / sum(pop)) %>% 
     filter(pop_share > 0.90) %>% 
@@ -180,7 +180,7 @@ patch_contact_dups <- function(all, senscritique){
   
   
   # ------- patch to missing contact_data in all
-  matches <- patch_names(all = all_unique_scr,
+  matches <- patch_names(all = all_unique_sc,
                          ref = sc_unique,
                          ref_id = "sc_artist_id",
                          ref_name = "sc_name",
