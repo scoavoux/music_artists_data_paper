@@ -1,5 +1,5 @@
 ### load items_old and/or items_new
-make_songs <- function(to_remove = to_remove_file,
+make_dz_songs <- function(to_remove = to_remove_file,
                        file = "records_w3/items/songs.snappy.parquet") {
   df <- load_s3(file,
                 col_select = c("song_id",
@@ -18,7 +18,7 @@ make_songs <- function(to_remove = to_remove_file,
 }
 
 
-bind_songs <- function(dz_songs_old, dz_songs_new, dz_streams, dz_names){
+bind_dz_songs <- function(dz_songs_old, dz_songs_new, dz_streams, dz_names){
   
   # bind items_old and items_new
   # prioritize deezer_id of items_new
@@ -61,7 +61,7 @@ bind_songs <- function(dz_songs_old, dz_songs_new, dz_streams, dz_names){
 }
 
 
-bind_names <- function(file_1, file_2){
+bind_dz_names <- function(file_1, file_2){
   
   names <- load_s3(file = file_1)
   scraped_names <- load_s3(file = file_2)
@@ -83,7 +83,7 @@ bind_names <- function(file_1, file_2){
 }
 
 ## unique artists for now --- because of f_n_play
-group_items_by_artist <- function(songs){
+group_songs_by_artist <- function(songs){
   
   dz_artists <- songs %>% 
     ungroup() %>% 
@@ -92,9 +92,9 @@ group_items_by_artist <- function(songs){
            w_f_n_play = w_n_play / sum(w_n_play)) %>% # compute weighted f_n_play
     group_by(dz_artist_id) %>% 
     summarise(dz_name = first(dz_name),
-              pop = sum(w_f_n_play) * 100, # to %
+              dz_stream_share = sum(w_f_n_play) * 100, # to %
               .groups = "drop") %>% 
-    arrange(desc(pop))
+    arrange(desc(dz_stream_share))
   
   return(dz_artists)
 }

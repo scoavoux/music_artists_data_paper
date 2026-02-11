@@ -2,7 +2,7 @@
 
 # quick benchmark of stream shares
 # input x is a dataframe with cols deezer_id, musicbrainz_id, contact_id
-cleanpop <- function(x){ 
+print_stream_share <- function(x){ 
   
   require(dplyr)
 
@@ -32,14 +32,14 @@ cleanpop <- function(x){
   
   
   
-  mbz_clean <- sum(mbz$pop)
-  sc_clean <- sum(sc$pop)
-  mbz_sc_clean <- sum(mbz_sc$pop)
-  mbz_sc_rating_clean <- sum(mbz_sc_rating$pop)
+  mbz_clean <- sum(mbz$dz_stream_share)
+  sc_clean <- sum(sc$dz_stream_share)
+  mbz_sc_clean <- sum(mbz_sc$dz_stream_share)
+  mbz_sc_rating_clean <- sum(mbz_sc_rating$dz_stream_share)
   
   deezer <- x %>% 
-    distinct(dz_artist_id, pop)
-  deezer_clean <- sum(deezer$pop)
+    distinct(dz_artist_id, dz_stream_share)
+  deezer_clean <- sum(deezer$dz_stream_share)
   
   dat <- tibble(clean_ids = c("musicbrainz:", 
                               "senscritique:", 
@@ -64,8 +64,8 @@ cleanpop <- function(x){
 }
 
 # show stream share of patches
-pop <- function(x, 
-                deezer=artists){
+stream_share_patch <- function(x, 
+                deezer = artists){
   
   require(stringr)
   
@@ -74,10 +74,10 @@ pop <- function(x,
     distinct(deezer_id, .keep_all = T)
   
   len <- nrow(patch)
-  streams <- round(sum(patch$pop), digits = 4)
+  streams <- round(sum(patch$dz_stream_share), digits = 4)
   
   print(str_glue("N: {len} \n"))
-  print(str_glue("pop: {streams} % \n"))
+  print(str_glue("dz_stream_share: {streams} % \n"))
   
 }
 
@@ -105,17 +105,6 @@ make <- function(){
   
 }
 
-
-
-
-# t <- all_enriched %>% 
-#   rows_update(ratings, by = "contact_id")
-# 
-# 
-# t <- all_enriched %>% 
-#   filter(!is.na(musicbrainz_id)) %>% 
-#   filter(!is.na(contact_id)) %>% 
-#   filter(!is.na(rating))
 
 
 

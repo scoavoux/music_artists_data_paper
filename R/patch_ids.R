@@ -109,7 +109,7 @@ mbz_from_wiki <- function(all, wiki){
 # --------------------------------------------------
 
 # among the duplicate deezer names for which there is one single contact_name 
-# and sc_artist_id, find the cases where one duplicate is much more popular than the others
+# and sc_artist_id, find the cases where one duplicate is much more dz_stream_shareular than the others
 # try different thresholds
 
 patch_deezer_dups <- function(ref, 
@@ -127,10 +127,10 @@ patch_deezer_dups <- function(ref,
   
   # for each name in all, compute fraction of streams held by one homonym
   # and filter the clear cases missing sc_artist_ids
-  all_pop_share <- all %>% 
+  all_stream_share <- all %>% 
     group_by(!!all_name) %>%
-    mutate(pop_share = pop / sum(pop)) %>% 
-    filter(pop_share > 0.90) %>% 
+    mutate(dz_stream_share_byname = dz_stream_share / sum(dz_stream_share)) %>% 
+    filter(dz_stream_share_byname > 0.90) %>% 
     filter(is.na(!!ref_id))
   
   ## subset unique ref names
@@ -140,7 +140,7 @@ patch_deezer_dups <- function(ref,
     select(!!ref_id, !!ref_name) # %>% 
     # distinct() # distinct perfect duplicates!!
   
-  matches <- patch_names(all = all_pop_share,
+  matches <- patch_names(all = all_stream_share,
                          ref = unique_ref,
                          ref_id = ref_id,
                          ref_name = ref_name,
@@ -160,8 +160,8 @@ patch_sc_dups <- function(all, senscritique){
   ## *added 0.9 filtering condition to include some deezer dups!
   all_unique_sc <- all %>%
     group_by(dz_name) %>% # maybe: name, dz_artist_id?
-    mutate(pop_share = pop / sum(pop)) %>% 
-    filter(pop_share > 0.90) %>% 
+    mutate(dz_stream_share_byname = dz_stream_share / sum(dz_stream_share)) %>% 
+    filter(dz_stream_share_byname > 0.90) %>% 
     add_count(dz_name) %>%
     filter(n == 1) %>%
     filter(is.na(sc_artist_id)) %>% 
@@ -174,8 +174,8 @@ patch_sc_dups <- function(all, senscritique){
     mutate(collection_count = as.integer(collection_count)) %>% 
     filter(collection_count > 0) %>% # remove irrelevant artists 
     group_by(sc_name) %>% 
-    mutate(col_share = collection_count / sum(collection_count)) %>% 
-    filter(col_share > 0.9) %>% 
+    mutate(colcount_share_byname = collection_count / sum(collection_count)) %>% 
+    filter(colcount_share_byname > 0.9) %>% 
     select(sc_name, sc_artist_id)
   
   
@@ -212,7 +212,7 @@ update_rows <- function(all, ..., by = "dz_artist_id"){
     all <- all %>% 
       rows_update(patches[[i]], by = by)
     
-    cleanpop(all)
+    print_stream_share(all)
     loginfo(strrep("-", 40))
     
   }
@@ -220,7 +220,6 @@ update_rows <- function(all, ..., by = "dz_artist_id"){
   return(all)
   
 }
-
 
 
 

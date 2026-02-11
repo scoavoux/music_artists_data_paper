@@ -1,6 +1,6 @@
 # binds all "raw" id files to one dataset
 
-consolidate_artists <- function(artists, 
+join_artist_ids <- function(artists, 
                                 mbz_deezer, 
                                 senscritique, 
                                 manual_search,
@@ -37,13 +37,14 @@ consolidate_artists <- function(artists,
            collection_count = as.integer(collection_count),
            collection_count = ifelse(is.na(collection_count), 0, collection_count)
     ) %>% 
-    select(dz_name, sc_name, mbz_name, wiki_name, dz_artist_id, 
-           mbz_artist_id, sc_artist_id, pop, collection_count) %>% 
+    select(dz_name, sc_name, mbz_name, wiki_name, 
+           dz_artist_id, mbz_artist_id, sc_artist_id, 
+           dz_stream_share, collection_count, n_ratings) %>% 
     distinct(dz_artist_id, sc_artist_id, mbz_artist_id, .keep_all = TRUE) %>%  # !!!
     as_tibble()
 
   #loginfo("stream share after first consolidation:")
-  #cleanpop(all)
+  #cleandz_stream_share(all)
   
   return(all)
 }

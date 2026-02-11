@@ -52,7 +52,7 @@ load_manual_search <- function(file){
 
 # ----------------- RATINGS ---------------------------
 
-load_ratings <- function(sc_ratings_file, sc_albums_file){
+load_sc_ratings <- function(sc_ratings_file, sc_albums_file){
   
   ratings <- load_s3(sc_ratings_file)
   sc_alb <- load_s3(sc_albums_file)
@@ -73,15 +73,28 @@ load_ratings <- function(sc_ratings_file, sc_albums_file){
 
 
 
-# ----------------- CONTACTS ---------------------------
+# ----------------- SENSCRITIQUE ---------------------------
 
-load_senscritique <- function(file){
+load_senscritique <- function(sc_file, sc_ratings_file, sc_albums_file){
   
   require(dplyr)
   require(stringr)
   
-  senscritique <- load_s3(file)
-
+  senscritique <- load_s3(sc_file)
+  ratings <- load_s3(sc_ratings_file)
+  sc_alb <- load_s3(sc_albums_file)
+  
+  # create n_ratings
+  ratings <- ratings %>% 
+    group_by(product_id) %>% 
+    summarise(rating = sum(rating)) %>% 
+    inner_join(sc_alb, by = "product_id") %>% 
+    mutate(sc_artist_id = contact_id) %>% 
+    group_by(sc_artist_id) %>% 
+    summarise(n_ratings = sum(rating)) %>% 
+    filter(!is.na(n_ratings)) %>% 
+    select(sc_artist_id, n_ratings)
+  
   clean_senscritique <- senscritique %>% 
     
     # set "" names as NA
@@ -92,14 +105,18 @@ load_senscritique <- function(file){
       sc_name = na_if(sc_name, ""),
       collection_count = ifelse(is.na(collection_count), 0, collection_count)
       ) %>% 
+    
+    left_join(ratings, by = "sc_artist_id") %>% 
 
     # id cols to character for clean joins
-    mutate_if(is.integer, as.character) %>%
+    mutate(sc_artist_id = as.character(sc_artist_id),
+           mbz_artist_id = as.character(mbz_artist_id)) %>%
     
     # clean (2) dirty ids
     mutate(mbz_id = str_remove(mbz_id, "https://musicbrainz.org/artist/")) %>%
     
-  select(sc_artist_id, sc_name, collection_count, mbz_artist_id) %>% 
+  select(sc_artist_id, sc_name, collection_count, 
+         mbz_artist_id, n_ratings) %>% 
   as_tibble()
   
   return(clean_senscritique)

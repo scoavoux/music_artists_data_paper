@@ -5,15 +5,15 @@ deduplicate_ids <- function(all){
   all <- all %>% 
     
     group_by(dz_artist_id) %>% 
-    mutate(dz_col_share = collection_count / sum(collection_count, na.rm = TRUE))  %>% 
+    mutate(colcount_share_by_dzdup = collection_count / sum(collection_count, na.rm = TRUE))  %>% 
     ungroup() %>% 
     
     group_by(sc_artist_id) %>%
-    mutate(sc_pop_share = pop / sum(pop, na.rm = TRUE)) %>%
+    mutate(stream_share_by_scdup = dz_stream_share / sum(dz_stream_share, na.rm = TRUE)) %>%
     ungroup() %>%
     
     group_by(mbz_artist_id) %>%
-    mutate(mbz_pop_share = pop / sum(pop, na.rm = TRUE)) %>%
+    mutate(stream_share_by_mbzdup = dz_stream_share / sum(dz_stream_share, na.rm = TRUE)) %>%
     ungroup()
   
   # ------------------------------------------------------
@@ -38,17 +38,17 @@ deduplicate_ids <- function(all){
   
   dz_losers <- dz_conflicts %>% 
     group_by(dz_artist_id) %>% 
-    mutate(keep_dz = dz_col_share == max(dz_col_share, na.rm = TRUE)) %>% 
+    mutate(keep_dz = colcount_share_by_dzdup == max(colcount_share_by_dzdup, na.rm = TRUE)) %>% 
     filter(keep_dz == FALSE)
   
   sc_losers <- sc_conflicts %>% 
     group_by(sc_artist_id) %>% 
-    mutate(keep_sc = sc_pop_share == max(sc_pop_share, na.rm = TRUE)) %>% 
+    mutate(keep_sc = stream_share_by_scdup == max(stream_share_by_scdup, na.rm = TRUE)) %>% 
     filter(keep_sc == FALSE)
   
   mbz_losers <- mbz_conflicts %>% 
     group_by(mbz_artist_id) %>% 
-    mutate(keep_mbz = mbz_pop_share == max(mbz_pop_share, na.rm = TRUE)) %>% 
+    mutate(keep_mbz = stream_share_by_mbzdup == max(stream_share_by_mbzdup, na.rm = TRUE)) %>% 
     filter(keep_mbz == FALSE)
   
   # -------------------------------------------------------
