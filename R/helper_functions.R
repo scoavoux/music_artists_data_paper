@@ -1,7 +1,8 @@
 # helper functions for the artist id issues 
 
-# quick benchmark of stream shares
-# input x is a dataframe with cols deezer_id, musicbrainz_id, contact_id
+# quick benchmark of stream shares after consolidatoin steps
+# input x is a dataframe with the 3 ids columns (and optionnally n_ratings)
+# output is a tibble with N and stream_share covered by each id
 print_stream_share <- function(x){ 
   
   require(dplyr)
@@ -29,8 +30,6 @@ print_stream_share <- function(x){
   else{
     mbz_sc_rating <- mbz_sc
   }
-  
-  
   
   mbz_clean <- sum(mbz$dz_stream_share)
   sc_clean <- sum(sc$dz_stream_share)
@@ -94,6 +93,7 @@ prop_na <- function(x) {
 }
 
 # wrapper for tar_source("R") and tar_make()
+# (maybe i'm just super lazy but that's alright)
 make <- function(){
   
   require(targets)

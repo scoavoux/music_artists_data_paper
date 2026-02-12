@@ -21,5 +21,4 @@ dup_sc_patch|stem|dup_sc_patch|0|skipped
 mbz_names_patch|stem|mbz_names_patch|0|skipped
 wiki_mbz_ids_patch|stem|wiki_mbz_ids_patch|0|skipped
 all_patched|stem|all_patched|0|skipped
-all_final|stem|all_final|0|dispatched
-all_final|stem|all_final|0|completed
+all_final|stem|all_final|0|skipped

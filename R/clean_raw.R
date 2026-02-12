@@ -22,31 +22,38 @@ load_manual_search <- function(file){
   
   ## manual searches by paul
   ## INTEGRATE TO MANUAL_SEARCH!
-  manual_co_1 <- load_s3("interim/missings_to_handcode/06.02-handcoded_contacts.csv")
+  manual_sc_1 <- load_s3("interim/missings_to_handcode/06.02-handcoded_contacts.csv")
   
-  manual_co_2 <- load_s3("interim/missings_to_handcode/handcoded_09.02.csv")
+  manual_sc_2 <- load_s3("interim/missings_to_handcode/handcoded_09.02.csv")
   
-  manual_co_1 <- manual_co_1 %>% 
+  manual_sc_1 <- manual_sc_1 %>% 
     as_tibble() %>% 
     filter(!is.na(sc_artist_id)) %>% 
     mutate_if(is.integer, as.character) %>% 
     select(dz_artist_id, sc_artist_id) 
   
-  manual_co_2 <- manual_co_2 %>% 
+  manual_sc_2 <- manual_sc_2 %>% 
     as_tibble() %>% 
     filter(!is.na(contact_id)) %>% 
     mutate_if(is.integer, as.character) %>% 
     select(dz_artist_id = "deezer_id", 
            sc_artist_id = "contact_id") 
   
+  # manual mbz
+  
+  mbz_manual_1 <- load_s3("interim/missings_to_handcode/missing_mbz_1202.csv")
+  mbz_manual_1 <- mbz_manual_1 %>% 
+    filter(!is.na(mbz_artist_id)) %>% 
+    mutate_if(is.integer, as.character)
+  
   manual_search <- manual_search %>% 
-    bind_rows(manual_co_1) %>% 
-    bind_rows(manual_co_2) %>% 
-    distinct(dz_artist_id, sc_artist_id)
+    bind_rows(manual_sc_1) %>% 
+    bind_rows(manual_sc_2) %>% 
+    full_join(mbz_manual_1, by = "dz_artist_id") %>% 
+    distinct(dz_artist_id, sc_artist_id, mbz_artist_id)
   
   return(manual_search)
 }
-
 
 
 

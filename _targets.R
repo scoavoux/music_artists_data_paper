@@ -152,7 +152,13 @@ list(
                              wiki_names_patch = wiki_names_patch,
                              wiki_mbz_names_patch = wiki_mbz_names_patch,
                              wiki_mbz_ids_patch = wiki_mbz_ids_patch,
-                             dup_sc_patch = dup_sc_patch)),
+                             dup_sc_patch = dup_sc_patch) %>% 
+                 
+                 ## append ratings (refactor later)
+                 select(-n_ratings) %>% 
+                 left_join(senscritique %>% 
+                             select(sc_artist_id, n_ratings),
+                           by = "sc_artist_id")),
   
   # deduplicate all 3 ids by taking the most popular duplicate on
   # collection_count for dz duplicates, and on dz_stream_share 
@@ -163,6 +169,7 @@ list(
 )
 
 
+### final data set is on onyxia in interim/artists_final.csv
 
 
 

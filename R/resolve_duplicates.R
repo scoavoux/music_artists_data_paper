@@ -79,6 +79,9 @@ deduplicate_ids <- function(all){
     
     select(-c(n_deezer, n_sc, n_mbz))
   
+  
+  print_stream_share(all_dedup)
+  
   ## check filtered out cases
   ## save to csv somewhere
   removed_duplicates <- all %>% 
