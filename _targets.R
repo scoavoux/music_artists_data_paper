@@ -21,155 +21,155 @@ tar_source("R")
 # List of targets ------
 list(
   
-    ### CREATE ARTISTS ----------------------------------------------
-    tar_target(name = streams,
+    ### CREATE (deezer) ARTISTS ----------------------------------------------
+    
+    # load and aggregate raw streams
+    tar_target(name = dz_streams,
                command = load_streams()),
     
     tar_target(name = to_remove_file,
                command = read.csv("data/artists_to_remove.csv")),
     
-    tar_target(name = items_old,
-               command = make_items(to_remove = to_remove_file,
+    
+    # bind old and new songs and names, join to streams
+    tar_target(name = dz_names,
+               command = bind_dz_names(file_1 = "records_w3/items/artists_data.snappy.parquet",
+                                       file_2 = "interim/new_artists_names_from_api.csv")),
+    
+    tar_target(name = dz_songs_old,
+               command = make_dz_songs(to_remove = to_remove_file,
                                     file = "records_w3/items/songs.snappy.parquet")),
     
-    tar_target(name = items_new,
-               command = make_items(to_remove = to_remove_file,
+    tar_target(name = dz_songs_new,
+               command = make_dz_songs(to_remove = to_remove_file,
                                     file = "records_w3/items/song.snappy.parquet")),
     
-    tar_target(name = names,
-               command = bind_names(file_1 = "records_w3/items/artists_data.snappy.parquet",
-                                    file_2 = "interim/new_artists_names_from_api.csv")),
+    tar_target(name = dz_songs,
+               command = bind_dz_songs(dz_songs_old, dz_songs_new, dz_streams, dz_names)),
     
-    tar_target(name = items,
-               command = bind_items(items_old, items_new, streams, names)),
     
-    tar_target(name = artists,
-               command = group_items_by_artist(items)),
+    # group songs by featured artists and compute weighted popularity
+    tar_target(name = dz_artists,
+               command = group_songs_by_artist(dz_songs)),
     
-    # ID shit
-    ### LOAD RAW KEYS ----------------------------------------------
-    tar_target(name = contacts, 
-               command = load_s3("senscritique/contacts.csv")),
     
-        tar_target(name = musicbrainz_urls,
-               command = load_s3("musicbrainz/musicbrainz_urls.csv")),
+    # -------- load and process raw ID data
     
-    tar_target(name = manual_search_path,
-               command = "data/manual_search.csv", format = "file"),
+    # sc_artist_id (+ metadata) to mbz_artist_id
+    tar_target(name = senscritique, 
+               command = load_senscritique(sc_file="senscritique/contacts.csv",
+                                           sc_ratings_file = "senscritique/ratings.csv",
+                                           sc_albums_file = "senscritique/contacts_albums_link.csv")),
+    
+    # manual searches sc_artist_id to dz_artist_id
     tar_target(name = manual_search,
-               command = read.csv(manual_search_path)),
-    
-    ### PROCESS KEYS -----------------------------------------------
-    # transform musicbrainz_urls to mbz_deezer
+               command = load_manual_search(file="data/manual_search.csv")),
+
+    # mbz_artist_id to dz_artist_id
     tar_target(name = mbz_deezer,
-               command = make_mbz_deezer(musicbrainz_urls)),
+               command = load_mbz_deezer(file="musicbrainz/musicbrainz_urls.csv")),
     
-    # temporary --- make a dedicated wiki_labels function some time
-    # code is (commented out) in wiki_keys.R
+    # wikidata artist names
     tar_target(name = wiki_labels,
                command = load_s3("interim/wiki_labels.csv")),
 
+    # wikidata itemId to mbz_artist_id and dz_artist_id
     tar_target(name = wiki,
-               command = make_wiki_keys(wiki_labels, mbz_deezer)),
+               command = load_wiki(mbz_deezer)),
     
     
     ### CONSOLIDATE ARTISTS ----------------------------------------
     
+    ##### left-join raw data
     tar_target(name = all,
-               command = consolidate_artists(artists, mbz_deezer,
-                                             contacts, manual_search, wiki)),
+               command = join_artist_ids(dz_artists, mbz_deezer,
+                                             senscritique, manual_search, wiki)),
     
-
-    # unique names matches between deezer and contact names
-    tar_target(name = contact_names_patch,
+    # unique matches between deezer and senscritique names
+    tar_target(name = sc_names_patch,
                command = patch_names(all = all,
-                                     ref = contacts,
-                                     ref_id = "contact_id",
-                                     ref_name = "contact_name",
-                                     all_name = "name")),
+                                     ref = senscritique,
+                                     ref_id = "sc_artist_id",
+                                     ref_name = "sc_name",
+                                     all_name = "dz_name")),
     
+    # unique matches between deezer and mbz names
     tar_target(name = mbz_names_patch,
                command = patch_names(all = all,
                                      ref = mbz_deezer,
-                                     ref_id = "musicbrainz_id",
+                                     ref_id = "mbz_artist_id",
                                      ref_name = "mbz_name",
-                                     all_name = "name")),
+                                     all_name = "dz_name")),
     
+    # unique matches between deezer and mbz names from wiki
     tar_target(name = wiki_mbz_names_patch,
                command = patch_names(all = all,
                                      ref = wiki,
-                                     ref_id = "musicbrainz_id",
+                                     ref_id = "mbz_artist_id",
                                      ref_name = "mbz_name",
-                                     all_name = "name")),
+                                     all_name = "dz_name")),
     
+    # unique matches between deezer and wiki names
     tar_target(name = wiki_names_patch,
                command = patch_names(all = all,
                                      ref = wiki,
-                                     ref_id = "musicbrainz_id",
+                                     ref_id = "mbz_artist_id",
                                      ref_name = "wiki_name",
-                                     all_name = "name")),
+                                     all_name = "dz_name")),
     
+    # mbz ids retrieved from wiki
     tar_target(name = wiki_mbz_ids_patch,
                command = mbz_from_wiki(all, wiki)),
     
-    tar_target(name = all_enriched,
-               command = update_rows(all, 
-                                     contact_names_patch = contact_names_patch,
-                                     dup_deezer_mbz_patch = contact_names_patch,
-                                     dup_deezer_co_patch = dup_deezer_co_patch,
-                                     mbz_names_patch = mbz_names_patch,
-                                     wiki_names_patch = wiki_names_patch,
-                                     wiki_mbz_names_patch = wiki_mbz_names_patch,
-                                     wiki_mbz_ids_patch = wiki_mbz_ids_patch,
-                                     dup_contacts_patch = dup_contacts_patch
-                                     )),
-    
-    tar_target(name = dup_deezer_co_patch,
-               command = patch_deezer_dups(ref = contacts, 
-                                           ref_id = "contact_id", 
-                                           ref_name = "contact_name",
+    # unique matches between duplicated deezer names and
+    # unique sc names when one deezer duplicate has 90% of streams
+    tar_target(name = dup_dz_sc_patch,
+               command = patch_deezer_dups(ref = senscritique, 
+                                           ref_id = "sc_artist_id", 
+                                           ref_name = "sc_name",
                                            all = all)),
-    tar_target(name = dup_deezer_mbz_patch,
+    
+    # unique matches between duplicated deezer names and
+    # unique mbz names when one deezer duplicate has 90% of dz_stream_share
+    tar_target(name = dup_dz_mbz_patch,
                command = patch_deezer_dups(ref = mbz_deezer, 
-                                           ref_id = "musicbrainz_id", 
+                                           ref_id = "mbz_artist_id", 
                                            ref_name = "mbz_name",
                                            all = all)),
-    tar_target(name = dup_contacts_patch,
-               command = patch_contact_dups(all, contacts))
+    
+    # unique matches between unique deezer names and
+    # duplicated sc names when one deezer duplicate has 90% of collection_counts
+    tar_target(name = dup_sc_patch,
+               command = patch_sc_dups(all, senscritique)),
+    
+    # update initial left-joined dataset with all patches
+    tar_target(name = all_patched,
+               command = all %>% 
+                 update_rows(sc_names_patch = sc_names_patch,
+                             dup_dz_mbz_patch = dup_dz_mbz_patch,
+                             dup_dz_sc_patch = dup_dz_sc_patch,
+                             mbz_names_patch = mbz_names_patch,
+                             wiki_names_patch = wiki_names_patch,
+                             wiki_mbz_names_patch = wiki_mbz_names_patch,
+                             wiki_mbz_ids_patch = wiki_mbz_ids_patch,
+                             dup_sc_patch = dup_sc_patch) %>% 
+                 
+                 ## append ratings (refactor later)
+                 select(-n_ratings) %>% 
+                 left_join(senscritique %>% 
+                             select(sc_artist_id, n_ratings),
+                           by = "sc_artist_id")),
+  
+  # deduplicate all 3 ids by taking the most popular duplicate on
+  # collection_count for dz duplicates, and on dz_stream_share 
+  # for sc and mbz duplicates
+  # export dropped duplicates to onyxia
+  tar_target(name = all_final, 
+             command = deduplicate_ids(all_patched))
 )
 
 
-# ## export biggest missings to csv for handcoding
-# 
-# missing <- all_enriched %>% 
-#   filter(is.na(contact_id) | is.na(musicbrainz_id)) %>% 
-#   slice(1:1000)
-# 
-# missing_mbz <- all_enriched %>% 
-#   filter(is.na(musicbrainz_id)) %>% 
-#   slice(1:1000)
-#            
-# missing_contacts <- all_enriched %>% 
-#   filter(is.na(contact_id)) %>% 
-#   slice(1:1000)
-# 
-# cleanpop(missing)
-# cleanpop(missing_mbz)
-# cleanpop(missing_contacts)
-# 
-# write_s3(missing, "interim/missings_to_handcode/missing_either.csv")
-# write_s3(missing_mbz, "interim/missings_to_handcode/missing_mbz.csv")
-# write_s3(missing_contacts, "interim/missings_to_handcode/missing_contacts.csv")
-# 
-# 
-# df <- load_s3("interim/missings_to_handcode/missing_either.csv")
-# 
-# df <- load_s3("interim/missings_to_handcode/missing_either.csv")
-# 
-# 
-
-
-
+### final data set is on onyxia in interim/artists_final.csv
 
 
 
