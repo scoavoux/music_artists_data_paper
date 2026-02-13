@@ -438,7 +438,7 @@ make_press_data <- function(corpus_tokenized, artist_names_and_aliases, regex_fi
   tidytable::fwrite(tibble(corpus_tokenized), "data/temp/corpus_tokenized.csv")
   
   
-  # Set up parrallel computing
+  # Set up parallel computing
   # To play it safe we leave 20 cores (on a 128 core machine)
   #n.cores <- parallel::detectCores()-20
   n.cores = 40 # ok let's try that
