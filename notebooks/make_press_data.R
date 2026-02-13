@@ -72,88 +72,88 @@ make_raw_corpus <- function(){
     mutate(source_origin = "Europresse",
            url = NA)
   
-  # Le Monde
-  lemonde <- vector("list", length = 12L)
-  # there are some small errors (bad dates in parsed data); we correct them below
-  for(i in 1:12){
-    lemonde[[i]] <- s3_read(paste0("french_media/lemonde/", paste0("lemonde-20", 10L:22L,".csv"))[i])
-    print(i)
-  }
-  
-  lemonde <- lapply(lemonde, function(x) {
-    x <- mutate(x,
-                is_article = as.logical(is_article),
-                annee = as.numeric(annee),
-                publidate = ymd(publidate)) %>% 
-      fill(publidate)
-    return(x)
-  }
-  )
-  
-  lemonde <- bind_rows(lemonde)
-  
-  lemonde <- filter(lemonde, str_detect(rubrique, "[Mm]usique"))
-  
-  # attention, il y a plein de rubriques variées
-  lemonde <- filter(lemonde, is_article)
-  lemonde <-  rename(lemonde, 
-                     date = "publidate",
-                     section = "rubrique",
-                     article_author = "auteur",
-                     article_title = "titre",
-                     article_excerpt = "chapo",
-                     article_text = "texte") %>% 
-    select(-annee, -publiheure, -is_article, -file)
-  
-  lemonde <- mutate(lemonde, 
-                    source_name = "Le Monde",
-                    source_origin = "scrapping")
-  
-  ## Le Figaro
-  s3 <- initialize_s3()
-  s3$download_file("scoavoux", "french_media/lefigaro-complet-v0.csv", 
-                   Filename = "data/temp/lefigaro-complet-v0.csv")
-  lefigaro <- read_csv("data/temp/lefigaro-complet-v0.csv")
-  lefigaro <- filter(lefigaro, year > 2009)
-  
-  lefigaro <- filter(lefigaro, rubrique == "Culture")
-  lefigaro <- mutate(lefigaro, date = as.Date(date))
-  
-  lefigaro <- lefigaro %>% 
-    select(date, 
-           section = "rubrique",
-           article_title = "titre",
-           article_author = "auteur",
-           article_text = "texte"
-    ) %>% 
-    mutate(source_name = "Le Figaro")
-  file.remove("data/temp/lefigaro-complet-v0.csv")
-  
-  
-  ## Libération
-  s3$download_file("scoavoux", "french_media/liberation-complet-v2.csv", "data/temp/liberation-complet-v2.csv")
-  
-  liberation <- read_csv("data/temp/liberation-complet-v2.csv")
-  file.remove("data/temp/liberation-complet-v2.csv")
-  liberation <- filter(liberation, rubrique %in% c("Culture", "Culture | Musique", "Musique"))
-  liberation <- rename(liberation,
-                       date = "publidate",
-                       section = "rubrique",
-                       article_author = "auteur",
-                       article_title = "titre",
-                       article_excerpt = "chapo",
-                       article_text = "texte") %>% 
-    select(-publiheure, -file)
-  liberation <- mutate(liberation, 
-                       source_name = "Libération",
-                       date = ymd(date))
-  corpus_raw <- bind_rows(telerama, lemonde, liberation, lefigaro)  %>% 
-    filter(!is.na(article_text)) %>% 
-    mutate(article_text = paste(article_title, ".\n", article_text))
-  corpus_raw <- corpus_raw %>% 
-    mutate(id = row_number())
-  return(corpus_raw)
-}
+#   # Le Monde
+#   lemonde <- vector("list", length = 12L)
+#   # there are some small errors (bad dates in parsed data); we correct them below
+#   for(i in 1:12){
+#     lemonde[[i]] <- s3_read(paste0("french_media/lemonde/", paste0("lemonde-20", 10L:22L,".csv"))[i])
+#     print(i)
+#   }
+#   
+#   lemonde <- lapply(lemonde, function(x) {
+#     x <- mutate(x,
+#                 is_article = as.logical(is_article),
+#                 annee = as.numeric(annee),
+#                 publidate = ymd(publidate)) %>% 
+#       fill(publidate)
+#     return(x)
+#   }
+#   )
+#   
+#   lemonde <- bind_rows(lemonde)
+#   
+#   lemonde <- filter(lemonde, str_detect(rubrique, "[Mm]usique"))
+#   
+#   # attention, il y a plein de rubriques variées
+#   lemonde <- filter(lemonde, is_article)
+#   lemonde <-  rename(lemonde, 
+#                      date = "publidate",
+#                      section = "rubrique",
+#                      article_author = "auteur",
+#                      article_title = "titre",
+#                      article_excerpt = "chapo",
+#                      article_text = "texte") %>% 
+#     select(-annee, -publiheure, -is_article, -file)
+#   
+#   lemonde <- mutate(lemonde, 
+#                     source_name = "Le Monde",
+#                     source_origin = "scrapping")
+#   
+#   ## Le Figaro
+#   s3 <- initialize_s3()
+#   s3$download_file("scoavoux", "french_media/lefigaro-complet-v0.csv", 
+#                    Filename = "data/temp/lefigaro-complet-v0.csv")
+#   lefigaro <- read_csv("data/temp/lefigaro-complet-v0.csv")
+#   lefigaro <- filter(lefigaro, year > 2009)
+#   
+#   lefigaro <- filter(lefigaro, rubrique == "Culture")
+#   lefigaro <- mutate(lefigaro, date = as.Date(date))
+#   
+#   lefigaro <- lefigaro %>% 
+#     select(date, 
+#            section = "rubrique",
+#            article_title = "titre",
+#            article_author = "auteur",
+#            article_text = "texte"
+#     ) %>% 
+#     mutate(source_name = "Le Figaro")
+#   file.remove("data/temp/lefigaro-complet-v0.csv")
+#   
+#   
+#   ## Libération
+#   s3$download_file("scoavoux", "french_media/liberation-complet-v2.csv", "data/temp/liberation-complet-v2.csv")
+#   
+#   liberation <- read_csv("data/temp/liberation-complet-v2.csv")
+#   file.remove("data/temp/liberation-complet-v2.csv")
+#   liberation <- filter(liberation, rubrique %in% c("Culture", "Culture | Musique", "Musique"))
+#   liberation <- rename(liberation,
+#                        date = "publidate",
+#                        section = "rubrique",
+#                        article_author = "auteur",
+#                        article_title = "titre",
+#                        article_excerpt = "chapo",
+#                        article_text = "texte") %>% 
+#     select(-publiheure, -file)
+#   liberation <- mutate(liberation, 
+#                        source_name = "Libération",
+#                        date = ymd(date))
+#   corpus_raw <- bind_rows(telerama, lemonde, liberation, lefigaro)  %>% 
+#     filter(!is.na(article_text)) %>% 
+#     mutate(article_text = paste(article_title, ".\n", article_text))
+#   corpus_raw <- corpus_raw %>% 
+#     mutate(id = row_number())
+#   return(corpus_raw)
+ }
 
 # This is a part where we break the targets workflow because we need a GPU
 # and python. Make_corpus_for_BERT prepares the corpus in R. Then we

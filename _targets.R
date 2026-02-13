@@ -165,13 +165,19 @@ list(
   # for sc and mbz duplicates
   # export dropped duplicates to onyxia
   tar_target(name = all_final, 
-             command = deduplicate_ids(all_patched))
+             command = deduplicate_ids(all_patched)),
+  
+  # for testing purposes!
+  tar_target(name = telerama,
+             command = clean_telerama(file="french_media/telerama_raw.csv")),
+  
+  tar_target(name = aliases,
+             command = make_aliases(all_final, 
+                                    mbz_alias_file="musicbrainz/mbid_name_alias.csv"))
 )
 
 
-### final data set is on onyxia in interim/artists_final.csv
-
-
+## RENAME all TO artists EVERYWHERE! (variations of artists)
 
 
 
