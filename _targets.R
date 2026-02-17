@@ -170,6 +170,12 @@ list(
   # for testing purposes!
   tar_target(name = telerama,
              command = clean_telerama(file="french_media/telerama_raw.csv")),
+
+  tar_target(name = figaro,
+             command = clean_figaro(file="french_media/lefigaro-complet-v0.csv")),
+  
+  tar_target(name = liberation,
+             command = clean_liberation(file="french_media/liberation-complet-v2.csv")),
   
   tar_target(name = aliases,
              command = make_aliases(all_final, 
@@ -180,7 +186,7 @@ list(
 ## RENAME all TO artists EVERYWHERE! (variations of artists)
 
 
-
+f <- load_s3("french_media/lefigaro-complet-v0.csv")
 
 
 

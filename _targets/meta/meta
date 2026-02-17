@@ -71,15 +71,17 @@ mbz_names_patch|stem|2f653386780c502f|e4bd11eeddcaabe2|35399f2a94eb631a|15759243
 wiki_mbz_ids_patch|stem|1198d4462faee4a6|84428039b4cd04a9|a598a6db9e154c45|-1891922533|bucket=scoavoux*region=NULL*key=music_artist/objects/wiki_mbz_ids_patch*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20496.4387592233s||0|rds|aws|vector|||1.11|Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 59 of `x` matches multiple rows in `y`. ℹ Row 418723 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.|
 all_patched|stem|e523711f5792d1ff|4174229045a94dd0|02c5b6d71574aac6|461700976|bucket=scoavoux*region=NULL*key=music_artist/objects/all_patched*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20496.438981094s||0|rds|aws|vector|||5.825||
 all_final|stem|5b71a3bea154e509|ff357c300aac514f|58dfc45e9288cdfe|1771459488|bucket=scoavoux*region=NULL*key=music_artist/objects/all_final*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20496.439536442s||0|rds|aws|vector|||38.793|There were 851 warnings in `mutate()`. The first warning was: ℹ In argument: `keep_dz = colcount_share_by_dzdup ==   max(colcount_share_by_dzdup, na.rm = TRUE)`. ℹ In group 3: `dz_artist_id = '10032898'`. Caused by warning in `max()`: ! no non-missing arguments to max; returning -Inf ℹ Run `dplyr::last_dplyr_warnings()` to see the 850 remaining warnings.|
-telerama|stem|d05030c2784bd6a4|e474b68da58a8f96|85895f37fd0b053b|1656235727|bucket=scoavoux*region=NULL*key=music_artist/objects/telerama*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20497.436635778s||0|rds|aws|vector|||2.655||
-.Random.seed|object|9407b993fb526f58
+regexify_aliases|function|7cad5e41280a97cd
+telerama|stem|3ef3a7644a81e8cd|e474b68da58a8f96|3e1c81c8d4fdf92c|1656235727|bucket=scoavoux*region=NULL*key=music_artist/objects/telerama*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20501.5571233215s||0|rds|aws|vector|||2.871||
+aliases|stem|26b184a505d1d7f9|4b481aaf3b3cdd42|c94c16d75198b23b|-838269410|bucket=scoavoux*region=NULL*key=music_artist/objects/aliases*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20501.5581758801s||0|rds|aws|vector|||28.194||
+.Random.seed|object|e4bccf5ed2db3ee1
 patch_names|function|4fd99ae76b9455ef
 initialize_s3|function|25a2772c1c03257f
 write_s3|function|15e44e053dc7a6c7
 prop_na|function|c201f9db83a66140
 print_stream_share|function|51c9f50b80af0569
-regexify_aliases|function|7cad5e41280a97cd
 mbz_from_wiki|function|09d134ac8e582641
+regexify|function|af5bde3347fe0c35
 group_songs_by_artist|function|1b87faee9017e507
 make|function|860e3605b48e903a
 make_wiki_keys|function|420336bcf27da1f0
@@ -94,13 +96,15 @@ load_s3_info|function|b201b67fd14b09a5
 update_rows|function|5a00fbb3fa16d38a
 join_artist_ids|function|c7ac1206cfc6f5e6
 deduplicate_ids|function|22f92f57a11cd4a3
+clean_figaro|function|0692ca2cea4f8beb
 load_sc_ratings|function|ac7f50b2722bc4fb
-clean_telerama|function|1829600c8518c699
+clean_telerama|function|c62576673fb3f61a
+clean_liberation|function|6ac50be131de711b
 load_wiki|function|0c5791e820407b00
 load_manual_search|function|2b5d381ac9d288fa
 make_dz_songs|function|f58dc2882a7702e0
-make_aliases|function|ccde498e05735006
+make_aliases|function|83cb10a49ecdfbbe
 load_mbz_deezer|function|5c576845a1e17fd0
 load_senscritique|function|bdd447d417e92a4f
 bind_dz_names|function|cd7c8ce67dd05815
-aliases|stem|ce2ca9979a724eb8|4b481aaf3b3cdd42|2b46ee5435fafdc2|-838269410|bucket=scoavoux*region=NULL*key=music_artist/objects/aliases*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20497.7614454562s||0|rds|aws|vector|||22.395||
+figaro|stem||6839378c615ddc23|3040d95c5eb7e16f|1823515149||t20501.7709757388s||0|rds|aws|vector|||70.472|NAs introduced by coercion to integer range|long vectors not supported yet: raw.c:68
