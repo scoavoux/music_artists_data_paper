@@ -74,9 +74,11 @@ all_final|stem|5b71a3bea154e509|ff357c300aac514f|58dfc45e9288cdfe|1771459488|buc
 regexify_aliases|function|7cad5e41280a97cd
 telerama|stem|3ef3a7644a81e8cd|e474b68da58a8f96|3e1c81c8d4fdf92c|1656235727|bucket=scoavoux*region=NULL*key=music_artist/objects/telerama*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20501.5571233215s||0|rds|aws|vector|||2.871||
 aliases|stem|26b184a505d1d7f9|4b481aaf3b3cdd42|c94c16d75198b23b|-838269410|bucket=scoavoux*region=NULL*key=music_artist/objects/aliases*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20501.5581758801s||0|rds|aws|vector|||28.194||
-.Random.seed|object|e4bccf5ed2db3ee1
-patch_names|function|4fd99ae76b9455ef
+figaro|stem||6839378c615ddc23|3040d95c5eb7e16f|1823515149||t20501.7709757388s||0|rds|aws|vector|||70.472|NAs introduced by coercion to integer range|long vectors not supported yet: raw.c:68
+lemonde|stem|463cdebcb2cd81a5|5286eaf4e11d211d|540d6fbad9a8cf08|1719245558|bucket=scoavoux*region=NULL*key=music_artist/objects/lemonde*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20502.442207428s||0|rds|aws|vector|||98.613|There was 1 warning in `mutate()`. ℹ In argument: `publidate = ymd(publidate)`. Caused by warning: !  3 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `publidate = ymd(publidate)`. Caused by warning: !  4 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `publidate = ymd(publidate)`. Caused by warning: !  5 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `publidate = ymd(publidate)`. Caused by warning: !  2 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `publidate = ymd(publidate)`. Caused by warning: !  1 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `publidate = ymd(publidate)`. Caused by warning: !  1 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `publidate = ymd(publidate)`. Caused by warning: !  2 failed to parse.|
 initialize_s3|function|25a2772c1c03257f
+.Random.seed|object|633c61a22da97348
+patch_names|function|4fd99ae76b9455ef
 write_s3|function|15e44e053dc7a6c7
 prop_na|function|c201f9db83a66140
 print_stream_share|function|51c9f50b80af0569
@@ -89,17 +91,18 @@ load_streams|function|614a898e2ac1f783
 load_partitioned_s3|function|ef32fd7856f71aa0
 bind_dz_songs|function|a925651495c469c1
 stream_share_patch|function|600e47e27ed7d5d1
-patch_sc_dups|function|b6bd2d99244add43
-patch_deezer_dups|function|6b161c745bcb1dd1
+clean_figaro|function|e657016a2c6aa724
 load_s3|function|2f0bfd56597701f8
 load_s3_info|function|b201b67fd14b09a5
+clean_liberation|function|4522346ccf465990
+patch_sc_dups|function|b6bd2d99244add43
+patch_deezer_dups|function|6b161c745bcb1dd1
 update_rows|function|5a00fbb3fa16d38a
 join_artist_ids|function|c7ac1206cfc6f5e6
 deduplicate_ids|function|22f92f57a11cd4a3
-clean_figaro|function|0692ca2cea4f8beb
 load_sc_ratings|function|ac7f50b2722bc4fb
 clean_telerama|function|c62576673fb3f61a
-clean_liberation|function|6ac50be131de711b
+clean_lemonde|function|15a872d1c836b6c2
 load_wiki|function|0c5791e820407b00
 load_manual_search|function|2b5d381ac9d288fa
 make_dz_songs|function|f58dc2882a7702e0
@@ -107,4 +110,4 @@ make_aliases|function|83cb10a49ecdfbbe
 load_mbz_deezer|function|5c576845a1e17fd0
 load_senscritique|function|bdd447d417e92a4f
 bind_dz_names|function|cd7c8ce67dd05815
-figaro|stem||6839378c615ddc23|3040d95c5eb7e16f|1823515149||t20501.7709757388s||0|rds|aws|vector|||70.472|NAs introduced by coercion to integer range|long vectors not supported yet: raw.c:68
+liberation|stem|ec360b30b8c57314|939b615cae0268c9|3f6f6d31a580d2b7|-1310133424|bucket=scoavoux*region=NULL*key=music_artist/objects/liberation*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20502.4662935323s||0|rds|aws|vector|||1.069||Failed to perform HTTP request. Caused by error in `curl::curl_fetch_disk()`: ! Failed to open file data/temp/french_media/liberation-complet-v2.csv.
