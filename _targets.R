@@ -169,16 +169,19 @@ list(
   
   # for testing purposes!
   tar_target(name = telerama,
-             command = clean_telerama(file="french_media/telerama_raw.csv")),
+             command = clean_telerama(file="telerama_raw.csv")),
 
-  tar_target(name = figaro,
-             command = clean_figaro(file="french_media/lefigaro-complet-v0.csv")),
+  tar_target(name = lefigaro,
+             command = clean_lefigaro(file="lefigaro-complet-v0.csv")),
   
   tar_target(name = liberation,
-             command = clean_liberation(file="french_media/liberation-complet-v2.csv")),
+             command = clean_liberation(file="liberation-complet-v2.csv")),
   
   tar_target(name = lemonde,
-             command = clean_lemonde(filepath="french_media/lemonde/lemonde-20")),
+             command = clean_lemonde(filepath="lemonde/lemonde-20")),
+  
+  tar_target(name = press_corpus,
+             command = bind_press_corpora(telerama, lefigaro, liberation, lemonde)),
   
   tar_target(name = aliases,
              command = make_aliases(all_final, 
