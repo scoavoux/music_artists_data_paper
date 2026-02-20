@@ -4,48 +4,56 @@ options(scipen = 99)
 tar_load(aliases)
 tar_load(all_final)
 
-# ------ join aliases to all_final
-## complete cases only: cases with no match get 
-## NA for dz_stream_share so the valid cases are prioritized
-all_final <- all_final %>% 
-  filter(!is.na(mbz_artist_id) & !is.na(sc_artist_id)) %>% 
-  select(dz_artist_id, dz_stream_share)
+install.packages('babynames')
+library(babynames)
 
-aliases <- aliases %>% 
-  left_join(all_final, by = "dz_artist_id")
+us_names <- babynames %>% 
+  group_by(name) %>% 
+  summarise(n = sum(n)) %>% 
+  arrange(desc(n)) %>% 
+  slice_head(n = 1000) %>% 
+  select(name)
 
+french_names <- read_csv("data/firstnames.csv")
 
-## ------------- check homonyms and take the more popular artist
-#### 20 ties, all but one are same name and alias with different id 
-#### --> keep name > alias
+french_names <- french_names %>% 
+  slice_head(n = 10000) %>% 
+  select(name = "firstname")
 
-aliases <- aliases %>% 
-  group_by(mbz_alias) %>% 
-  filter(dz_stream_share == max(dz_stream_share)) %>% 
-  add_count(mbz_alias) %>% 
-  ungroup()
+first_names <- french_names %>% 
+  bind_rows(us_names) %>% 
+  mutate(name = str_to_lower(name)) %>% 
+  distinct()
 
-# deduplicate remaining by name > alias
-remaining_dups <- aliases %>% 
-  filter(n > 1) %>% 
-  filter(type == "name") %>% 
-  select(-n)
-
-aliases <- aliases %>% 
-  select(-n) %>% 
-  anti_join(remaining_dups, by = "mbz_alias") %>% 
-  bind_rows(remaining_dups) %>% 
-  add_count(mbz_alias) %>% 
-  filter(n == 1) %>% # deletes one final rogue duplicate
-  select(-n)
-
-
+first_names %>% 
+  filter(name == "santana")
 
 ## ------------- check stopnames, esp:
 
-#### first names only
+#### first names only 
+#### --- extract w first name dictionary
+
+t <- aliases %>% 
+  mutate(name = str_to_lower(mbz_alias)) %>% 
+  inner_join(french_names, by = "name")
+
+
+
+
+
+
+
+#### append last names as alias
+#### --- extract real names w first name dictionary
+
+
+
+
+
+
 
 #### common names (referring to something else, like "Paris")
+#### sam hand-coded many already
 
 #### very short names? maybe check separately to see if not too common
 

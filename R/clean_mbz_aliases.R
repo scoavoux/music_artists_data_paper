@@ -31,6 +31,9 @@ make_aliases <- function(all_final, mbz_alias_file) {
 
   aliases <- load_s3(mbz_alias_file)
   
+  ## complete cases only so cases with no match get NA
+  ## for dz_stream_share --> the valid cases are prioritized
+  ## before popularity is compared among them
   all_final <- all_final %>% 
     filter(!is.na(mbz_artist_id) & !is.na(sc_artist_id)) %>% 
     select(dz_artist_id, mbz_artist_id, dz_stream_share)
