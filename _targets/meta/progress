@@ -1,13 +1,10 @@
 name|type|parent|branches|progress
-lefigaro|stem|lefigaro|0|dispatched
-lefigaro|stem|lefigaro|0|completed
+lefigaro|stem|lefigaro|0|skipped
 senscritique|stem|senscritique|0|skipped
 to_remove_file|stem|to_remove_file|0|skipped
 wiki_labels|stem|wiki_labels|0|skipped
-telerama|stem|telerama|0|dispatched
-telerama|stem|telerama|0|completed
-lemonde|stem|lemonde|0|dispatched
-lemonde|stem|lemonde|0|completed
+telerama|stem|telerama|0|skipped
+lemonde|stem|lemonde|0|skipped
 dz_names|stem|dz_names|0|skipped
 dz_streams|stem|dz_streams|0|skipped
 mbz_deezer|stem|mbz_deezer|0|skipped
@@ -16,8 +13,7 @@ liberation|stem|liberation|0|skipped
 dz_songs_new|stem|dz_songs_new|0|skipped
 dz_songs_old|stem|dz_songs_old|0|skipped
 wiki|stem|wiki|0|skipped
-press_corpus|stem|press_corpus|0|dispatched
-press_corpus|stem|press_corpus|0|completed
+press_corpus|stem|press_corpus|0|skipped
 dz_songs|stem|dz_songs|0|skipped
 dz_artists|stem|dz_artists|0|skipped
 all|stem|all|0|skipped
@@ -31,4 +27,5 @@ mbz_names_patch|stem|mbz_names_patch|0|skipped
 wiki_mbz_names_patch|stem|wiki_mbz_names_patch|0|skipped
 all_patched|stem|all_patched|0|skipped
 all_final|stem|all_final|0|skipped
-aliases|stem|aliases|0|skipped
+aliases|stem|aliases|0|dispatched
+aliases|stem|aliases|0|completed

@@ -28,8 +28,12 @@ make_aliases <- function(all_final, mbz_alias_file) {
   require(tidytable)
   require(dplyr)
   require(stringr)
-  
+
   aliases <- load_s3(mbz_alias_file)
+  
+  all_final <- all_final %>% 
+    filter(!is.na(mbz_artist_id) & !is.na(sc_artist_id)) %>% 
+    select(dz_artist_id, mbz_artist_id, dz_stream_share)
   
   aliases <- aliases %>% 
     rename(mbz_artist_id = "mbid",
@@ -38,9 +42,39 @@ make_aliases <- function(all_final, mbz_alias_file) {
     filter(!is.na(dz_artist_id)) %>% 
     arrange(desc(dz_stream_share)) %>% 
     mutate(alias_regex = regexify(mbz_alias)) %>% 
-    select(dz_artist_id, mbz_alias, alias_regex, type) %>% 
+    select(dz_artist_id, mbz_alias, alias_regex, type, dz_stream_share) %>% 
     as_tibble()
-
+  
+  # remove useless names (hand-coded by sam)
+  regex_fixes <- read_csv("data/regex_fixes.csv")
+  names_to_remove <- regex_fixes %>% 
+    filter(type == "remove")
+  
+  aliases <- aliases %>% 
+    anti_join(names_to_remove, by = c(mbz_alias = "name"))
+  
+  # remove duplicate names by known popularity method
+  aliases <- aliases %>% 
+    group_by(mbz_alias) %>% 
+    filter(dz_stream_share == max(dz_stream_share)) %>% 
+    add_count(mbz_alias) %>% 
+    ungroup()
+  
+  ### deduplicate remaining by name > alias
+  remaining_dups <- aliases %>% 
+    filter(n > 1) %>% 
+    filter(type == "name") %>% 
+    select(-n)
+  
+  ### reinclude in aliases
+  aliases <- aliases %>% 
+    select(-n) %>% 
+    anti_join(remaining_dups, by = "mbz_alias") %>% 
+    bind_rows(remaining_dups) %>% 
+    add_count(mbz_alias) %>% 
+    filter(n == 1) %>% # deletes one final rogue duplicate
+    select(-n)
+  
   # We clean up the regexes a bit
   aliases <- aliases %>% 
     filter(
@@ -54,9 +88,8 @@ make_aliases <- function(all_final, mbz_alias_file) {
     ) %>% 
     distinct(dz_artist_id, mbz_alias, .keep_all = TRUE) 
     
+  return(aliases)
 }
-
-  
 
 ### ADD LAST NAMES AS ALIAS HERE?
 
