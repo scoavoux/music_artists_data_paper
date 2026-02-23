@@ -4,51 +4,51 @@ options(scipen = 99)
 tar_load(aliases)
 tar_load(all_final)
 
-install.packages('babynames')
 library(babynames)
+library(dplyr)
+library(readr)
+library(stringr)
 
-us_names <- babynames %>% 
-  group_by(name) %>% 
-  summarise(n = sum(n)) %>% 
-  arrange(desc(n)) %>% 
-  slice_head(n = 1000) %>% 
-  select(name)
 
-french_names <- read_csv("data/firstnames.csv")
+## MUTATE A NAME COLUMN IN ALIASES
 
-french_names <- french_names %>% 
-  slice_head(n = 10000) %>% 
-  select(name = "firstname")
 
-first_names <- french_names %>% 
-  bind_rows(us_names) %>% 
-  mutate(name = str_to_lower(name)) %>% 
-  distinct()
-
-first_names %>% 
-  filter(name == "santana")
+first_names <- first_name_dict(fr_names = "data/firstnames.csv",
+                               n_us_names=500, n_fr_names=2000)
 
 ## ------------- check stopnames, esp:
 
 #### first names only 
 #### --- extract w first name dictionary
 
-t <- aliases %>% 
+first_name_in_aliases <- aliases %>% 
   mutate(name = str_to_lower(mbz_alias)) %>% 
-  inner_join(french_names, by = "name")
+  inner_join(first_names, by = "name")
+
+pattern <- str_c(paste0("\\b", first_names$name, "\\b"), collapse = "|")
+
+string <- "Paul Simon"
+
+str_count(string, pattern = '\\w+')
 
 
+aliases <- aliases %>%
+  mutate(
+    mbz_alias = str_to_lower(mbz_alias),
+    real_name = str_detect(mbz_alias, regex(pattern, ignore_case = TRUE))
+  )
 
+
+test <- t %>% 
+  filter(real_name == TRUE) %>% 
+  mutate(n_tokens = str_count(mbz_alias, pattern = '\\w+')) %>% 
+  filter(n_tokens %in% c(2,3))
 
 
 
 
 #### append last names as alias
 #### --- extract real names w first name dictionary
-
-
-
-
 
 
 
@@ -64,10 +64,31 @@ t <- aliases %>%
 #### ask samuel
 
 
-
 ## ------------- append last names as alias to real names
 
 
+
+# remove duplicate names by known popularity method
+aliases <- aliases %>%
+  group_by(mbz_alias) %>%
+  filter(dz_stream_share == max(dz_stream_share)) %>% # IMPLEMENT RATIO
+  add_count(mbz_alias) %>%
+  ungroup()
+
+### deduplicate remaining by name > alias
+remaining_dups <- aliases %>%
+  filter(n > 1) %>%
+  filter(type == "name") %>%
+  select(-n)
+
+### reinclude in aliases
+aliases <- aliases %>%
+  select(-n) %>%
+  anti_join(remaining_dups, by = "mbz_alias") %>%
+  bind_rows(remaining_dups) %>%
+  add_count(mbz_alias) %>%
+  filter(n == 1) %>% # deletes one final rogue duplicate
+  select(-n)
 
 
 

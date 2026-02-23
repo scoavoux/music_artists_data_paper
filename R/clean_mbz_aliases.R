@@ -23,6 +23,33 @@ regexify <- function(str){
 }
 
 
+
+first_name_dict <- function(fr_names="data/firstnames.csv", n_us_names=1000, n_fr_names=2000){
+  
+  require(babynames)
+  
+  us_names <- babynames %>% 
+    group_by(name) %>% 
+    summarise(n = sum(n)) %>% 
+    arrange(desc(n)) %>% 
+    slice_head(n = n_us_names) %>% 
+    select(name) %>% 
+    mutate(origin = "us")
+  
+  fr_names <- read_csv(fr_names) %>% 
+    slice_head(n = n_fr_names) %>% 
+    select(name = "firstname") %>% 
+    mutate(origin = "fr")
+  
+  first_names <- fr_names %>% 
+    bind_rows(us_names) %>% 
+    mutate(name = str_to_lower(name)) %>% 
+    distinct()
+  
+  return(first_names)
+}
+
+
 make_aliases <- function(all_final, mbz_alias_file) {
   
   require(tidytable)
@@ -56,27 +83,36 @@ make_aliases <- function(all_final, mbz_alias_file) {
   aliases <- aliases %>% 
     anti_join(names_to_remove, by = c(mbz_alias = "name"))
   
-  # remove duplicate names by known popularity method
-  aliases <- aliases %>% 
-    group_by(mbz_alias) %>% 
-    filter(dz_stream_share == max(dz_stream_share)) %>% 
-    add_count(mbz_alias) %>% 
-    ungroup()
-  
-  ### deduplicate remaining by name > alias
-  remaining_dups <- aliases %>% 
-    filter(n > 1) %>% 
-    filter(type == "name") %>% 
-    select(-n)
-  
-  ### reinclude in aliases
-  aliases <- aliases %>% 
-    select(-n) %>% 
-    anti_join(remaining_dups, by = "mbz_alias") %>% 
-    bind_rows(remaining_dups) %>% 
-    add_count(mbz_alias) %>% 
-    filter(n == 1) %>% # deletes one final rogue duplicate
-    select(-n)
+  # # remove common US and french first names (by dictionary)
+  # first_names <- first_name_dict(fr_names = "data/firstnames.csv",
+  #                                n_us_names=500, n_fr_names=2000)
+  # 
+  # aliases <- aliases %>% 
+  #   mutate(name = str_to_lower(mbz_alias)) %>% 
+  #   anti_join(first_names, by = "name")
+  # 
+  # 
+  # # remove duplicate names by known popularity method
+  # aliases <- aliases %>% 
+  #   group_by(mbz_alias) %>% 
+  #   filter(dz_stream_share == max(dz_stream_share)) %>% # IMPLEMENT RATIO
+  #   add_count(mbz_alias) %>% 
+  #   ungroup()
+  # 
+  # ### deduplicate remaining by name > alias
+  # remaining_dups <- aliases %>% 
+  #   filter(n > 1) %>% 
+  #   filter(type == "name") %>% 
+  #   select(-n)
+  # 
+  # ### reinclude in aliases
+  # aliases <- aliases %>% 
+  #   select(-n) %>% 
+  #   anti_join(remaining_dups, by = "mbz_alias") %>% 
+  #   bind_rows(remaining_dups) %>% 
+  #   add_count(mbz_alias) %>% 
+  #   filter(n == 1) %>% # deletes one final rogue duplicate
+  #   select(-n)
   
   # We clean up the regexes a bit
   aliases <- aliases %>% 

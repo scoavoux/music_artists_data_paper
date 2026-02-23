@@ -78,7 +78,7 @@ lefigaro|stem|7723b01e122442c7|47db85362366be44|e5b515f0a1395687|-1125268433|buc
 lemonde|stem|7ec8ccb87fdbbdf1|ab7aa722bd2440ca|7e4225b785558cff|1719245558|bucket=scoavoux*region=NULL*key=music_artist/objects/lemonde*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20502.5648782131s||0|rds|aws|vector|||86.44|There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  3 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  4 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  5 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  2 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  1 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  1 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  2 failed to parse.|
 press_corpus|stem|9541338262b66a67|c287ae213c7bd73d|142b30c76b451479|-296614722|bucket=scoavoux*region=NULL*key=music_artist/objects/press_corpus*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20502.5651389447s||0|rds|aws|vector|||0.622||
 telerama|stem|7b043032ef6126b0|c8b1e8b2cc300b90|73382333ed24d7b3|1656235727|bucket=scoavoux*region=NULL*key=music_artist/objects/telerama*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20504.3780417728s||0|rds|aws|vector|||2.255|There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(date)`. Caused by warning: ! All formats failed to parse. No formats found.|
-.Random.seed|object|a4d398c6e677832f
+.Random.seed|object|ddb9fa4e046a541c
 patch_names|function|4fd99ae76b9455ef
 initialize_s3|function|25a2772c1c03257f
 write_s3|function|15e44e053dc7a6c7
@@ -90,6 +90,7 @@ group_songs_by_artist|function|1b87faee9017e507
 make|function|860e3605b48e903a
 make_wiki_keys|function|420336bcf27da1f0
 load_streams|function|614a898e2ac1f783
+first_name_dict|function|c64a216963a93a89
 bind_press_corpora|function|2f4871d3fd759f56
 load_partitioned_s3|function|ef32fd7856f71aa0
 bind_dz_songs|function|a925651495c469c1
@@ -108,9 +109,9 @@ clean_telerama|function|c58ebab3e25c5aa0
 clean_lemonde|function|4fbc1fe4aba78713
 load_wiki|function|0c5791e820407b00
 load_manual_search|function|2b5d381ac9d288fa
-make_aliases|function|30a5cc2c683b443c
+make_aliases|function|3a58564572af3c6c
 make_dz_songs|function|f58dc2882a7702e0
 load_mbz_deezer|function|5c576845a1e17fd0
 load_senscritique|function|bdd447d417e92a4f
 bind_dz_names|function|cd7c8ce67dd05815
-aliases|stem|849985f4a40bd42b|4b481aaf3b3cdd42|d56bdcab8d6597ab|-838269410|bucket=scoavoux*region=NULL*key=music_artist/objects/aliases*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20504.6537711157s||0|rds|aws|vector|||22.796||
+aliases|stem|33c092146d748e49|4b481aaf3b3cdd42|7b414838d8cd5cf5|-838269410|bucket=scoavoux*region=NULL*key=music_artist/objects/aliases*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20507.4027125137s||0|rds|aws|vector|||30.352||
