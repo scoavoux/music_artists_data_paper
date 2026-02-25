@@ -4,15 +4,35 @@ import spacy
 from spacy import displacy
 from spacy.matcher import PhraseMatcher
 from spacy.util import filter_spans
+import unicodedata
 
-telerama = pd.read_csv("/Users/pol/Downloads/telerama_clean.csv")
 
-aliases = pd.read_csv("/Users/pol/Downloads/aliases.csv")  # or however you import
+press = pd.read_excel("/Users/pol/Downloads/press_corpus.xlsx")
+
+press.info()
+
+aliases = pd.read_excel("/Users/pol/Downloads/aliases.xlsx")  # or however you import
 aliases = aliases.dropna(subset=["mbz_alias"])
+
+aliases = aliases.drop(columns="alias_regex")
+
+# normalize both texts
+def clean_text(text):
+    #text = text.lower()
+    text = unicodedata.normalize("NFKD", text)
+    text = text.replace("\xa0", " ")
+    text = text.strip()
+    return text
+
+
+press["article_text"] = press["article_text"].apply(clean_text)
+aliases["mbz_alias"] = aliases["mbz_alias"].apply(clean_text)
+
 
 alias_to_id = dict(
     zip(aliases["mbz_alias"], aliases["dz_name"])
 )
+
 
 def keep_alias(alias):
     tokens = alias.split()
@@ -28,57 +48,50 @@ alias_to_id = {
 }
 
 
-nlp = spacy.load("en_core_web_sm", disable=["ner", "parser", "tagger"])
+nlp = spacy.load("fr_core_news_sm", disable=["ner", "parser", "tagger"])
 
 
-matcher = PhraseMatcher(nlp.vocab)
+matcher = PhraseMatcher(nlp.vocab, attr='LOWER')
 
 patterns = [nlp.make_doc(alias) for alias in alias_to_id.keys()]
 matcher.add("ARTIST", patterns)
 
 
-
-telerama.info()
-
-telerama["reviewed_artist"]
-
-
-
-df = telerama[1:100]
+df = press
 df = df.reset_index().rename(columns={"index": "article_id"})
+
 
 results = []
 
-for doc, reviewed_artist in zip(nlp.pipe(df["article_text"]), df["reviewed_artist"]):
+
+docs = list(nlp.pipe(df["article_text"].fillna("")))
+
+for row, doc in zip(df.itertuples(index=False), docs):
     matches = matcher(doc)
-    
-    spans = [doc[start:end] for _, start, end in matches]
-    spans = filter_spans(spans)  # keeps longest, removes overlaps
+    spans = filter_spans([doc[start:end] for _, start, end in matches])
     
     for span in spans:
         results.append({
-            "reviewed_artist": reviewed_artist,
+            "article_id": row.article_id,
+            "reviewed_artist": row.reviewed_artist,
             "matched_string": span.text,
             "from_alias": alias_to_id.get(span.text)
         })
 
+results
 
 matches_df = pd.DataFrame(results)
 
 agg_matches = (
     matches_df
-    .groupby("reviewed_artist")["matched_string"]
+    .groupby("article_id")["matched_string"]
     .apply(list)
     .reset_index()
 )
 
-df = df.merge(agg_matches, on="reviewed_artist", how="left")
+df = df.merge(agg_matches, on="article_id", how="left")
 
 df
-
-df.to_csv("/Users/pol/Downloads/test.csv", sep=";")
-
-[s for s in matches_df["article_title"].loc[:100]]
+df.to_excel("/Users/pol/Downloads/telerama_phrase_matches.xlsx")
 
 
-matches_df = matches_df.groupby(["article_id", "artist_id"]).size()
