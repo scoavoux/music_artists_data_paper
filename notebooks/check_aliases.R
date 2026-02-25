@@ -66,8 +66,6 @@ test <- t %>%
 
 ## ------------- append last names as alias to real names
 
-
-
 # remove duplicate names by known popularity method
 aliases <- aliases %>%
   group_by(mbz_alias) %>%
@@ -89,16 +87,6 @@ aliases <- aliases %>%
   add_count(mbz_alias) %>%
   filter(n == 1) %>% # deletes one final rogue duplicate
   select(-n)
-
-
-
-
-
-
-
-
-
-
 
 
 

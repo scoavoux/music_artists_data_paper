@@ -191,10 +191,13 @@ list(
 
 ## RENAME all TO artists EVERYWHERE! (variations of artists)
 
+#library(openxlsx)
+#write.xlsx(press_corpus, "data/press_corpus.xlsx")
 
 
 
 
+# write.xlsx(aliases, "data/aliases.xlsx")
 
 
 

@@ -71,14 +71,7 @@ mbz_names_patch|stem|2f653386780c502f|e4bd11eeddcaabe2|35399f2a94eb631a|15759243
 wiki_mbz_ids_patch|stem|1198d4462faee4a6|84428039b4cd04a9|a598a6db9e154c45|-1891922533|bucket=scoavoux*region=NULL*key=music_artist/objects/wiki_mbz_ids_patch*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20496.4387592233s||0|rds|aws|vector|||1.11|Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 59 of `x` matches multiple rows in `y`. ℹ Row 418723 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.|
 all_patched|stem|e523711f5792d1ff|4174229045a94dd0|02c5b6d71574aac6|461700976|bucket=scoavoux*region=NULL*key=music_artist/objects/all_patched*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20496.438981094s||0|rds|aws|vector|||5.825||
 all_final|stem|5b71a3bea154e509|ff357c300aac514f|58dfc45e9288cdfe|1771459488|bucket=scoavoux*region=NULL*key=music_artist/objects/all_final*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20496.439536442s||0|rds|aws|vector|||38.793|There were 851 warnings in `mutate()`. The first warning was: ℹ In argument: `keep_dz = colcount_share_by_dzdup ==   max(colcount_share_by_dzdup, na.rm = TRUE)`. ℹ In group 3: `dz_artist_id = '10032898'`. Caused by warning in `max()`: ! no non-missing arguments to max; returning -Inf ℹ Run `dplyr::last_dplyr_warnings()` to see the 850 remaining warnings.|
-regexify_aliases|function|7cad5e41280a97cd|||||||||||||||
-clean_figaro|function|008b282dbc515b53|||||||||||||||
-liberation|stem|a6ae3289114f4bfc|029fe68d31a5495a|3a1728bfdf4f755a|-1310133424|bucket=scoavoux*region=NULL*key=music_artist/objects/liberation*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20502.5568985638s||0|rds|aws|vector|||36.939|NAs introduced by coercion to integer range|
-lefigaro|stem|7723b01e122442c7|47db85362366be44|e5b515f0a1395687|-1125268433|bucket=scoavoux*region=NULL*key=music_artist/objects/lefigaro*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20502.5637784407s||0|rds|aws|vector|||233.551|NAs introduced by coercion to integer range. One or more parsing issues, call `problems()` on your data frame for details, e.g.:   dat <- vroom(...)   problems(dat). There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(date)`. Caused by warning: ! All formats failed to parse. No formats found.|
-lemonde|stem|7ec8ccb87fdbbdf1|ab7aa722bd2440ca|7e4225b785558cff|1719245558|bucket=scoavoux*region=NULL*key=music_artist/objects/lemonde*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20502.5648782131s||0|rds|aws|vector|||86.44|There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  3 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  4 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  5 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  2 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  1 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  1 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  2 failed to parse.|
-press_corpus|stem|9541338262b66a67|c287ae213c7bd73d|142b30c76b451479|-296614722|bucket=scoavoux*region=NULL*key=music_artist/objects/press_corpus*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20502.5651389447s||0|rds|aws|vector|||0.622||
-telerama|stem|7b043032ef6126b0|c8b1e8b2cc300b90|73382333ed24d7b3|1656235727|bucket=scoavoux*region=NULL*key=music_artist/objects/telerama*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20504.3780417728s||0|rds|aws|vector|||2.255|There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(date)`. Caused by warning: ! All formats failed to parse. No formats found.|
-.Random.seed|object|ddb9fa4e046a541c
+.Random.seed|object|e0cb2cb56ff7aea5
 patch_names|function|4fd99ae76b9455ef
 initialize_s3|function|25a2772c1c03257f
 write_s3|function|15e44e053dc7a6c7
@@ -90,10 +83,10 @@ group_songs_by_artist|function|1b87faee9017e507
 make|function|860e3605b48e903a
 make_wiki_keys|function|420336bcf27da1f0
 load_streams|function|614a898e2ac1f783
-first_name_dict|function|c64a216963a93a89
 bind_press_corpora|function|2f4871d3fd759f56
 load_partitioned_s3|function|ef32fd7856f71aa0
 bind_dz_songs|function|a925651495c469c1
+first_name_dict|function|c64a216963a93a89
 stream_share_patch|function|600e47e27ed7d5d1
 patch_sc_dups|function|b6bd2d99244add43
 patch_deezer_dups|function|6b161c745bcb1dd1
@@ -109,9 +102,9 @@ clean_telerama|function|c58ebab3e25c5aa0
 clean_lemonde|function|4fbc1fe4aba78713
 load_wiki|function|0c5791e820407b00
 load_manual_search|function|2b5d381ac9d288fa
-make_aliases|function|3a58564572af3c6c
+make_aliases|function|2016c0999dbff030
 make_dz_songs|function|f58dc2882a7702e0
 load_mbz_deezer|function|5c576845a1e17fd0
 load_senscritique|function|bdd447d417e92a4f
 bind_dz_names|function|cd7c8ce67dd05815
-aliases|stem|33c092146d748e49|4b481aaf3b3cdd42|7b414838d8cd5cf5|-838269410|bucket=scoavoux*region=NULL*key=music_artist/objects/aliases*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20507.4027125137s||0|rds|aws|vector|||30.352||
+aliases|stem|e313f8fac45fee5d|4b481aaf3b3cdd42|3cd3adab02b27b1c|-838269410|bucket=scoavoux*region=NULL*key=music_artist/objects/aliases*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20508.3905099964s||0|rds|aws|vector|||20.315||
