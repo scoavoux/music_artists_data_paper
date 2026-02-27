@@ -71,40 +71,46 @@ mbz_names_patch|stem|2f653386780c502f|e4bd11eeddcaabe2|35399f2a94eb631a|15759243
 wiki_mbz_ids_patch|stem|1198d4462faee4a6|84428039b4cd04a9|a598a6db9e154c45|-1891922533|bucket=scoavoux*region=NULL*key=music_artist/objects/wiki_mbz_ids_patch*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20496.4387592233s||0|rds|aws|vector|||1.11|Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 59 of `x` matches multiple rows in `y`. ℹ Row 418723 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.|
 all_patched|stem|e523711f5792d1ff|4174229045a94dd0|02c5b6d71574aac6|461700976|bucket=scoavoux*region=NULL*key=music_artist/objects/all_patched*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20496.438981094s||0|rds|aws|vector|||5.825||
 all_final|stem|5b71a3bea154e509|ff357c300aac514f|58dfc45e9288cdfe|1771459488|bucket=scoavoux*region=NULL*key=music_artist/objects/all_final*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20496.439536442s||0|rds|aws|vector|||38.793|There were 851 warnings in `mutate()`. The first warning was: ℹ In argument: `keep_dz = colcount_share_by_dzdup ==   max(colcount_share_by_dzdup, na.rm = TRUE)`. ℹ In group 3: `dz_artist_id = '10032898'`. Caused by warning in `max()`: ! no non-missing arguments to max; returning -Inf ℹ Run `dplyr::last_dplyr_warnings()` to see the 850 remaining warnings.|
-.Random.seed|object|e0cb2cb56ff7aea5
-patch_names|function|4fd99ae76b9455ef
-initialize_s3|function|25a2772c1c03257f
-write_s3|function|15e44e053dc7a6c7
+lefigaro|stem|7723b01e122442c7|47db85362366be44|e5b515f0a1395687|-1125268433|bucket=scoavoux*region=NULL*key=music_artist/objects/lefigaro*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20511.5550131411s||0|rds|aws|vector|||189.32|NAs introduced by coercion to integer range. One or more parsing issues, call `problems()` on your data frame for details, e.g.:   dat <- vroom(...)   problems(dat). There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(date)`. Caused by warning: ! All formats failed to parse. No formats found.|
+telerama|stem|7b043032ef6126b0|c8b1e8b2cc300b90|73382333ed24d7b3|1656235727|bucket=scoavoux*region=NULL*key=music_artist/objects/telerama*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20511.5550756979s||0|rds|aws|vector|||3.896|There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(date)`. Caused by warning: ! All formats failed to parse. No formats found.|
+lemonde|stem|7ec8ccb87fdbbdf1|ab7aa722bd2440ca|7e4225b785558cff|1719245558|bucket=scoavoux*region=NULL*key=music_artist/objects/lemonde*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20511.5561268183s||0|rds|aws|vector|||88.939|There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  3 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  4 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  5 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  2 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  1 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  1 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  2 failed to parse.|
+liberation|stem|a6ae3289114f4bfc|029fe68d31a5495a|3a1728bfdf4f755a|-1310133424|bucket=scoavoux*region=NULL*key=music_artist/objects/liberation*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20511.5566702256s||0|rds|aws|vector|||36.257|NAs introduced by coercion to integer range|
+press_corpus|stem|9541338262b66a67|c287ae213c7bd73d|142b30c76b451479|-296614722|bucket=scoavoux*region=NULL*key=music_artist/objects/press_corpus*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20511.556929954s||0|rds|aws|vector|||0.849||
 prop_na|function|c201f9db83a66140
-print_stream_share|function|51c9f50b80af0569
+write_s3|function|15e44e053dc7a6c7
+.Random.seed|object|92ed729d5f7d9caf
+first_name_dict|function|c64a216963a93a89
+bind_dz_songs|function|a925651495c469c1
+initialize_s3|function|25a2772c1c03257f
 mbz_from_wiki|function|09d134ac8e582641
-regexify|function|af5bde3347fe0c35
+patch_names|function|4fd99ae76b9455ef
+print_stream_share|function|51c9f50b80af0569
+bind_press_corpora|function|2f4871d3fd759f56
 group_songs_by_artist|function|1b87faee9017e507
+stream_share_patch|function|600e47e27ed7d5d1
+normalize_string|function|1c47ddc0dd094d84
 make|function|860e3605b48e903a
+load_partitioned_s3|function|ef32fd7856f71aa0
+regexify|function|e30119407d109e4f
 make_wiki_keys|function|420336bcf27da1f0
 load_streams|function|614a898e2ac1f783
-bind_press_corpora|function|2f4871d3fd759f56
-load_partitioned_s3|function|ef32fd7856f71aa0
-bind_dz_songs|function|a925651495c469c1
-first_name_dict|function|c64a216963a93a89
-stream_share_patch|function|600e47e27ed7d5d1
-patch_sc_dups|function|b6bd2d99244add43
-patch_deezer_dups|function|6b161c745bcb1dd1
-clean_lefigaro|function|9a095fa620b9c60f
 load_s3|function|2f0bfd56597701f8
-load_s3_info|function|b201b67fd14b09a5
 clean_liberation|function|bcf27a80b4d11f22
+load_s3_info|function|b201b67fd14b09a5
+clean_lefigaro|function|9a095fa620b9c60f
+patch_deezer_dups|function|6b161c745bcb1dd1
+patch_sc_dups|function|b6bd2d99244add43
 update_rows|function|5a00fbb3fa16d38a
 join_artist_ids|function|c7ac1206cfc6f5e6
 deduplicate_ids|function|22f92f57a11cd4a3
-load_sc_ratings|function|ac7f50b2722bc4fb
-clean_telerama|function|c58ebab3e25c5aa0
 clean_lemonde|function|4fbc1fe4aba78713
-load_wiki|function|0c5791e820407b00
-load_manual_search|function|2b5d381ac9d288fa
-make_aliases|function|2016c0999dbff030
-make_dz_songs|function|f58dc2882a7702e0
 load_mbz_deezer|function|5c576845a1e17fd0
 load_senscritique|function|bdd447d417e92a4f
+load_sc_ratings|function|ac7f50b2722bc4fb
 bind_dz_names|function|cd7c8ce67dd05815
-aliases|stem|e313f8fac45fee5d|4b481aaf3b3cdd42|3cd3adab02b27b1c|-838269410|bucket=scoavoux*region=NULL*key=music_artist/objects/aliases*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20508.3905099964s||0|rds|aws|vector|||20.315||
+make_aliases|function|6ee33e42f15e9b64
+clean_telerama|function|c58ebab3e25c5aa0
+load_wiki|function|0c5791e820407b00
+load_manual_search|function|2b5d381ac9d288fa
+make_dz_songs|function|f58dc2882a7702e0
+aliases|stem|18fc666a6152ddf0|4b481aaf3b3cdd42|903109b32b96ed1c|-838269410|bucket=scoavoux*region=NULL*key=music_artist/objects/aliases*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20511.6105562996s||0|rds|aws|vector|||21.102||

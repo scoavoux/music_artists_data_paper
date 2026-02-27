@@ -7,21 +7,30 @@ regexify <- function(str){
   str <- str %>% 
     #stringi::stri_trans_general(id = "Latin-ASCII") %>% 
     # escape regex special character
-    str_escape() %>% 
+    #str_escape() %>% 
     
     str_replace_all(c(
-      "é" = "[ée]",
-      "\\b[Tt]he\\b" = "([Tt]he|[Ll]es)",
-      "^[Tt]he\\b" = "([Tt]he|[Ll]es)",
-      "\\b(?:[Aa]nd|[Ee]t|&)" = "([Aa]nd|[Ee]t|&)"
-    )) %>% 
+      "\\bthe\\b" = "(the|les|des|du|de la)?",
+      "\\b(?:and|et|&)" = "(and|et|&)"
+    )) #%>% 
   
-  { ifelse(str_detect(substr(., 1, 1), "\\w"), paste0("\\b", .), .) } %>%
-  { ifelse(str_detect(substr(., nchar(.), nchar(.)), "\\w"), paste0(., "\\b"), .) }
+  #{ ifelse(str_detect(substr(., 1, 1), "\\w"), paste0("\\b", .), .) } %>%
+  #{ ifelse(str_detect(substr(., nchar(.), nchar(.)), "\\w"), paste0(., "\\b"), .) }
     
   return(str)
 }
 
+regexify("the weeknd")
+
+# string normalization
+normalize_string <- function(x) {
+  require(stringi)
+  x %>% 
+    str_to_lower() |> 
+    stri_trans_general("Latin-ASCII") %>% # rm accents
+    # str_replace_all("[^a-z0-9 ]", " ") %>% # rm special chars NEED THIS?
+    str_squish() # trim + remove extra spaces
+}
 
 
 first_name_dict <- function(fr_names="data/firstnames.csv", n_us_names=1000, n_fr_names=2000){
@@ -71,8 +80,7 @@ make_aliases <- function(all_final, mbz_alias_file) {
     left_join(all_final, by = "mbz_artist_id") %>% 
     filter(!is.na(dz_artist_id)) %>% 
     arrange(desc(dz_stream_share)) %>% 
-    mutate(alias_regex = regexify(mbz_alias)) %>% 
-    select(dz_artist_id, mbz_alias, alias_regex, type, dz_stream_share) %>% 
+    select(dz_artist_id, mbz_alias, type, dz_stream_share) %>% 
     as_tibble()
   
   # remove useless names (hand-coded by sam)
@@ -125,12 +133,24 @@ make_aliases <- function(all_final, mbz_alias_file) {
       # arabic, korean, russian, greek alphabets)
       !str_detect(mbz_alias, "^[^ -~]+$")
     ) %>% 
-    distinct(dz_artist_id, mbz_alias, .keep_all = TRUE) 
+    
+    # NORMALIZE STRING!
+    mutate(mbz_alias = normalize_string(mbz_alias)) %>% 
+    
+    mutate(re_alias = regexify(mbz_alias)) %>% 
+    
+    distinct(dz_artist_id, mbz_alias, re_alias, .keep_all = TRUE) 
     
   return(aliases)
 }
 
 ### ADD LAST NAMES AS ALIAS HERE?
+
+
+
+
+
+
 
 
   
