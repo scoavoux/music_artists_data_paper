@@ -1,65 +1,32 @@
 # Make aliases ------
-
-regexify <- function(str){
+str_normalize <- function(str){
   
   require(stringr)
+  require(stringi)
+  
   
   str <- str %>% 
-    #stringi::stri_trans_general(id = "Latin-ASCII") %>% 
-    # escape regex special character
-    #str_escape() %>% 
-    
+
+    str_to_lower() %>%  
+
+    stri_trans_general("Latin-ASCII") %>% # rm accents
+
     str_replace_all(c(
-      "\\bthe\\b" = "(the|les|des|du|de la)?",
-      "\\b(?:and|et|&)" = "(and|et|&)"
-    )) #%>% 
-  
-  #{ ifelse(str_detect(substr(., 1, 1), "\\w"), paste0("\\b", .), .) } %>%
-  #{ ifelse(str_detect(substr(., nchar(.), nchar(.)), "\\w"), paste0(., "\\b"), .) }
+      #"\\bthe\\b" = "(the|les|des|du|de\sla)?", # LEAVE OUT FOR NOW
+      "\\b(the|les|des|le|la)\\s\\b" = "", # remove the
+      "\\b(?:and|et|&|n)\\b" = "&", # unify &
+      "-" = " "
+    )) %>% 
     
+    str_remove_all("[.,!?;:]") %>% 
+    
+    str_squish() # trim + remove extra spaces
+
   return(str)
 }
 
-regexify("the weeknd")
 
-# string normalization
-normalize_string <- function(x) {
-  require(stringi)
-  x %>% 
-    str_to_lower() |> 
-    stri_trans_general("Latin-ASCII") %>% # rm accents
-    # str_replace_all("[^a-z0-9 ]", " ") %>% # rm special chars NEED THIS?
-    str_squish() # trim + remove extra spaces
-}
-
-
-first_name_dict <- function(fr_names="data/firstnames.csv", n_us_names=1000, n_fr_names=2000){
-  
-  require(babynames)
-  
-  us_names <- babynames %>% 
-    group_by(name) %>% 
-    summarise(n = sum(n)) %>% 
-    arrange(desc(n)) %>% 
-    slice_head(n = n_us_names) %>% 
-    select(name) %>% 
-    mutate(origin = "us")
-  
-  fr_names <- read_csv(fr_names) %>% 
-    slice_head(n = n_fr_names) %>% 
-    select(name = "firstname") %>% 
-    mutate(origin = "fr")
-  
-  first_names <- fr_names %>% 
-    bind_rows(us_names) %>% 
-    mutate(name = str_to_lower(name)) %>% 
-    distinct()
-  
-  return(first_names)
-}
-
-
-make_aliases <- function(all_final, mbz_alias_file) {
+ make_aliases <- function(all_final, mbz_alias_file) {
   
   require(tidytable)
   require(dplyr)
@@ -91,36 +58,32 @@ make_aliases <- function(all_final, mbz_alias_file) {
   aliases <- aliases %>% 
     anti_join(names_to_remove, by = c(mbz_alias = "name"))
   
-  # # remove common US and french first names (by dictionary)
-  # first_names <- first_name_dict(fr_names = "data/firstnames.csv",
-  #                                n_us_names=500, n_fr_names=2000)
-  # 
-  # aliases <- aliases %>% 
-  #   mutate(name = str_to_lower(mbz_alias)) %>% 
-  #   anti_join(first_names, by = "name")
-  # 
-  # 
-  # # remove duplicate names by known popularity method
-  # aliases <- aliases %>% 
-  #   group_by(mbz_alias) %>% 
-  #   filter(dz_stream_share == max(dz_stream_share)) %>% # IMPLEMENT RATIO
-  #   add_count(mbz_alias) %>% 
-  #   ungroup()
-  # 
-  # ### deduplicate remaining by name > alias
-  # remaining_dups <- aliases %>% 
-  #   filter(n > 1) %>% 
-  #   filter(type == "name") %>% 
-  #   select(-n)
-  # 
-  # ### reinclude in aliases
-  # aliases <- aliases %>% 
-  #   select(-n) %>% 
-  #   anti_join(remaining_dups, by = "mbz_alias") %>% 
-  #   bind_rows(remaining_dups) %>% 
-  #   add_count(mbz_alias) %>% 
-  #   filter(n == 1) %>% # deletes one final rogue duplicate
-  #   select(-n)
+  
+  # NORMALIZE NAMES!
+  aliases <- aliases %>% 
+    mutate(mbz_alias = str_normalize(mbz_alias)) 
+  
+  # remove duplicate names by known popularity method
+  aliases <- aliases %>%
+    group_by(mbz_alias) %>%
+    filter(dz_stream_share == max(dz_stream_share)) %>% # IMPLEMENT RATIO
+    add_count(mbz_alias) %>%
+    ungroup()
+
+  ### deduplicate remaining by name > alias
+  remaining_dups <- aliases %>%
+    filter(n > 1) %>%
+    filter(type == "name") %>%
+    select(-n)
+
+  ### reinclude in aliases
+  aliases <- aliases %>%
+    select(-n) %>%
+    anti_join(remaining_dups, by = "mbz_alias") %>%
+    bind_rows(remaining_dups) %>%
+    add_count(mbz_alias) %>%
+    filter(n == 1) %>% # deletes one final rogue duplicate
+    select(-n)
   
   # We clean up the regexes a bit
   aliases <- aliases %>% 
@@ -134,22 +97,23 @@ make_aliases <- function(all_final, mbz_alias_file) {
       !str_detect(mbz_alias, "^[^ -~]+$")
     ) %>% 
     
-    # NORMALIZE STRING!
-    mutate(mbz_alias = normalize_string(mbz_alias)) %>% 
-    
-    mutate(re_alias = regexify(mbz_alias)) %>% 
-    
-    distinct(dz_artist_id, mbz_alias, re_alias, .keep_all = TRUE) 
+    distinct(dz_artist_id, mbz_alias, .keep_all = TRUE) 
     
   return(aliases)
 }
 
-### ADD LAST NAMES AS ALIAS HERE?
 
 
-
-
-
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 
 
 
