@@ -16,6 +16,7 @@ dependencies = [
   "pip>=26.0.1",
   "pyarrow>=20.0.0",
   "spacy>=3.8.11",
+  "unidecode>=1.4.0",
 ]
 
 [build-system]

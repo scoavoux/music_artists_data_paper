@@ -18,7 +18,7 @@ aliases = aliases.drop(columns="alias_regex")
 
 # normalize both texts
 def clean_text(text):
-    #text = text.lower()
+    text = text.lower()
     text = unicodedata.normalize("NFKD", text)
     text = text.replace("\xa0", " ")
     text = text.strip()
