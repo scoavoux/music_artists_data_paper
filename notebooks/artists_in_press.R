@@ -5,6 +5,9 @@ library(ggplot2)
 tar_load(aliases)
 tar_load(all_final)
 
+all_final %>% 
+  filter(dz_artist_id == 1203)
+
 # prepare artists
 all_final <- all_final %>% 
   filter(!is.na(sc_artist_id) & !is.na(mbz_artist_id)) %>% 
@@ -50,17 +53,14 @@ added_aliases <- aliases_in_press %>%
 
 write.csv2(added_aliases, file = "data/aliases_to_check.csv")
 
-tar_load(aliases)
 
-aliases %>% 
-  filter(mbz_alias == "verdi")
+dz_matches_outliers <- artists_in_press %>% 
+  select(dz_artist_id, dz_name, dz_stream_share, name_count, corr_pop)
 
-aliases %>% 
-  distinct(mbz_alias == "verdi")
+write.csv2(dz_matches_outliers[1:1000,], file = "data/dz_matches_outliers.csv")
 
-
-
-
+artists_in_press <- artists_in_press %>% 
+  arrange(desc(name_count))
 
 
 
