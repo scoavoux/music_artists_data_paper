@@ -2,11 +2,9 @@ library(dplyr)
 library(stringr)
 library(ggplot2)
 
-tar_load(aliases)
-tar_load(all_final)
+options(scipen = 99)
 
-all_final %>% 
-  filter(dz_artist_id == 1203)
+tar_load(all_final)
 
 # prepare artists
 all_final <- all_final %>% 
@@ -20,39 +18,68 @@ all_final <- all_final %>%
 
 
 # prepare entities
-ents <- read.csv("data/extracted_ents_clean.csv", sep = ";")
+ents <- read.csv("data/extracted_ents_ALL.csv", sep = ";")
 
 ents <- ents %>% 
   as_tibble() %>% 
   mutate(is_in_press = TRUE,
-         press_name = normalize_string(name)) %>% 
-  group_by(press_name) %>% 
+         entity = str_normalize(name)) %>% 
+  group_by(entity) %>% 
   mutate(keep_name = ifelse(name_count == max(name_count), TRUE, FALSE)) %>% 
   filter(keep_name) %>% 
   ungroup() %>% 
-  select(c(press_name, name_count, is_in_press, keep_name)) %>% 
+  filter(str_length(entity) > 2) %>% 
+  select(c(entity, name_count, keep_name)) %>% 
   distinct()  # remove perfect duplicates
 
 
-# ------ compare join with dz_names and with aliases
-# join and sort by difference between popularity and name count
+############################################################
+############################################################
+
+# ------ 1. match on name in dz_names
 artists_in_press <- all_final %>% 
-  left_join(ents, by = c(dz_name = "press_name")) %>% 
-  mutate(corr_pop = abs(log(dz_stream_share / name_count))) %>% # outliers: log ratio of the 2 metrics
-  arrange(desc(corr_pop))
+  left_join(ents, by = c(dz_name = "entity"))
 
-aliases_in_press <- aliases %>% 
-  inner_join(ents, by = c(mbz_alias = "press_name")) 
+# 2. ENTITIES WITH NO MATCH
+ent_no_dzname <- ents %>% 
+  anti_join(artists_in_press, by = c(entity = "dz_name")) %>% 
+  filter(name_count > 30)
 
-# what additional matches do we get from the aliases list?
-added_aliases <- aliases_in_press %>% 
-  anti_join(artists_in_press, by = c(mbz_alias = "dz_name")) %>% 
-  arrange(desc(name_count)) %>% 
-  select(-c(keep_name, is_in_press, type))
+write.csv2(ent_no_dzname, file = "data/ent_no_dzname.csv")
 
+
+# ENTITIES WITH WRONG MATCH
+# join and sort by difference between popularity and name count
+artists_in_press <- artists_in_press %>% 
+  mutate(corr_pop = abs(log(dz_stream_share / name_count))) %>% 
+  arrange(desc(corr_pop)) # outliers: log ratio of the 2 metrics
+
+
+all_final %>% 
+  filter(str_detect(dz_name, "doherty"))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# # what additional matches do we get from the aliases list?
+# added_aliases <- aliases_in_press %>% 
+#   anti_join(artists_in_press, by = c(mbz_alias = "dz_name")) %>% 
+#   arrange(desc(name_count)) %>% 
+#   select(-c(type))
 
 write.csv2(added_aliases, file = "data/aliases_to_check.csv")
-
 
 dz_matches_outliers <- artists_in_press %>% 
   select(dz_artist_id, dz_name, dz_stream_share, name_count, corr_pop)
