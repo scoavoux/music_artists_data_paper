@@ -48,6 +48,20 @@ ent_no_dzname <- ents %>%
 write.csv2(ent_no_dzname, file = "data/ent_no_dzname.csv")
 
 
+
+## REIMPORT HAND-CODED AND MATCH WITH aliases
+
+df <- read.csv("data/ent_no_dzname.csv", sep = ";")
+df <- df %>% 
+  filter(alias == 1 & to_artist != "") 
+
+df <- df %>% 
+  left_join(all_final, by = c(to_artist = "dz_name")) %>%
+  rename(dz_name = to_artist) %>% 
+  select(dz_name, name_count)
+
+
+
 # ENTITIES WITH WRONG MATCH
 # join and sort by difference between popularity and name count
 artists_in_press <- artists_in_press %>% 
@@ -56,14 +70,14 @@ artists_in_press <- artists_in_press %>%
 
 
 all_final %>% 
-  filter(str_detect(dz_name, "doherty"))
+  filter(str_detect(dz_name, "kavinsk"))
 
 
+all_final %>% 
+  filter(dz_artist_id == 1004)
 
-
-
-
-
+all_before_dedup %>% 
+  filter(name == "N.W.A")
 
 
 
