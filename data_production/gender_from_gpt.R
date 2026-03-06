@@ -82,11 +82,16 @@ read_gender_annotations <- function(output_dir = "gpt_batches") {
 }
 
 # Run ------
-## Test set ------
 library(tidyverse)
 library(janitor)
+library(targets)
+library(aws.s3)
+
+## Test set ------
+
 manual_annotation <- read_csv("data/artistes_200_test - artists_200_randomsample.csv")
 test_set_annotation <- annotate_gender(manual_annotation, assistant_path = "assistant/gpt_gender_assistant.txt")
+
 test_set_annotation <- test_set_annotation |> 
   rename(gpt_gender = "gender") %>% 
   left_join(select(manual_annotation, artist_id, human_annotation, genre)) |> 
@@ -94,9 +99,47 @@ test_set_annotation <- test_set_annotation |>
 tabyl(test_set_annotation, gpt_gender, human_annotation)
 
 ## Full dataset run ------
-tar_load(artists)
-to_code <- select(artists, artist_id, name, genre)
-full_set_annotation <- annotate_gender(to_code, assistant_path = "assistant/gpt_gender_assistant.txt")
+tar_load(all_final)
+
+## Add main genre
+main_genre_1 <- arrow::read_parquet(
+  file =   arrow::s3_bucket(
+    "scoavoux",
+    endpoint_override = "minio.lab.sspcloud.fr"
+  )$path("records_w3/items/artists_data.snappy.parquet"),
+  partitioning = arrow::schema(REGION = arrow::utf8()),
+  col_select = c("artist_id", "main_genre")
+) %>% 
+  filter(!is.na(main_genre))
+main_genre_2 <- arrow::read_parquet(
+  file =   arrow::s3_bucket(
+    "scoavoux",
+    endpoint_override = "minio.lab.sspcloud.fr"
+  )$path("records_w3/items/artist.snappy.parquet"),
+  partitioning = arrow::schema(REGION = arrow::utf8()),
+  col_select = c("artist_id", "main_genre")
+) %>% 
+  filter(!is.na(main_genre))
+
+main_genre <- bind_rows(main_genre_2, main_genre_1) %>% 
+  group_by(artist_id) %>% 
+  slice(1) %>% 
+  ungroup()
+
+main_genre <- rename(main_genre, dz_artist_id = "artist_id") %>% 
+  mutate(dz_artist_id = as.character(dz_artist_id))
+
+all_final <- arrange(all_final, desc(dz_stream_share))
+main_artists <- select(all_final, dz_name, dz_artist_id, dz_stream_share) %>% 
+  filter(dz_stream_share > 0.000001)
+main_artists <- main_artists %>% 
+  left_join(main_genre) %>% 
+  distinct(dz_name, .keep_all = TRUE) %>% 
+  filter(!is.na(main_genre))
+
+to_code <- select(main_artists, artist_id = "dz_artist_id", name = "dz_name", genre = "main_genre")
+
+full_set_annotation <- annotate_gender(to_code, assistant_path = "data_production/assistant/gpt_gender_assistant.txt")
 
 #full_set_annotation <- read_gender_annotations()
 full_set_annotation <- full_set_annotation %>% 

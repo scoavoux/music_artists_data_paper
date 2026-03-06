@@ -9,7 +9,7 @@ needed.packages <- c('targets',
                      'rstudioapi')
 
 for(pack in needed.packages){
-  if(pack %in% rownames(installed.packages()) == FALSE)
+  if(!(pack %in% rownames(installed.packages())))
   {install.packages(pack)}
 }
 
