@@ -42,14 +42,14 @@ press_v0 <- all_final %>%
 
 # 2. ENTITIES WITH NO MATCH
 ent_no_dzname <- ents %>% 
-  anti_join(artists_in_press, by = c(entity = "dz_name")) %>% 
+  anti_join(press_v0, by = c(entity = "dz_name")) %>% 
   filter(name_count > 30)
 
 write.csv2(ent_no_dzname, file = "data/ent_no_dzname.csv")
 
 
 ## REIMPORT HAND-CODED AND MATCH WITH aliases
-aliases_no_match <- read.csv("data/ent_no_dzname.csv", sep = ";") # UPDATED BY HAND!
+aliases_no_match <- read.csv("data/ent_no_dzname_CHECKED.csv", sep = ";") # UPDATED BY HAND!
 
 aliases_no_match <- aliases_no_match %>% 
   filter(alias == 1 & to_artist != "") %>% 
@@ -61,32 +61,28 @@ aliases_no_match <- aliases_no_match %>%
 
 
 ## UPDATE ARTISTS_IN_PRESS WITH HAND-CODED ALIASES
-press_v1 <- press_v0 %>%
-  left_join(aliases_no_match, by = "dz_name", suffix = c("", "_alias")) %>%
-  mutate(name_count = name_count + coalesce(name_count_alias, 0)) %>%
-  select(-name_count_alias)
-
-
-# ENTITIES WITH WRONG MATCH
+# AND FIND ENTITIES WITH WRONG MATCH
 # join and sort by difference between popularity and name count
 # outliers: log ratio of the 2 metrics
-press_v1_outliers <- press_v1 %>% 
-  mutate(corr_pop = abs(log(dz_stream_share / name_count))) %>% 
+press_v1 <- press_v0 %>%
+  left_join(aliases_no_match, by = "dz_name", suffix = c("", "_alias")) %>%
+  mutate(name_count = name_count + coalesce(name_count_alias, 0),
+         corr_pop = abs(log(dz_stream_share / name_count))) %>%
   filter(name_count > 30) %>% 
   arrange(desc(corr_pop)) %>% 
-  select(dz_name, name_count, keep_name, 
-         dz_artist_id, corr_pop, dz_stream_share)
+  select(dz_name, name_count, dz_artist_id, 
+         corr_pop, dz_stream_share)
   
-write.csv2(press_v1_outliers, file = "data/press_outliers.csv")
+write.csv2(press_v1, file = "data/press_outliers.csv")
 
 
 ## REIMPORT CORRECTED OUTLIERS
-press_v1_CORR_outliers <- read.csv("data/press_outliers.csv", sep = ";") # UPDATED BY HAND!
+press_v1_CHECKED <- read.csv("data/press_outliers_CHECKED.csv", sep = ";") # UPDATED BY HAND!
 
-to_drop <- press_v1_CORR_outliers %>% 
+to_drop <- press_v1_CHECKED %>% 
   filter(drop == 1)
 
-wrong_alias <- press_v1_CORR_outliers %>% 
+wrong_alias <- press_v1_CHECKED %>% 
   filter(alias == 1) %>% 
   rename(press_alias = dz_name,
          dz_name = to_artist) %>% 
@@ -100,7 +96,7 @@ wrong_homonyms <- tibble(dz_name = wrong_alias$press_alias,
 # UPDATE DF
 
 ### drop non-artists
-press_v2 <- press_v1 %>% 
+press_v2 <- press_v1%>% 
   anti_join(to_drop, by = "dz_name")
 
 ### recoded aliases
@@ -116,7 +112,7 @@ press_v4 <- press_v3 %>%
                              0, 
                              name_count))
 
-# FINAL
+# FINAL DF
 press_v4 <- press_v4 %>% 
   arrange(desc(name_count)) %>% 
   select(dz_name, name_count, dz_stream_share, dz_artist_id)
