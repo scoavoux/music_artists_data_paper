@@ -18,7 +18,7 @@ all_final <- all_final %>%
 
 
 # prepare entities
-ents <- read.csv("data/extracted_ents_ALL.csv", sep = ";")
+ents <- read.csv("data/extracted_ents_0903.csv", sep = ";")
 
 ents <- ents %>% 
   as_tibble() %>% 
@@ -38,9 +38,10 @@ ents <- ents %>%
 
 # ------ 1. match on name in dz_names
 press_v0 <- all_final %>% 
-  left_join(ents, by = c(dz_name = "entity"))
+  left_join(ents, by = c(dz_name = "entity")) %>% 
+  arrange(desc(name_count))
 
-# 2. ENTITIES WITH NO MATCH
+# extract entities with no match 
 ent_no_dzname <- ents %>% 
   anti_join(press_v0, by = c(entity = "dz_name")) %>% 
   filter(name_count > 30)
@@ -48,8 +49,11 @@ ent_no_dzname <- ents %>%
 write.csv2(ent_no_dzname, file = "data/ent_no_dzname.csv")
 
 
-## REIMPORT HAND-CODED AND MATCH WITH aliases
-aliases_no_match <- read.csv("data/ent_no_dzname_CHECKED.csv", sep = ";") # UPDATED BY HAND!
+############################################################
+############################################################
+
+# ------ 2. integrate hand-coded aliases
+aliases_no_match <- read.csv("data/ent_no_dzname_CHECKED.csv", sep = ";") 
 
 aliases_no_match <- aliases_no_match %>% 
   filter(alias == 1 & to_artist != "") %>% 
@@ -59,27 +63,30 @@ aliases_no_match <- aliases_no_match %>%
   select(press_alias, dz_name, name_count) %>% 
   as_tibble()
 
-
-## UPDATE ARTISTS_IN_PRESS WITH HAND-CODED ALIASES
-# AND FIND ENTITIES WITH WRONG MATCH
-# join and sort by difference between popularity and name count
+# update press_v0 with hand-coded aliases
+# and sort by difference between popularity and name count
 # outliers: log ratio of the 2 metrics
 press_v1 <- press_v0 %>%
   left_join(aliases_no_match, by = "dz_name", suffix = c("", "_alias")) %>%
   mutate(name_count = name_count + coalesce(name_count_alias, 0),
-         corr_pop = abs(log(dz_stream_share / name_count))) %>%
+         corr_pop = abs(log(dz_stream_share / name_count)))
+  
+press_v1_outliers <- press_v1 %>% 
   filter(name_count > 30) %>% 
   arrange(desc(corr_pop)) %>% 
   select(dz_name, name_count, dz_artist_id, 
          corr_pop, dz_stream_share)
   
-write.csv2(press_v1, file = "data/press_outliers.csv")
+write.csv2(press_v1_outliers, file = "data/press_outliers.csv")
 
 
-## REIMPORT CORRECTED OUTLIERS
-press_v1_CHECKED <- read.csv("data/press_outliers_CHECKED.csv", sep = ";") # UPDATED BY HAND!
+############################################################
+############################################################
 
-to_drop <- press_v1_CHECKED %>% 
+## ------- 3. reimport corrected outliers
+press_v1_outliers_CHECKED <- read.csv("data/press_outliers_CHECKED.csv", sep = ";") 
+
+to_drop <- press_v1_outliers_CHECKED %>% 
   filter(drop == 1)
 
 wrong_alias <- press_v1_CHECKED %>% 
@@ -90,13 +97,13 @@ wrong_alias <- press_v1_CHECKED %>%
   as_tibble()
 
 # wrongly matched homonyms to integrate with name_count == 0
-wrong_homonyms <- tibble(dz_name = wrong_alias$press_alias,
-                   name_count = 0)
-  
+wrong_homonyms <- wrong_alias$press_alias
+
+
 # UPDATE DF
 
 ### drop non-artists
-press_v2 <- press_v1%>% 
+press_v2 <- press_v1 %>% 
   anti_join(to_drop, by = "dz_name")
 
 ### recoded aliases
@@ -104,7 +111,6 @@ press_v3 <- press_v2 %>%
   left_join(wrong_alias, by = "dz_name", suffix = c("", "_alias")) %>%
   mutate(name_count = name_count + coalesce(name_count_alias, 0)) %>% # sum of counts if name in alias
   select(-c(name_count_alias, press_alias))
-
 
 ### homonyms
 press_v4 <- press_v3 %>%
@@ -128,17 +134,16 @@ write.csv2(found_aliases, "data/handcoded_aliases_0503.csv")
 
 
 
+# ----------------- UPDATE TO_DROP WITH MORE NAMES
 
+names_to_drop <- c("paul", "camille", "anna", "juliette",
+                   "jacques", "raphael", "antoine", 
+                   "simon", "claude", "corneille",
+                   "keith", "bob", 
+                   
+                   "reich", "morrison") # ADD!
 
-
-
-
-
-
-
-
-
-
+names_to_drop <- c(names_to_drop, wrong_homonyms)
 
 
 

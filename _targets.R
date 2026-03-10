@@ -185,7 +185,18 @@ list(
   
   tar_target(name = aliases,
              command = make_aliases(all_final, 
-                                    mbz_alias_file="musicbrainz/mbid_name_alias.csv"))
+                                    mbz_alias_file="musicbrainz/mbid_name_alias.csv")),
+  
+  
+  # load ents_file separately
+  
+  
+  # output: all press counts linked to valid dz_artist_id
+  # AND export the "CHECK" datasets as byproduct!!!
+  # implement my dictionaries to remove names and add aliases
+  tar_target(name = press_name_counts,
+             command = make_press_counts(all_final, ent_file, 
+                                         to_drop_dict, to_alias_dict)),
 )
 
 

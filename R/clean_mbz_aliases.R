@@ -14,7 +14,7 @@ str_normalize <- function(str){
     str_replace_all(c(
       #"\\bthe\\b" = "(the|les|des|du|de\sla)?", # LEAVE OUT FOR NOW
       "\\b(the|les|des|le|la)\\s\\b" = "", # remove the
-      "\\b(?:and|et|&|n)\\b" = "&", # unify &
+      "\\b(?:and|et|&)\\b" = "&", # unify &
       "-" = " "
     )) %>% 
     
