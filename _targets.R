@@ -188,31 +188,30 @@ list(
                                     mbz_alias_file="musicbrainz/mbid_name_alias.csv")),
   
   
-  # load ents_file separately
+  # load entities file separately
+  tar_target(name = press_named_entities,
+             command = load_s3("interim/press_files/extracted_ents_1003.csv", 
+                                sep = ";")),
   
+  # names to drop
+  tar_target(name = entities_to_drop,
+             command = list_entities_to_drop(file="interim/press_files/press_outliers_checked_1003.csv")),
+  
+  # aliases to update
+  tar_target(name = aliases_to_add,
+             command = list_aliases(file1 = "interim/press_files/ents_without_match_checked_1003.csv",
+                                    file2 = "interim/press_files/press_outliers_checked_1003.csv",
+                                    all_final)),
   
   # output: all press counts linked to valid dz_artist_id
   # AND export the "CHECK" datasets as byproduct!!!
   # implement my dictionaries to remove names and add aliases
   tar_target(name = press_name_counts,
-             command = make_press_counts(all_final, ent_file, 
-                                         to_drop_dict, to_alias_dict)),
+             command = count_names_press(all_final, press_named_entities, 
+                                         name_count_threshold = 30,
+                                         aliases_to_add = NULL,
+                                         names_to_drop = NULL))
 )
-
-
-## RENAME all TO artists EVERYWHERE! (variations of artists)
-
-#library(openxlsx)
-#write.xlsx(press_corpus, "data/press_corpus.xlsx")
-
-
-
-
-# write.xlsx(aliases, "data/aliases.xlsx")
-
-
-
-
 
 
 

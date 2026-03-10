@@ -13,48 +13,72 @@
 # and continue hand-coding them
 
 
-list_aliases <- function(){
+list_aliases <- function(file1, file2, all_final){
   
-  ## ------- 3. import corrected outliers
-  press_v1_outliers_CHECKED <- read.csv("data/press_outliers_CHECKED.csv", sep = ";") 
+  # prepare all_final
+  all_final <- all_final %>% 
+    filter(!is.na(sc_artist_id) & !is.na(mbz_artist_id)) %>% # complete cases
+    mutate(dz_name = str_normalize(dz_name)) %>% # normalize name
+    group_by(dz_name) %>% 
+    mutate(keep = ifelse(dz_stream_share == max(dz_stream_share), 
+                         TRUE, 
+                         FALSE)) %>% # deduplicate
+    filter(keep == TRUE) %>% 
+    ungroup() %>% 
+    select(dz_name, dz_stream_share, dz_artist_id)
   
-  to_drop <- press_v1_outliers_CHECKED %>% 
-    filter(drop == 1)
+  ents_without_match <- load_s3(file1) 
+  press_outliers_checked <- load_s3(file2) 
   
-  wrong_alias <- press_v1_CHECKED %>% 
-    filter(alias == 1) %>% 
-    rename(press_alias = dz_name,
-           dz_name = to_artist) %>% 
-    select(press_alias, dz_name, name_count) %>% 
-    as_tibble()
-  
-  # wrongly matched homonyms to integrate with name_count == 0
-  wrong_homonyms <- wrong_alias$press_alias
-  
-  
-  return(to_alias_dict)
-}
-
-
-list_ents_to_drop <- function(){
-  
-  # ------ 2. integrate hand-coded aliases
-  aliases_no_match <- read.csv("data/ent_no_dzname_CHECKED.csv", sep = ";") 
-  
-  aliases_no_match <- aliases_no_match %>% 
+  added_aliases <- ents_without_match %>% 
     filter(alias == 1 & to_artist != "") %>% 
     left_join(all_final, by = c(to_artist = "dz_name")) %>%
-    rename(dz_name = to_artist,
-           press_alias = entity) %>% 
-    select(press_alias, dz_name, name_count) %>% 
+    rename(alias_to_recode = entity,
+           dz_name = to_artist) %>% 
+    select(alias_to_recode, dz_name, name_count) %>% 
     as_tibble()
   
+  recoded_aliases <- press_outliers_checked %>% 
+    filter(alias == 1) %>% 
+    rename(alias_to_recode = dz_name,
+           dz_name = to_artist) %>% 
+    as_tibble() %>% 
+    select(alias_to_recode, dz_name, name_count)
   
-  return(to_drop_dict)
+  aliases <- rbind(added_aliases, recoded_aliases)
+  
+  return(aliases)
 }
 
 
-make_press_counts <- function(all_final, ent_file){
+# make a df of entities which get NA either because 
+# they are non-musical artists or homonyms of famous artists
+list_entities_to_drop <- function(file){
+  
+  press_outliers_checked <- load_s3(file)
+  
+  # non-artists or ambiguous names
+  wrong_name <- press_outliers_checked %>% 
+    filter(drop == 1)
+  wrong_name <- wrong_name$dz_name
+  
+  # homonyms of famous artists (e.g., "beethoven")
+  wrong_alias <- press_outliers_checked %>% 
+    filter(alias == 1)
+  wrong_alias <- wrong_alias$dz_name
+  
+  names_to_drop <- c(wrong_name, wrong_alias)
+  
+  # assign NA on both metrics to update
+  names_to_drop <- tibble(dz_name = names_to_drop,
+                          name_count = NA,
+                          article_count = NA)
+  return(names_to_drop)
+}
+
+
+count_names_press <- function(all_final, press_named_entities, name_count_threshold, 
+                              add_alias, add_to_drop){
   
   # prepare all_final
   all_final <- all_final %>% 
@@ -69,70 +93,65 @@ make_press_counts <- function(all_final, ent_file){
     select(dz_name, dz_stream_share, dz_artist_id)
   
   # prepare ents
-  ents <- ents %>% 
+  ents <- press_named_entities %>% 
     as_tibble() %>% 
-    mutate(is_in_press = TRUE,
-           entity = str_normalize(name)) %>% 
+    mutate(entity = str_normalize(name)) %>% 
     group_by(entity) %>% 
-    mutate(keep_name = ifelse(name_count == max(name_count), TRUE, FALSE)) %>% 
+    mutate(keep_name = ifelse(name_count == max(name_count), 
+                              TRUE, 
+                              FALSE)) %>% # deduplicate
     filter(keep_name) %>% 
     ungroup() %>% 
     filter(str_length(entity) > 2) %>% # remove short ents
-    select(c(entity, name_count, name_id)) %>% #
-    distinct()  # remove perfect duplicates
+    select(c(name_id, entity, name_count, article_count))
   
   # ------------- 1. match on name in dz_names
-  press_counts <- all_final %>% 
+  press_name_counts <- all_final %>% 
     left_join(ents, by = c(dz_name = "entity")) %>% 
+    mutate(corr_pop = abs(log(dz_stream_share / name_count))) %>% 
     arrange(desc(name_count))
   
-  ## and export (biggest?) non-matched ents + biggest outliers
+  # ------------- 2.  export (biggest?) non-matched ents + biggest outliers
+  # 1. non-matched entities
+  ents_without_match <- ents %>% 
+    anti_join(press_name_counts, by = c(entity = "dz_name")) %>% 
+    filter(name_count >= name_count_threshold)
   
-  # outliers
-  press_counts_outliers <- press_counts %>% 
-    filter(name_count > 30) %>% 
+  write_s3(ents_without_match, file = "interim/press_files/ents_without_match_1003.csv")
+  
+  # 2. outliers
+  press_counts_outliers <- press_name_counts %>% 
+    filter(name_count >= name_count_threshold) %>% 
     arrange(desc(corr_pop)) %>% 
     select(dz_name, name_count, dz_artist_id, 
            corr_pop, dz_stream_share)
   
-  write_s3(press_counts_outliers)
-  
-  return(press_counts)
-}
+  write_s3(press_counts_outliers, file = "interim/press_files/press_counts_outliers_1003.csv")
   
   
   
-correct_press_counts <- function(press_counts, to_alias, to_drop){
+  if(!is.null(aliases_to_add)){
+
+    press_name_counts <- press_name_counts %>%
+      left_join(
+        aliases_to_add %>% select(alias_to_recode, canonical = dz_name),
+        by = c("dz_name" = "alias_to_recode")
+      ) %>%
+      mutate(dz_name = coalesce(canonical, dz_name)) %>%
+      group_by(dz_name) %>%
+      summarise(across(name_count, sum), .groups = "drop")
+    
+    press_name_counts_updated <- press_name_counts_updated %>%
+      mutate(
+        name_count = if_else(dz_name %in% names_to_drop$dz_name, 
+                             NA_integer_, 
+                             name_count),
+        article_count = if_else(dz_name %in% names_to_drop$dz_name, 
+                                NA_integer_, 
+                                article_count)
+      )
+    
+  }
   
-  
-  
-  # ------------- 2. add aliases from alias dict
-  
-  
-  
-  # ------------- 3. drop errors
-  names_to_drop <- c("paul", "camille", "anna", "juliette",
-                     "jacques", "raphael", "antoine", 
-                     "simon", "claude", "corneille",
-                     "keith", "bob", 
-                     
-                     "reich", "morrison") # ADD!
-  
-  names_to_drop <- c(names_to_drop, wrong_homonyms)
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  return(press_name_counts)
 }
