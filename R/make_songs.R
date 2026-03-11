@@ -72,11 +72,13 @@ bind_dz_names <- function(file_1, file_2){
     select(dz_artist_feat_id, dz_name)
   
   scraped_names <- scraped_names %>% 
-    mutate(dz_artist_feat_id = as.character(deezer_id.new))
+    mutate(dz_artist_feat_id = as.character(deezer_id.new),
+           dz_name = name) %>% 
+    select(-c(deezer_id.new, name)) %>% 
+    as_tibble()
   
   names <- names %>% 
-    bind_rows(scraped_names) %>% 
-    select(-deezer_id.new)
+    bind_rows(scraped_names)
   
   return(names)
 
@@ -100,7 +102,12 @@ group_songs_by_artist <- function(songs){
 }
 
 
-  
+
+
+
+
+
+
   
   
   
