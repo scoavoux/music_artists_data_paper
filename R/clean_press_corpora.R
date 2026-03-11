@@ -202,8 +202,9 @@ bind_press_corpora <- function(...){
   press_corpus <- bind_rows(...) %>%
     filter(!is.na(article_text)) %>%
     mutate(article_text = paste(article_title, ".\n", article_text)) %>%
-    mutate(id = row_number()) %>%
-    select(id, source, article_text) %>% 
+    select(source, article_text) %>% 
+    distinct(article_text, .keep_all = T) %>% # REMOVE DUPLICATE TEXTS
+    mutate(article_id = row_number()) %>%
     as_tibble()
   
   head(press_corpus)
@@ -211,9 +212,6 @@ bind_press_corpora <- function(...){
   return(press_corpus)
   
 }
-
-
-
 
 
 
