@@ -185,25 +185,45 @@ list(
   
   # load entities file separately
   tar_target(name = press_named_entities,
-             command = load_s3("interim/press_files/extracted_ents_1103.csv", 
-                                sep = ";") %>% as_tibble()),
+             command = clean_press_ents("press_files/extracted_ents_1203.csv")),
   
   # names to drop
   tar_target(name = entities_to_drop,
-             command = list_entities_to_drop(file="interim/press_files/press_outliers_checked_1003.csv")),
+             command = list_entities_to_drop(file="press_files/press_outliers_checked_1003.csv")),
   
   # aliases to update
-  # tar_target(name = aliases_to_add,
-  #            command = list_aliases(file1 = "interim/press_files/ents_without_match_checked_1003.csv",
-  #                                   file2 = "interim/press_files/press_outliers_checked_1003.csv",
-  #                                   all_final)),
+  tar_target(name = aliases_to_add,
+             command = list_aliases(file1 = "press_files/ents_without_match_checked_1003.csv",
+                                    file2 = "press_files/press_outliers_checked_1003.csv",
+                                    all_final)),
 
   # output: all press counts linked to valid dz_artist_id
   # AND export the "CHECK" datasets as byproduct!!!
   # implement my dictionaries to remove names and add aliases
   tar_target(name = press_name_counts,
              command = count_names_press(all_final, press_named_entities, 
-                                         name_count_threshold = 30))
+                                         name_count_threshold = 30)),
+  
+  tar_target(name = upd_press_name_counts,
+             command = update_press_names(press_name_counts, aliases_to_add, entities_to_drop)),
+  
+  tar_target(name = all_final_press,
+             command = press_counts_to_final(all_final, upd_press_name_counts))
 )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

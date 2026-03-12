@@ -13,6 +13,32 @@
 # and continue hand-coding them
 
 
+clean_press_ents <- function(file){
+  
+  ents <- load_s3(file)
+
+  # prepare ents
+  ents <- ents %>% 
+    as_tibble() %>% 
+    mutate(ent_name = str_normalize(ent_name)) %>% 
+    group_by(ent_name) %>% 
+    # summarize name counts for name duplicates
+    mutate(name_count = sum(name_count),
+              name_count_lefigaro = sum(name_count_lefigaro),
+              name_count_lemonde = sum(name_count_lemonde),
+              name_count_liberation = sum(name_count_liberation),
+              name_count_telerama = sum(name_count_telerama)) %>% 
+    ungroup() %>% 
+    distinct(ent_name, .keep_all = T) %>% # keep only one duplicate
+    filter(str_length(ent_name) > 2) %>% # remove short ents
+    select(c(name_id, ent_name, article_id, name_count,
+             name_count_lefigaro, name_count_lemonde,
+             name_count_liberation, name_count_telerama))
+  
+    return(ents)
+}
+
+
 list_aliases <- function(file1, file2, all_final){
   
   # prepare all_final
@@ -31,11 +57,9 @@ list_aliases <- function(file1, file2, all_final){
   press_outliers_checked <- load_s3(file2) 
   
   added_aliases <- ents_without_match %>% 
-    filter(alias == 1 & to_artist != "") %>% 
-    left_join(all_final, by = c(to_artist = "dz_name")) %>%
-    rename(alias_to_recode = entity,
-           dz_name = to_artist) %>% 
-    select(alias_to_recode, dz_name, name_count,
+    filter(is_alias == 1 & dz_name != "") %>% 
+    left_join(all_final, by = "dz_name") %>%
+    select(ent_name, dz_name, name_count,
            name_count_lefigaro,
            name_count_lemonde,
            name_count_liberation,
@@ -43,11 +67,9 @@ list_aliases <- function(file1, file2, all_final){
     as_tibble()
   
   recoded_aliases <- press_outliers_checked %>% 
-    filter(alias == 1) %>% 
-    rename(alias_to_recode = dz_name,
-           dz_name = to_artist) %>% 
+    filter(is_alias == 1) %>% 
     as_tibble() %>% 
-    select(alias_to_recode, dz_name, name_count,
+    select(ent_name, dz_name, name_count,
            name_count_lefigaro,
            name_count_lemonde,
            name_count_liberation,
@@ -67,20 +89,23 @@ list_entities_to_drop <- function(file){
   
   # non-artists or ambiguous names
   wrong_name <- press_outliers_checked %>% 
-    filter(drop == 1)
-  wrong_name <- wrong_name$dz_name
+    filter(to_drop == 1)
+  wrong_name <- wrong_name$ent_name
   
   # homonyms of famous artists (e.g., "beethoven")
   wrong_alias <- press_outliers_checked %>% 
-    filter(alias == 1)
-  wrong_alias <- wrong_alias$dz_name
+    filter(is_alias == 1)
+  wrong_alias <- wrong_alias$ent_name
   
   names_to_drop <- c(wrong_name, wrong_alias)
   
   # assign NA on both metrics to update
   names_to_drop <- tibble(dz_name = names_to_drop,
                           name_count = NA,
-                          article_count = NA)
+                          name_count_lefigaro = NA,
+                          name_count_lemonde = NA,
+                          name_count_liberation = NA,
+                          name_count_telerama = NA)
   return(names_to_drop)
 }
 
@@ -96,137 +121,85 @@ count_names_press <- function(all_final, press_named_entities, name_count_thresh
                          TRUE, 
                          FALSE)) %>% # deduplicate
     filter(keep == TRUE) %>% 
-    ungroup() %>% 
+    ungroup() %>%
+    add_count(dz_name) %>% 
+    filter(n == 1) %>% # remove 15 (insignificant) duplicates tied on popularity
     select(dz_name, dz_stream_share, dz_artist_id)
   
-  # prepare ents
-  ents <- press_named_entities %>% 
-    as_tibble() %>% 
-    mutate(ent_name = str_normalize(name)) %>% 
-    group_by(ent_name) %>% 
-    mutate(keep_name = ifelse(name_count == max(name_count), 
-                              TRUE, 
-                              FALSE)) %>% # deduplicate
-    filter(keep_name) %>% 
-    ungroup() %>% 
-    distinct(ent_name, .keep_all = T) %>%  # remaining duplicates with equal name_count --> CHANGE LATER
-    filter(str_length(ent_name) > 2) %>% # remove short ents
-    select(-c(V1, name))
-  
-  # ------------- 1. match on name in dz_names
+    # ------------- 1. match on name in dz_names
   press_name_counts <- all_final %>% 
-    left_join(ents, by = c(dz_name = "ent_name")) %>% 
+    left_join(press_named_entities, by = c(dz_name = "ent_name")) %>% 
     mutate(corr_pop = abs(log(dz_stream_share / name_count))) %>% # MIX WITH ARTICLE_COUNT?
     arrange(desc(name_count))
   
   # ------------- 2.  export (biggest?) non-matched ents + biggest outliers
   # 1. non-matched entities
-  ents_without_match <- ents %>% 
+  ents_without_match <- press_named_entities %>% 
     anti_join(press_name_counts, by = c(ent_name = "dz_name")) %>% 
     filter(name_count >= name_count_threshold)
   
-  write_s3(ents_without_match, file = "interim/press_files/ents_without_match_1103.csv")
+  write_s3(ents_without_match, file = "press_files/ents_without_match.csv")
   
   # 2. outliers
   press_counts_outliers <- press_name_counts %>% 
     filter(name_count >= name_count_threshold) %>% 
     arrange(desc(corr_pop))
   
-  write_s3(press_counts_outliers, file = "interim/press_files/press_counts_outliers_1103.csv")
+  write_s3(press_counts_outliers, file = "press_files/press_counts_outliers.csv")
   
   press_name_counts <- press_name_counts %>% 
-    select(-c(article_id, keep_name, corr_pop))
+    select(-c(article_id, corr_pop))
   
   return(press_name_counts)
 }
 
 
-# aliases_to_add
-# ## ADD ALIASES + TO_DROP
-# press_name_counts <- press_name_counts %>%
-#   left_join(
-#     aliases_to_add %>% select(alias_to_recode, canonical = dz_name),
-#     by = c("dz_name" = "alias_to_recode")
-#   ) %>%
-#   mutate(dz_name = coalesce(canonical, dz_name)) %>%
-#   group_by(dz_name) %>%
-#   summarise(across(name_count, sum), .groups = "drop")
-# 
-# press_name_counts_updated <- press_name_counts_updated %>%
-#   mutate(
-#     name_count = if_else(dz_name %in% names_to_drop$dz_name,
-#                          NA_integer_,
-#                          name_count),
-#     article_count = if_else(dz_name %in% names_to_drop$dz_name,
-#                             NA_integer_,
-#                             article_count)
-#   )
+## update press_name_counts with hand-coded aliases
+## and cases to drop??
+update_press_names <- function(press_name_counts, aliases_to_add, entities_to_drop){
+  
+  totals <- bind_rows(
+    press_name_counts %>%
+      select(dz_name, starts_with("name_count")),
+    
+    aliases_to_add %>%
+      select(dz_name, starts_with("name_count"))
+  ) %>%
+    group_by(dz_name) %>%
+    summarize(
+      across(starts_with("name_count"), ~sum(.x, na.rm = TRUE)),
+      .groups = "drop"
+    )
+  
+  # apply drop logic
+  totals <- totals %>% 
+    anti_join(entities_to_drop, by = "dz_name") %>% 
+    bind_rows(entities_to_drop)
+  
+  upd_press_name_counts <- press_name_counts %>%
+    select(-starts_with("name_count")) %>%
+    left_join(totals, by = "dz_name") %>% 
+    select(-name_id)
+  
+  return(upd_press_name_counts)
+}
+
+
+# integrate to press
+press_counts_to_final <- function(all_final, upd_press_name_counts){
+  
+  upd_press_name_counts <- upd_press_name_counts %>% 
+    select(-c(dz_name, dz_stream_share))
+  
+  all_final_press <- all_final %>% 
+    left_join(upd_press_name_counts, by = "dz_artist_id")
+
+  return(all_final_press)
+}
 
 
 
-# LOAD THE 2 CHECKED DATASETS AND APPEND DECOMPOSED COUNTS
-
-decomp <- press_named_entities %>%
-  mutate(ent_name = str_normalize(name)) %>%
-  group_by(ent_name) %>%
-  mutate(keep_name = ifelse(name_count == max(name_count),
-                            TRUE,
-                            FALSE)) %>% # deduplicate
-  filter(keep_name) %>%
-  ungroup() %>%
-  distinct(ent_name, .keep_all = T) %>% 
-  select(c(ent_name, name_count, name_count_lefigaro, name_count_lemonde,
-           name_count_liberation, name_count_telerama))
-
-t <- decomp %>%
-  add_count(ent_name) %>%
-  filter(n > 1)
-
-ents_without_match_checked_1003 <- load_s3("interim/press_files/ents_without_match_checked_1003.csv")
-press_outliers_checked_1003 <- load_s3("interim/press_files/press_outliers_checked_1003.csv")
-
-nrow(ents_without_match_checked_1003)
-
-
-ents_without_match_checked_new <- ents_without_match_checked_1003 %>%
-  left_join(decomp, by = c(entity = "ent_name")) %>%
-  as_tibble()
-
-ents_without_match_checked_1003
-ents_without_match_checked_new
-
-
-
-# prepare ents
-ents <- press_named_entities %>% 
-  as_tibble() %>% 
-  mutate(ent_name = str_normalize(name)) %>% 
-  group_by(ent_name) %>% 
- # mutate(keep_name = ifelse(name_count == max(name_count), 
-                           # TRUE, 
-                           # FALSE)) %>% # deduplicate
- # filter(keep_name) %>% 
-  ungroup() %>% 
-  #distinct(ent_name, .keep_all = T) %>%  # remaining duplicates with equal name_count --> CHANGE LATER
-  filter(str_length(ent_name) > 2) %>% # remove short ents
-  select(-c(V1, name))
-
-dups <- ents %>% 
-  add_count(ent_name) %>% 
-  filter(n > 1)
-
-dups %>% 
-  filter(ent_name == "figaro") %>% 
-  select(c(name_count, ent_name))
-
-t <- dups %>% 
-  left_join(press_named_entities %>% select(c(name_id,name)), by = "name_id") %>% 
-  select(c(name, ent_name, name_count)) %>% 
-  arrange(desc(ent_name))
-
-t %>% 
-  filter(ent_name == "liberation") %>% 
-  select(c(name, ent_name))
+## WHAT ABOUT NA vs 0 in press??
 
 
 
