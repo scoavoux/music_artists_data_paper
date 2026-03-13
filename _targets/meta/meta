@@ -87,13 +87,14 @@ aliases_to_add|stem|f849d18973f21389|62c09a2587972c19|cbe1745e0d49fc91|136787724
 entities_to_drop|stem|095acb5f1ace964e|e720e289a96706a4|56ccb5ed4d6955b2|256931683|bucket=scoavoux*region=NULL*key=music_artist/objects/entities_to_drop*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20524.5742151084s||0|rds|aws|vector|||1.091||
 press_name_counts|stem|758b785161aad733|346dec4925afca55|b0427bc45d2465c0|1845327189|bucket=scoavoux*region=NULL*key=music_artist/objects/press_name_counts*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20524.588234472s||0|rds|aws|vector|||7.946||
 upd_press_name_counts|stem|ad9d16fc3939e576|ca645d5a63c9aa7b|cbd84df45e5ba54a|1329869738|bucket=scoavoux*region=NULL*key=music_artist/objects/upd_press_name_counts*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20524.6157846994s||0|rds|aws|vector|||5.419||
-str_normalize|function|3f1125990a04f5a2
 make_aliases|function|14733ecdf13fc145
 all_final_press|stem|dc2be3d5a96220b9|121a6f901ed6d77a|82e6bf8220bfd9b3|-349450312|bucket=scoavoux*region=NULL*key=music_artist/objects/all_final_press*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20525.3873702144s||0|rds|aws|vector|||2.355||
-mbz_releases|stem||e15bbf324c17fbde|db63d9898b7ae824|2049062744||t20525.63607503s||0|rds|aws|vector|||25.899||Join columns in `x` must be present in the data. ✖ Problem with `dz_artist_id`.
+press_named_entities|stem|a7d6713cc2c5f1b6|3ff5913f6b85c573|bb498348f151d80d|582344855|bucket=scoavoux*region=NULL*key=music_artist/objects/press_named_entities*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20525.6415903204s||0|rds|aws|vector|||16.834||
+mbz_releases|stem|ce98cb00950cf128|e53723ed19079694|d0d1b4570d0507c1|2049062744|bucket=scoavoux*region=NULL*key=music_artist/objects/mbz_releases*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20525.642191126s||0|rds|aws|vector|||45.817||
 prop_na|function|c201f9db83a66140
+str_normalize|function|3f1125990a04f5a2
 write_s3|function|15e44e053dc7a6c7
-.Random.seed|object|3c3236cc79678516
+.Random.seed|object|6ddf3661cf3b6a71
 bind_dz_songs|function|a925651495c469c1
 initialize_s3|function|25a2772c1c03257f
 mbz_from_wiki|function|09d134ac8e582641
@@ -108,7 +109,7 @@ load_partitioned_s3|function|ef32fd7856f71aa0
 update_press_names|function|ff1a185d62bebeec
 make_wiki_keys|function|420336bcf27da1f0
 load_streams|function|614a898e2ac1f783
-count_names_press|function|6a1c887b6119ff44
+count_names_press|function|df930f20c89ebf0a
 load_s3|function|2f0bfd56597701f8
 clean_liberation|function|bcf27a80b4d11f22
 load_s3_info|function|b201b67fd14b09a5
@@ -118,17 +119,18 @@ patch_sc_dups|function|b6bd2d99244add43
 update_rows|function|5a00fbb3fa16d38a
 join_artist_ids|function|c7ac1206cfc6f5e6
 deduplicate_ids|function|22f92f57a11cd4a3
-clean_press_ents|function|60bf784fb5c4e30d
+clean_press_ents|function|e83424a6694c8b9e
 load_mbz_releases|function|1ce21eaa45b6e25c
 clean_lemonde|function|4fbc1fe4aba78713
 load_mbz_deezer|function|5c576845a1e17fd0
 load_senscritique|function|bdd447d417e92a4f
 load_sc_ratings|function|ac7f50b2722bc4fb
 bind_dz_names|function|7e7a92b84ef5a0dd
-list_aliases|function|e0507c2f9888f344
+list_aliases|function|5c6958d2fa8860ac
 clean_telerama|function|c58ebab3e25c5aa0
 load_wiki|function|0c5791e820407b00
 load_manual_search|function|2b5d381ac9d288fa
+count_radio_plays|function|59c61742acc669ca
 make_dz_songs|function|f58dc2882a7702e0
 list_entities_to_drop|function|637244e34d9909c6
-press_named_entities|stem|a7d6713cc2c5f1b6|3ff5913f6b85c573|1d3f90af52dc66d7|582344855|bucket=scoavoux*region=NULL*key=music_artist/objects/press_named_entities*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20524.426877906s||0|rds|aws|vector|||2.531||ℹ In argument: `ent_name = str_normalize(ent_name)`. Caused by error in `str_normalize()`: ! could not find function 'str_normalize'
+radio_counts|stem|773a6d6f49f0ed9a|f14db74b21cc7791|4e49f21f71aca54f|-310315281|bucket=scoavoux*region=NULL*key=music_artist/objects/radio_counts*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20525.6742227694s||0|rds|aws|vector|||31.457||

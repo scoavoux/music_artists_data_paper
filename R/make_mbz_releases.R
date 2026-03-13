@@ -1,3 +1,11 @@
+# compute the variables relative to releases
+# first 4 input datasets are needed, which we prepare
+# second, 3 of them are appended to the releases data, and some
+# filtering and recodes are performed
+# last, the interesting variables are calculated by grouping the
+# release-level data to artist-level metrics
+
+
 load_mbz_releases <- function(all_final, release_file, dates_active_file, genre_file){
   
   # -------------------- PREPARE INPUTS ----------------------

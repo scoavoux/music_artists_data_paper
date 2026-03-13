@@ -219,7 +219,11 @@ list(
              command = load_mbz_releases(all_final,
                                          release_file="musicbrainz/musicbrainz_releases.csv",
                                          dates_active_file="/musicbrainz/mbid_artist_end_date.csv",
-                                         genre_file="records_w3/items/artists_data.snappy.parquet")) # PLACEHOLDER! 
+                                         genre_file="records_w3/items/artists_data.snappy.parquet")), # PLACEHOLDER!
+  
+  # compute 2 radio variables
+  tar_target(name = radio_counts,
+             command = count_radio_plays(file="records_w3/radio/radio_plays_with_artist_id.csv"))
   
 )
 

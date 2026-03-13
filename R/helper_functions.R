@@ -105,6 +105,32 @@ make <- function(){
   
 }
 
+str_normalize <- function(str){
+  
+  require(stringr)
+  require(stringi)
+  
+  
+  str <- str %>% 
+    
+    str_to_lower() %>%  
+    
+    stri_trans_general("Latin-ASCII") %>% # rm accents
+    
+    str_replace_all(c(
+      #"\\bthe\\b" = "(the|les|des|du|de\sla)?", # LEAVE OUT FOR NOW
+      "\\b(the|les|des|le|la)\\s\\b" = "", # remove the
+      "\\b(?:and|et|&)\\b" = "&", # unify &
+      "-" = " "
+    )) %>% 
+    
+    str_remove_all("[.,!?;:]") %>% 
+    
+    str_squish() # trim + remove extra spaces
+  
+  return(str)
+}
+
 
 
 

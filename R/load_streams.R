@@ -64,14 +64,8 @@ load_streams <- function() {
               l_play = sum(listening_time)) %>%
     #mutate(f_n_play = n_play / sum(n_play)) # DON'T MAKE F_N_PLAY YET!
   
-  #loginfo(cat("streams loaded, with", nrow(streams), "rows."))
-  
   return(streams)
 }
-
-# write it to interim
-# write_parquet(streams, "data/interim/clean_streams.parquet", compression = "snappy")
-# loginfo("clean_streams.parquet written".)
 
 
 
