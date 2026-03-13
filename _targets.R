@@ -192,6 +192,7 @@ list(
              command = list_entities_to_drop(file="press_files/press_outliers_checked_1003.csv")),
   
   # aliases to update
+  # attention: hand-coded csv files which we might update!
   tar_target(name = aliases_to_add,
              command = list_aliases(file1 = "press_files/ents_without_match_checked_1003.csv",
                                     file2 = "press_files/press_outliers_checked_1003.csv",
@@ -207,18 +208,10 @@ list(
   tar_target(name = upd_press_name_counts,
              command = update_press_names(press_name_counts, aliases_to_add, entities_to_drop)),
   
+  # join press name counts into all_final
   tar_target(name = all_final_press,
              command = press_counts_to_final(all_final, upd_press_name_counts))
 )
-
-
-
-
-
-
-
-
-
 
 
 

@@ -31,7 +31,6 @@ all_patched|stem|all_patched|0|skipped
 all_final|stem|all_final|0|skipped
 press_name_counts|stem|press_name_counts|0|skipped
 aliases_to_add|stem|aliases_to_add|0|skipped
-upd_press_name_counts|stem|upd_press_name_counts|0|dispatched
-upd_press_name_counts|stem|upd_press_name_counts|0|completed
+upd_press_name_counts|stem|upd_press_name_counts|0|skipped
 all_final_press|stem|all_final_press|0|dispatched
 all_final_press|stem|all_final_press|0|completed

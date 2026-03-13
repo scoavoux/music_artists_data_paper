@@ -13,6 +13,8 @@
 # and continue hand-coding them
 
 
+## clean press entities, i.e. remove short strings, 
+##normalize name and sum name_counts of homonyms
 clean_press_ents <- function(file){
   
   ents <- load_s3(file)
@@ -39,6 +41,7 @@ clean_press_ents <- function(file){
 }
 
 
+## make a df of the aliases to add the name_counts of to real artists
 list_aliases <- function(file1, file2, all_final){
   
   # prepare all_final
@@ -110,6 +113,8 @@ list_entities_to_drop <- function(file){
 }
 
 
+## join press name_counts to all_final and export the 
+## 2 csv files to be hand-coded
 count_names_press <- function(all_final, press_named_entities, name_count_threshold){
   
   # prepare all_final
@@ -154,8 +159,7 @@ count_names_press <- function(all_final, press_named_entities, name_count_thresh
 }
 
 
-## update press_name_counts with hand-coded aliases
-## and cases to drop??
+## update press_name_counts with hand-coded aliases and cases to drop??
 update_press_names <- function(press_name_counts, aliases_to_add, entities_to_drop){
   
   totals <- bind_rows(
@@ -185,29 +189,24 @@ update_press_names <- function(press_name_counts, aliases_to_add, entities_to_dr
 }
 
 
-# integrate to press
+## integrate press name counts to all_final, making sure only the
+## identified wrong cases get NA --- all others == 0
 press_counts_to_final <- function(all_final, upd_press_name_counts){
   
   upd_press_name_counts <- upd_press_name_counts %>% 
     select(-c(dz_name, dz_stream_share))
   
   all_final_press <- all_final %>% 
-    left_join(upd_press_name_counts, by = "dz_artist_id")
-
+    left_join(upd_press_name_counts, by = "dz_artist_id") %>%
+    mutate(
+      matched = dz_artist_id %in% upd_press_name_counts$dz_artist_id,
+      across(starts_with("name_count"),
+             ~ ifelse(!matched, 0, .))
+    ) %>% # make sure only the hand-coded NAs are NA, all others == 0
+    select(-matched)
+  
   return(all_final_press)
 }
-
-
-
-## WHAT ABOUT NA vs 0 in press??
-
-
-
-
-
-
-
-
 
 
 

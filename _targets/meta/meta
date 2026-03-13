@@ -87,17 +87,18 @@ press_named_entities|stem|a7d6713cc2c5f1b6|3ff5913f6b85c573|bb498348f151d80d|582
 aliases_to_add|stem|f849d18973f21389|62c09a2587972c19|cbe1745e0d49fc91|1367877244|bucket=scoavoux*region=NULL*key=music_artist/objects/aliases_to_add*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20524.4456541491s||0|rds|aws|vector|||5.435||
 entities_to_drop|stem|095acb5f1ace964e|e720e289a96706a4|56ccb5ed4d6955b2|256931683|bucket=scoavoux*region=NULL*key=music_artist/objects/entities_to_drop*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20524.5742151084s||0|rds|aws|vector|||1.091||
 press_name_counts|stem|758b785161aad733|346dec4925afca55|b0427bc45d2465c0|1845327189|bucket=scoavoux*region=NULL*key=music_artist/objects/press_name_counts*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20524.588234472s||0|rds|aws|vector|||7.946||
+upd_press_name_counts|stem|ad9d16fc3939e576|ca645d5a63c9aa7b|cbd84df45e5ba54a|1329869738|bucket=scoavoux*region=NULL*key=music_artist/objects/upd_press_name_counts*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20524.6157846994s||0|rds|aws|vector|||5.419||
 prop_na|function|c201f9db83a66140
 str_normalize|function|3f1125990a04f5a2
 write_s3|function|15e44e053dc7a6c7
-.Random.seed|object|c968ec64bc87c6a7
+.Random.seed|object|b32f3bbbd8337e8e
 bind_dz_songs|function|a925651495c469c1
 initialize_s3|function|25a2772c1c03257f
 mbz_from_wiki|function|09d134ac8e582641
 patch_names|function|4fd99ae76b9455ef
 print_stream_share|function|51c9f50b80af0569
 bind_press_corpora|function|9f0e20eeaa6cb1cd
-press_counts_to_final|function|009fabe598fa6ebd
+press_counts_to_final|function|aedfcab3715c94c2
 group_songs_by_artist|function|1b87faee9017e507
 stream_share_patch|function|600e47e27ed7d5d1
 make|function|860e3605b48e903a
@@ -128,5 +129,4 @@ load_wiki|function|0c5791e820407b00
 load_manual_search|function|2b5d381ac9d288fa
 make_dz_songs|function|f58dc2882a7702e0
 list_entities_to_drop|function|637244e34d9909c6
-upd_press_name_counts|stem|ad9d16fc3939e576|ca645d5a63c9aa7b|cbd84df45e5ba54a|1329869738|bucket=scoavoux*region=NULL*key=music_artist/objects/upd_press_name_counts*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20524.6157846994s||0|rds|aws|vector|||5.419||
-all_final_press|stem|5fb10a83d2b5051a|121a6f901ed6d77a|7c4d1d23d2434b8e|-349450312|bucket=scoavoux*region=NULL*key=music_artist/objects/all_final_press*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20524.615933675s||0|rds|aws|vector|||1.037||
+all_final_press|stem|dc2be3d5a96220b9|121a6f901ed6d77a|82e6bf8220bfd9b3|-349450312|bucket=scoavoux*region=NULL*key=music_artist/objects/all_final_press*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20525.3873702144s||0|rds|aws|vector|||2.355||
