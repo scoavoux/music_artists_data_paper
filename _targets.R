@@ -210,7 +210,17 @@ list(
   
   # join press name counts into all_final
   tar_target(name = all_final_press,
-             command = press_counts_to_final(all_final, upd_press_name_counts))
+             command = press_counts_to_final(all_final, upd_press_name_counts)),
+  
+  
+  # compute mbz release variables
+  # left_join this to all_final later
+  tar_target(name = mbz_releases,
+             command = load_mbz_releases(all_final,
+                                         release_file="musicbrainz/musicbrainz_releases.csv",
+                                         dates_active_file="/musicbrainz/mbid_artist_end_date.csv",
+                                         genre_file="records_w3/items/artists_data.snappy.parquet")) # PLACEHOLDER! 
+  
 )
 
 
