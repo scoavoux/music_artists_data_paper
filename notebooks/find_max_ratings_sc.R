@@ -21,18 +21,24 @@ rm_dups <- rm_dups %>%
   mutate_if(is.integer, as.character)
 
 t <- contacts %>% 
-  anti_join(all_dedup, by = "sc_artist_id") %>% 
+  anti_join(all_final, by = "sc_artist_id") %>% 
   anti_join(rm_dups, by = "sc_artist_id") %>% 
   filter(!is.na(n_ratings)) %>% 
   arrange(desc(n_ratings))
 
 
+t <- t[1:100,]
+
+write.csv2(t, "data/missing_sc_max_ratings.csv")
+
+
+
 library(stringr)
 
-all_dedup %>% 
+all_final %>% 
   filter(is.na(sc_artist_id)) %>% 
-  filter(str_detect(dz_name, "Miles Davis")) %>% 
-  select(dz_name, dz_artist_id, pop)
+  filter(str_detect(dz_name, "Vanguard")) %>% 
+  select(dz_name, dz_artist_id, dz_stream_share)
 
 
 

@@ -1,32 +1,32 @@
 
 ## export biggest missings to csv for handcoding
 
-tar_load(all_dedup)
+tar_load(all_final)
 
 library(stringr)
 
-missing <- all_dedup %>%
-  filter(is.na(contact_id) | is.na(musicbrainz_id)) %>%
+
+missing_mbz <- all_final %>%
+  filter(is.na(mbz_artist_id)) %>%
   slice(1:1000) %>% 
-  select(name, deezer_id, musicbrainz_id, pop, contact_id)
+  select(dz_name, mbz_artist_id, dz_artist_id, dz_stream_share, sc_artist_id)
 
-missing_mbz <- all_dedup %>%
-  filter(is.na(musicbrainz_id)) %>%
+missing_sc <- all_final %>%
+  filter(is.na(sc_artist_id)) %>%
   slice(1:1000) %>% 
-  select(name, deezer_id, musicbrainz_id, pop, contact_id)
+  select(dz_name, sc_artist_id, dz_artist_id, mbz_artist_id, dz_stream_share)
 
-missing_contacts <- all_dedup %>%
-  filter(is.na(contact_id)) %>%
-  slice(1:1000) %>% 
-  select(name, deezer_id, musicbrainz_id, pop, contact_id)
-
-cleanpop(missing)
-cleanpop(missing_mbz)
-cleanpop(missing_contacts)
+print_stream_share(missing_mbz)
+print_stream_share(missing_sc)
 
 
-write.csv2(missing_contacts, "data/missing_contacts.csv")
-write.csv2(missing_mbz, "data/missing_mbz.csv")
+write.csv2(missing_sc, "data/missing_sc_1000.csv")
+write.csv2(missing_mbz, "data/missing_mbz_1000.csv")
+
+
+92.5/100
+
+99.5/100
 
 
 
@@ -44,16 +44,8 @@ manual_sc_1 <- manual_co_1 %>%
   mutate_if(is.integer, as.character) %>% 
   select(deezer_id, contact_id)
 
-
-
 manual_search <- manual_search %>% 
   bind_rows(manual_sc_1)
-
-
-### mbz
-
-manual_mbz_1
-
 
 
 
