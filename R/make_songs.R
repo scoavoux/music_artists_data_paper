@@ -84,7 +84,7 @@ bind_dz_names <- function(file_1, file_2){
 
 }
 
-## unique artists for now --- because of f_n_play
+## unique artists for now --- because of dz_stream_share
 group_songs_by_artist <- function(songs){
   
   dz_artists <- songs %>% 

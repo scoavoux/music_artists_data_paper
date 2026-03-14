@@ -57,7 +57,7 @@ load_streams <- function() {
   short_streams <- collect(query_short)
   long_streams <- collect(query_long)
   
-  # bind rows and compute popularity (fraction of all plays)
+  # bind rows and summarize n_play + l_play
   streams <- bind_rows(short_streams, long_streams) %>%
     group_by(song_id) %>%
     summarize(n_play = sum(n_play),
