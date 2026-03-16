@@ -1,6 +1,7 @@
 # Preparation ------
 library(targets)
 library(tarchetypes)
+library(dplyr)
 
 tar_option_set(
   packages = c("paws", "tidyverse", "arrow"),
