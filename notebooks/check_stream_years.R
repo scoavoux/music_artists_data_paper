@@ -15,11 +15,10 @@ streams_long <- path_long %>%
   mutate(year = year(as_datetime(ts_listen)),
          lt = ifelse(listening_time < 0, 0, listening_time)) %>%
   filter(is_listened == 1,
-         year != 2022,
          song_id > 0) %>%
-  inner_join(song_artist_weights, by = "song_id") %>% 
-  inner_join(users, by = c("hashed_id")) %>%
-  select(hashed_id, song_id, dz_artist_feat_id, is_respondent, w_feat)
+  group_by(year) %>% 
+  summarise(n_users = n_distinct(hashed_id)) %>% 
+  collect()
 
 
 path_short <- arrow::open_dataset(
@@ -40,15 +39,16 @@ streams_short <- path_short %>%
          lt = ifelse(listening_time < 0, 0, listening_time)) %>% 
   filter(media_type == "song", 
          is_listened == 1, 
-         year == 2022,
          song_id > 0) %>% 
-  inner_join(song_artist_weights, by = "song_id") %>% 
-  inner_join(users, by = c("hashed_id")) %>%
-  select(hashed_id, song_id, dz_artist_feat_id, is_respondent, w_feat)
+  group_by(year) %>% 
+  summarise(n_users = n_distinct(hashed_id)) %>% 
+  collect()
 
 
+streams_short
+streams_long <- streams_long %>% 
+  arrange(year)
 
-library(dplyr)
 
 streams_combined <- full_join(
   streams_long,
@@ -59,5 +59,12 @@ streams_combined <- full_join(
   mutate(
     n_users = coalesce(n_users_long, 0) + coalesce(n_users_short, 0)
   ) %>%
-  select(year, n_users) %>%
   arrange(year)
+
+write.csv2(streams_combined, "data/dz_users_per_year.csv")
+
+
+
+
+
+

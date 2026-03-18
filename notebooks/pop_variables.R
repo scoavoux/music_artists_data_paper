@@ -36,7 +36,7 @@ streams_long <- path_long %>%
   mutate(year = year(as_datetime(ts_listen)),
          lt = ifelse(listening_time < 0, 0, listening_time)) %>%
   filter(is_listened == 1,
-         year != 2022,
+         year %in% c(2023, 2024),
          song_id > 0) %>%
   inner_join(song_artist_weights, by = "song_id") %>% 
   inner_join(users, by = c("hashed_id")) %>%
@@ -68,29 +68,27 @@ streams_short <- path_short %>%
   select(hashed_id, song_id, dz_artist_feat_id, is_respondent, w_feat)
 
 
-streams
-
-streams <- bind_rows(streams_short, streams_long)
+streams <- union_all(streams_short, streams_long)
 
 
-# make n_play at group-song level
+# make n_plays at group-song level
 plays <- streams %>%
   group_by(song_id, dz_artist_feat_id, 
            is_respondent, w_feat) %>%
-  summarise(n_play = n(),
+  summarise(n_plays = n(),
             .groups = "drop") %>% 
-  mutate(n_play = n_play * w_feat) %>% 
-  select(song_id, dz_artist_feat_id, is_respondent, n_play)
+  mutate(n_plays = n_plays * w_feat) %>% 
+  select(song_id, dz_artist_feat_id, is_respondent, n_plays)
 
 
 # make n_users at group-artist levels
 artist_user_counts <- streams_short %>%
   group_by(dz_artist_feat_id, is_respondent) %>%
   summarise(
-    dz_stream_user_count = n_distinct(hashed_id),
+    n_users = n_distinct(hashed_id),
     .groups = "drop"
   ) %>% 
-  select(dz_artist_feat_id, is_respondent, dz_stream_user_count)
+  select(dz_artist_feat_id, is_respondent, n_users)
 
 
 # ---------------------------------------------------------------
@@ -100,7 +98,7 @@ artist_popularity <- plays %>%
   # aggregate dz_stream_count to group
   group_by(dz_artist_feat_id, is_respondent) %>%
   summarise(
-    dz_stream_count = sum(n_play, na.rm = TRUE),
+    n_plays = sum(n_plays, na.rm = TRUE),
     .groups = "drop"
   ) %>%
   
@@ -109,20 +107,6 @@ artist_popularity <- plays %>%
     artist_user_counts,
     by = c("dz_artist_feat_id", "is_respondent")
   ) %>%
-  group_by(is_respondent) %>%
-  mutate(
-    dz_stream_share = dz_stream_count / sum(dz_stream_count) * 100
-  ) %>%
-  ungroup() %>% 
-  
-  # reshape to wide
-  mutate(group = ifelse(is_respondent == 1, "respondent", "control")) %>%
-  select(-is_respondent) %>%
-  pivot_wider(
-    names_from = group,
-    values_from = c(dz_stream_count, dz_stream_user_count, dz_stream_share),
-    names_glue = "{.value}_{group}"
-  ) %>% 
   
   collect()
 
@@ -131,24 +115,29 @@ head(artist_popularity)
 
 
 # reshape to wide
-t <- artist_popularity %>% 
+artist_popularity_wide <- artist_popularity %>% 
   mutate(group = ifelse(is_respondent == 1, "respondent", "control")) %>%
   select(-is_respondent) %>%
   pivot_wider(
     names_from = group,
-    values_from = c(dz_stream_count, dz_stream_user_count, dz_stream_share),
+    values_from = c(n_plays, n_users),
     names_glue = "{.value}_{group}"
-  )
-
+  ) %>% 
+  rename(n_plays = "n_plays_control",
+         n_users = "n_users_control")
+  
+head(artist_popularity_wide)
 
 tar_load(all_final)
 
 test <- all_final %>% 
-  left_join(t, by = c(dz_artist_id = "dz_artist_feat_id")) %>% 
-  arrange(desc(dz_stream_count_control))
+  left_join(artist_popularity_wide, by = c(dz_artist_id = "dz_artist_feat_id")) %>% 
+  arrange(desc(n_plays))
+
+rm(pfui)
 
 
-prop_na(t)
+
 
 
 
