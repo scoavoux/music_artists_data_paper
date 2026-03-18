@@ -98,9 +98,9 @@ load_senscritique <- function(sc_file, sc_ratings_file, sc_albums_file){
     inner_join(sc_alb, by = "product_id") %>% 
     mutate(sc_artist_id = contact_id) %>% 
     group_by(sc_artist_id) %>% 
-    summarise(n_ratings = sum(rating)) %>% 
-    filter(!is.na(n_ratings)) %>% 
-    select(sc_artist_id, n_ratings)
+    summarise(sc_n_ratings = sum(rating)) %>% 
+    filter(!is.na(sc_n_ratings)) %>% 
+    select(sc_artist_id, sc_n_ratings)
   
   clean_senscritique <- senscritique %>% 
     
@@ -110,7 +110,7 @@ load_senscritique <- function(sc_file, sc_ratings_file, sc_albums_file){
       mbz_artist_id = na_if(mbz_id, ""),
       sc_name = contact_name,
       sc_name = na_if(sc_name, ""),
-      collection_count = ifelse(is.na(collection_count), 0, collection_count)
+      sc_collection_count = ifelse(is.na(collection_count), 0, collection_count)
       ) %>% 
     
     left_join(ratings, by = "sc_artist_id") %>% 
@@ -122,8 +122,8 @@ load_senscritique <- function(sc_file, sc_ratings_file, sc_albums_file){
     # clean (2) dirty ids
     mutate(mbz_id = str_remove(mbz_id, "https://musicbrainz.org/artist/")) %>%
     
-  select(sc_artist_id, sc_name, collection_count, 
-         mbz_artist_id, n_ratings) %>% 
+  select(sc_artist_id, sc_name, sc_collection_count, 
+         mbz_artist_id, sc_n_ratings) %>% 
   as_tibble()
   
   return(clean_senscritique)

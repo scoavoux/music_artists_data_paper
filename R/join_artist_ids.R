@@ -34,8 +34,8 @@ join_artist_ids <- function(dz_artists,
     left_join(wiki, by = "dz_artist_id") %>% # add wiki for names
     mutate(sc_artist_id = coalesce(sc_artist_id.x, sc_artist_id.y),
            mbz_artist_id = coalesce(mbz_artist_id.x, mbz_artist_id.y),
-           collection_count = as.integer(collection_count),
-           collection_count = ifelse(is.na(collection_count), 0, collection_count)
+           sc_collection_count = as.integer(sc_collection_count),
+           sc_collection_count = ifelse(is.na(sc_collection_count), 0, sc_collection_count)
     ) %>% 
     select(dz_name, 
            sc_name, 
@@ -45,9 +45,9 @@ join_artist_ids <- function(dz_artists,
            mbz_artist_id, 
            sc_artist_id, 
            dz_stream_share, 
-           collection_count, 
-           n_ratings,
-           starts_with("n_")) %>% # add popularity metrics
+           sc_collection_count, 
+           sc_n_ratings,
+           starts_with("n_")) %>% # popularity metrics
     distinct(dz_artist_id, sc_artist_id, mbz_artist_id, .keep_all = TRUE) %>%  # !!!
     as_tibble()
 

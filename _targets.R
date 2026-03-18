@@ -239,10 +239,50 @@ list(
                                          genre_file="records_w3/items/artists_data.snappy.parquet")), # PLACEHOLDER!
   
   # compute 2 radio variables
+  # integrate later
   tar_target(name = radio_counts,
-             command = count_radio_plays(file="records_w3/radio/radio_plays_with_artist_id.csv"))
+             command = count_radio_plays(file="records_w3/radio/radio_plays_with_artist_id.csv")),
+  
+  
+  # final dataframe with selected variables
+  tar_target(name = df,
+             command = all_final_press %>% 
+               select(dz_artist_id, 
+                      dz_name,
+                      sc_artist_id,
+                      mbz_artist_id,
+                      starts_with("n_"),
+                      collection_count,
+                      n_ratings,
+                      starts_with("name_count")) %>% 
+               
+               # radio
+               left_join(radio_counts, by = "dz_artist_id") %>% 
+               
+               # releases
+               left_join(mbz_releases, by = "mbz_artist_id"))
   
 )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

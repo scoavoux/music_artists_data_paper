@@ -36,14 +36,10 @@ patch_names <- function(all,
                                  rlang::as_string(ref_id))) # %>% 
     # distinct() # distinct perfect duplicates!!
 
-  loginfo("allgood")
-  
   ## rows in all missing IDs
   miss <- all %>%
     filter(is.na(!!ref_id))
 
-  loginfo("allgood")
-  
   ## unique name-based matches
   matches <- miss %>%
     inner_join(ref_clean,
@@ -52,12 +48,8 @@ patch_names <- function(all,
     add_count(!!all_name, name = "n_all") %>% 
     filter(n_all == 1) # CRUCIAL: keep only unique names
   
-  loginfo("allgood")
-  
   # subset wanted cols
   id_y <- paste0(rlang::as_string(ref_id), ".y")
-  
-  loginfo("allgood")
   
   matches <- matches %>%
     select(
@@ -152,7 +144,7 @@ patch_deezer_dups <- function(ref,
 
 # --------------------------------------------------------------
 
-# resolve contact name duplicates by share of collection_count they have
+# resolve contact name duplicates by share of sc_collection_count they have
 # then patch them to unique* deezer names
 patch_sc_dups <- function(all, senscritique){
   
@@ -171,10 +163,10 @@ patch_sc_dups <- function(all, senscritique){
   sc_unique <- senscritique %>% 
     # keep the condition like this for now: adding the other variables adds like 30 cases
     # but unsure about the cases (e.g., there are weird ones with very few albums)
-    mutate(collection_count = as.integer(collection_count)) %>% 
-    filter(collection_count > 0) %>% # remove irrelevant artists 
+    mutate(sc_collection_count = as.integer(sc_collection_count)) %>% 
+    filter(sc_collection_count > 0) %>% # remove irrelevant artists 
     group_by(sc_name) %>% 
-    mutate(colcount_share_byname = collection_count / sum(collection_count)) %>% 
+    mutate(colcount_share_byname = sc_collection_count / sum(sc_collection_count)) %>% 
     filter(colcount_share_byname > 0.9) %>% 
     select(sc_name, sc_artist_id)
   
