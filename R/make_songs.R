@@ -18,7 +18,8 @@ make_dz_songs <- function(to_remove = to_remove_file,
 }
 
 
-bind_dz_songs <- function(dz_songs_old, dz_songs_new, dz_streams, dz_names){
+bind_dz_songs <- function(dz_songs_old, dz_songs_new, #dz_streams, 
+                          dz_names){
   
   # bind items_old and items_new
   # prioritize deezer_id of items_new
@@ -50,12 +51,12 @@ bind_dz_songs <- function(dz_songs_old, dz_songs_new, dz_streams, dz_names){
     mutate(w_feat = 1 / n_distinct(dz_artist_feat_id))
   
   ## join to streams
-  songs <- songs %>% 
-   inner_join(dz_streams, by = "song_id") ## inner_join appropriate??
+  #songs <- songs %>% 
+   #inner_join(dz_streams, by = "song_id") ## inner_join appropriate??
 
   ## add deezer names to debug joins with other ids
   songs <- songs %>% 
-    left_join(dz_names, by = "dz_artist_feat_id") # CHANGED TO DEEZER_FEAT_ID
+    left_join(dz_names, by = "dz_artist_feat_id") 
   
   return(songs)
 }
@@ -84,28 +85,24 @@ bind_dz_names <- function(file_1, file_2){
 
 }
 
-## unique artists for now --- because of dz_stream_share
-group_songs_by_artist <- function(songs){
+
+group_songs_by_artist <- function(dz_songs, dz_stream_data){
   
-  dz_artists <- songs %>% 
+  dz_artists <- dz_songs %>% 
     ungroup() %>% 
-    mutate(dz_artist_id = as.character(dz_artist_feat_id), # ATTENTION: renaming feat_id to id here!!
-           w_n_play = w_feat * n_play, # weight n plays by feat
-           w_f_n_play = w_n_play / sum(w_n_play)) %>% # compute weighted f_n_play
+    mutate(dz_artist_id = as.character(dz_artist_feat_id)) %>%  # ATTENTION: renaming feat_id to id here!!
     group_by(dz_artist_id) %>% 
     summarise(dz_name = first(dz_name),
-              dz_stream_share = sum(w_f_n_play) * 100, # to %
               .groups = "drop") %>% 
+    
+    # NEW 18/03: ADD POP HERE!
+    inner_join(dz_stream_data, by = "dz_artist_id") %>% 
+    mutate(dz_stream_share = n_plays / sum(n_plays, na.rm = T) * 100) %>%  # TEMPORARY
+    
     arrange(desc(dz_stream_share))
   
   return(dz_artists)
 }
-
-
-
-
-
-
 
 
   

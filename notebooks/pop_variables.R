@@ -1,6 +1,8 @@
 tar_load(dz_songs)
 options(arrow.skip_nul = TRUE)
 
+options(scipen = 99)
+
 library(tidyr)
 
 # -------------------
@@ -126,30 +128,38 @@ artist_popularity_wide <- artist_popularity %>%
   rename(n_plays = "n_plays_control",
          n_users = "n_users_control")
   
-head(artist_popularity_wide)
+# for sanity checks
+artist_popularity_wide <- artist_popularity_wide %>% 
+  mutate(
+    n_plays_share = (n_plays / sum(n_plays, na.rm = T)) * 100,
+    n_plays_share_respondent = (n_plays_respondent / sum(n_plays_respondent, na.rm = T)) * 100
+  )
 
-tar_load(all_final)
-
-test <- all_final %>% 
+all_final <- all_final %>% 
   left_join(artist_popularity_wide, by = c(dz_artist_id = "dz_artist_feat_id")) %>% 
-  arrange(desc(n_plays))
-
-rm(pfui)
-
+  arrange(desc(n_plays)) %>% 
+  select(dz_name, dz_stream_share, n_plays_share)
 
 
+missing_artists <- all_final %>% 
+  filter(is.na(n_plays))
+print_stream_share(missing_artists) # 0.2% stream share missing
+
+missing_artists_resp <- all_final %>% 
+  filter(is.na(n_plays_respondent))
+print_stream_share(missing_artists_resp) # 0.2% stream share missing
+
+# Jul and Ninho as big outliers, else kind of okay-ish
+all_final_clean <- all_final %>% 
+  filter(!is.na(n_plays_share)) %>% 
+  mutate(diff = abs(log(n_plays_share) / log(dz_stream_share))) %>% 
+  arrange(desc(diff))
+
+head(streams)
 
 
-
-
-
-
-
-
-
-
-
-
+all_final_clean %>% 
+  filter(dz_name == "The Beatles")
 
 
 

@@ -1,7 +1,7 @@
 # Preparation ------
 library(targets)
 library(tarchetypes)
-library(dplyr)
+#library(dplyr)
 
 tar_option_set(
   packages = c("paws", "tidyverse", "arrow"),
@@ -26,8 +26,23 @@ list(
     ### CREATE (deezer) ARTISTS ----------------------------------------------
     
     # load and aggregate raw streams
-    tar_target(name = dz_streams,
-               command = load_streams()),
+    #tar_target(name = dz_streams,
+     #          command = load_streams()),
+    
+    tar_target(dz_users,
+               command = load_s3("records_w3/RECORDS_hashed_user_group.parquet") %>% 
+                 mutate(
+                   is_respondent = ifelse(is_respondent == TRUE, 1, 0),
+                   is_control = ifelse(is_in_control_group == TRUE, 1, 0)) %>% 
+                 filter(
+                   is_respondent != 0 | is_control != 0
+                   ) %>% # remove users who are neither control nor respondent
+                 select(hashed_id, 
+                        is_respondent, 
+                        is_control)),
+    
+    tar_target(name = dz_stream_data,
+               command = make_stream_popularity(dz_songs, dz_users)),
     
     tar_target(name = to_remove_file,
                command = read.csv("data/artists_to_remove.csv")),
@@ -47,12 +62,12 @@ list(
                                     file = "records_w3/items/song.snappy.parquet")),
     
     tar_target(name = dz_songs,
-               command = bind_dz_songs(dz_songs_old, dz_songs_new, dz_streams, dz_names)),
+               command = bind_dz_songs(dz_songs_old, dz_songs_new, dz_names)),
     
     
     # group songs by featured artists and compute weighted popularity
     tar_target(name = dz_artists,
-               command = group_songs_by_artist(dz_songs)),
+               command = group_songs_by_artist(dz_songs, dz_stream_data)),
     
     
     # -------- load and process raw ID data

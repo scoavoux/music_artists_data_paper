@@ -31,14 +31,14 @@ print_stream_share <- function(x){
     mbz_sc_rating <- mbz_sc
   }
   
-  mbz_clean <- sum(mbz$dz_stream_share)
-  sc_clean <- sum(sc$dz_stream_share)
-  mbz_sc_clean <- sum(mbz_sc$dz_stream_share)
-  mbz_sc_rating_clean <- sum(mbz_sc_rating$dz_stream_share)
+  mbz_clean <- sum(mbz$dz_stream_share, na.rm = T)
+  sc_clean <- sum(sc$dz_stream_share, na.rm = T)
+  mbz_sc_clean <- sum(mbz_sc$dz_stream_share, na.rm = T)
+  mbz_sc_rating_clean <- sum(mbz_sc_rating$dz_stream_share, na.rm = T)
   
   deezer <- x %>% 
     distinct(dz_artist_id, dz_stream_share)
-  deezer_clean <- sum(deezer$dz_stream_share)
+  deezer_clean <- sum(deezer$dz_stream_share, na.rm = T)
   
   dat <- tibble(clean_ids = c("musicbrainz:", 
                               "senscritique:", 

@@ -30,9 +30,8 @@ join_artist_ids <- function(dz_artists,
   # JOIN ALL ---------------------------------------------
   all <- dz_artists %>% 
     left_join(mbz_deezer_senscritique, by = "dz_artist_id") %>% 
-    # left_join(senscritique, by = "mbz_artist_id") %>% 
     left_join(manual_search, by = "dz_artist_id") %>% 
-    left_join(wiki, by = "dz_artist_id") %>% # added wiki for names
+    left_join(wiki, by = "dz_artist_id") %>% # add wiki for names
     mutate(sc_artist_id = coalesce(sc_artist_id.x, sc_artist_id.y),
            mbz_artist_id = coalesce(mbz_artist_id.x, mbz_artist_id.y),
            collection_count = as.integer(collection_count),
@@ -47,7 +46,8 @@ join_artist_ids <- function(dz_artists,
            sc_artist_id, 
            dz_stream_share, 
            collection_count, 
-           n_ratings) %>% 
+           n_ratings,
+           starts_with("n_")) %>% # add popularity metrics
     distinct(dz_artist_id, sc_artist_id, mbz_artist_id, .keep_all = TRUE) %>%  # !!!
     as_tibble()
 
@@ -55,17 +55,6 @@ join_artist_ids <- function(dz_artists,
   
   return(all)
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
