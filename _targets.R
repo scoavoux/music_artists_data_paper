@@ -16,8 +16,9 @@ tar_option_set(
   )
 )
 
-tar_source("R")
+#setwd("/home/onyxia/work/music_artists_data_paper")
 
+tar_source("R")
 
 # List of targets ------
 list(
