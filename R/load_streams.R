@@ -2,6 +2,7 @@
 #### create streams df with cols song_id and f_n_plays
 #### remove songs with no listens, negative song_ids
 
+# DEPRECATED/OUTDATED!
 load_streams <- function() {
   
   # load and filter streams_short
@@ -181,7 +182,10 @@ make_stream_popularity <- function(dz_songs, dz_users){
     ) %>% 
     rename(n_plays = "n_plays_control",
            n_users = "n_users_control",
-           dz_artist_id = "dz_artist_feat_id")
+           dz_artist_id = "dz_artist_feat_id") %>% 
+    
+    # filter out artists with no plays in control group
+    filter(!is.na(n_plays)) 
   
   return(artist_popularity_wide)
 }

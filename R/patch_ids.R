@@ -13,14 +13,10 @@ patch_names <- function(all,
 
   require(logging)
   
-  loginfo("allgood")
-  
   ref_id   <- rlang::sym(ref_id)
   ref_name <- rlang::sym(ref_name)
   all_name <- rlang::sym(all_name)
 
-  loginfo("allgood")
-  
   ## prepare reference table
   ref_clean <- ref %>%
     as_tibble() %>%
@@ -121,8 +117,8 @@ patch_deezer_dups <- function(ref,
   # and filter the clear cases missing sc_artist_ids
   all_stream_share <- all %>% 
     group_by(!!all_name) %>%
-    mutate(dz_stream_share_byname = dz_stream_share / sum(dz_stream_share)) %>% 
-    filter(dz_stream_share_byname > 0.90) %>% 
+    mutate(n_plays_byname = n_plays / sum(n_plays)) %>% 
+    filter(n_plays_byname > 0.90) %>% 
     filter(is.na(!!ref_id))
   
   ## subset unique ref names
@@ -152,8 +148,8 @@ patch_sc_dups <- function(all, senscritique){
   ## *added 0.9 filtering condition to include some deezer dups!
   all_unique_sc <- all %>%
     group_by(dz_name) %>% # maybe: name, dz_artist_id?
-    mutate(dz_stream_share_byname = dz_stream_share / sum(dz_stream_share)) %>% 
-    filter(dz_stream_share_byname > 0.90) %>% 
+    mutate(n_plays_byname = n_plays / sum(n_plays)) %>% 
+    filter(n_plays_byname > 0.90) %>% 
     add_count(dz_name) %>%
     filter(n == 1) %>%
     filter(is.na(sc_artist_id)) %>% 

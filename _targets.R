@@ -24,11 +24,8 @@ tar_source("R")
 list(
   
     ### CREATE (deezer) ARTISTS ----------------------------------------------
-    
-    # load and aggregate raw streams
-    #tar_target(name = dz_streams,
-     #          command = load_streams()),
-    
+
+    # maybe put in clean_raw
     tar_target(dz_users,
                command = load_s3("records_w3/RECORDS_hashed_user_group.parquet") %>% 
                  mutate(
@@ -172,9 +169,9 @@ list(
                              dup_sc_patch = dup_sc_patch) %>% 
                  
                  ## append ratings (refactor later)
-                 select(-n_ratings) %>% 
+                 select(-sc_n_ratings) %>% 
                  left_join(senscritique %>% 
-                             select(sc_artist_id, n_ratings),
+                             select(sc_artist_id, sc_n_ratings),
                            by = "sc_artist_id")),
   
   # deduplicate all 3 ids by taking the most popular duplicate on
@@ -252,8 +249,8 @@ list(
                       sc_artist_id,
                       mbz_artist_id,
                       starts_with("n_"),
-                      collection_count,
-                      n_ratings,
+                      sc_collection_count,
+                      sc_n_ratings,
                       starts_with("name_count")) %>% 
                
                # radio
@@ -263,23 +260,6 @@ list(
                left_join(mbz_releases, by = "mbz_artist_id"))
   
 )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

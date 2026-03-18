@@ -44,7 +44,6 @@ join_artist_ids <- function(dz_artists,
            dz_artist_id, 
            mbz_artist_id, 
            sc_artist_id, 
-           dz_stream_share, 
            sc_collection_count, 
            sc_n_ratings,
            starts_with("n_")) %>% # popularity metrics

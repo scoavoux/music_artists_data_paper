@@ -5,15 +5,15 @@ deduplicate_ids <- function(all){
   all <- all %>% 
     
     group_by(dz_artist_id) %>% 
-    mutate(colcount_share_by_dzdup = collection_count / sum(collection_count, na.rm = TRUE))  %>% 
+    mutate(colcount_share_by_dzdup = sc_collection_count / sum(sc_collection_count, na.rm = TRUE))  %>% 
     ungroup() %>% 
     
     group_by(sc_artist_id) %>%
-    mutate(stream_share_by_scdup = dz_stream_share / sum(dz_stream_share, na.rm = TRUE)) %>%
+    mutate(stream_share_by_scdup = n_plays / sum(n_plays, na.rm = TRUE)) %>%
     ungroup() %>%
     
     group_by(mbz_artist_id) %>%
-    mutate(stream_share_by_mbzdup = dz_stream_share / sum(dz_stream_share, na.rm = TRUE)) %>%
+    mutate(stream_share_by_mbzdup = n_plays / sum(n_plays, na.rm = TRUE)) %>%
     ungroup()
   
   # ------------------------------------------------------

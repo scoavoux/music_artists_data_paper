@@ -97,9 +97,8 @@ group_songs_by_artist <- function(dz_songs, dz_stream_data){
     
     # NEW 18/03: ADD POP HERE!
     inner_join(dz_stream_data, by = "dz_artist_id") %>% 
-    mutate(dz_stream_share = n_plays / sum(n_plays, na.rm = T) * 100) %>%  # TEMPORARY
     
-    arrange(desc(dz_stream_share))
+    arrange(desc(n_plays))
   
   return(dz_artists)
 }

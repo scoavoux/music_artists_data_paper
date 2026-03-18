@@ -49,6 +49,8 @@ list_aliases <- function(file1, file2, all_final){
     filter(!is.na(sc_artist_id) & !is.na(mbz_artist_id)) %>% # complete cases
     mutate(dz_name = str_normalize(dz_name)) %>% # normalize name
     group_by(dz_name) %>% 
+    
+    # START AGAIN HERE LATER +++++++++++++++++++++++++++
     mutate(keep = ifelse(dz_stream_share == max(dz_stream_share), 
                          TRUE, 
                          FALSE)) %>% # deduplicate CHANGE: SUM OF NAME_COUNT INSTEAD!!

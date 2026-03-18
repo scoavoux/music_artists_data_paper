@@ -6,6 +6,9 @@
 print_stream_share <- function(x){ 
   
   require(dplyr)
+  
+  x <- x %>% 
+    mutate(dz_stream_share = (n_plays / sum(n_plays, na.rm = T)) * 100)
 
   mbz <- x %>% 
     filter(!is.na(mbz_artist_id)) %>% 
@@ -130,6 +133,14 @@ str_normalize <- function(str){
   
   return(str)
 }
+
+
+
+
+
+
+
+
 
 
 
