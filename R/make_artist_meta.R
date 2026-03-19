@@ -45,3 +45,68 @@ make_artist_country <- function(mbz_area_file,
   return(mbz_artist_area)
   
 }
+
+
+# LOAD GENDER FROM MBZ AND GPT, COALESCE BOTH
+make_artist_gender <- function(all_final, mbz_gender_file, gpt_gender_file){
+  
+  mbz_gender <- load_s3(mbz_gender_file)
+  
+  mbz_gender <- mbz_gender %>% 
+    rename(mbz_artist_id = "gid") %>% 
+    mutate(gender = ifelse(gender == 1, "male", "female")) %>% 
+    as_tibble()
+  
+  gpt_gender <- load_s3(gpt_gender_file)
+  
+  gpt_gender <- gpt_gender %>% 
+    mutate(dz_artist_id = as.character(artist_id)) %>% 
+    filter(gender != "uncertain") %>% 
+    select(dz_artist_id, gender) %>% 
+    as_tibble()
+  
+  all_final <- all_final %>% 
+    select(dz_artist_id, mbz_artist_id)
+  
+  mbz_gpt_gender <- all_final %>% 
+    
+    # mbz if available
+    left_join(mbz_gender, by = "mbz_artist_id") %>%
+    rename(gender_mbz = gender) %>%
+    
+    # else gpt
+    left_join(gpt_gender, by = "dz_artist_id") %>%
+    rename(gender_gpt = gender) %>%
+    
+    mutate(
+      gender = coalesce(gender_mbz, gender_gpt)
+    ) %>%
+    
+    select(dz_artist_id, gender)
+  
+  return(mbz_gpt_gender)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

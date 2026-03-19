@@ -1,26 +1,6 @@
 
 
 
-load_s3("records_w3/artists_songs_languages.csv")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

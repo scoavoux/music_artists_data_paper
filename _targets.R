@@ -252,6 +252,24 @@ list(
                                            area_to_country_file="data/area_country.csv",
                                            country_rank_file="data/country_rank.csv")),
   
+  tar_target(name = artist_language,
+             command = load_s3("records_w3/artists_songs_languages.csv") %>% 
+               as_tibble() %>% 
+               mutate(dz_artist_id = as.character(art_id),
+                      lang_main = lang,
+                      lang_main_nb_songs = nb_songs) %>% 
+               arrange(dz_artist_id, desc(lang_main_nb_songs)) %>% 
+               group_by(dz_artist_id) %>% 
+               slice(1) %>% 
+               ungroup() %>% 
+               select(dz_artist_id, lang_main, lang_main_nb_songs)
+             ),
+  
+  tar_target(name = mbz_gpt_gender,
+             command = make_artist_gender(all_final,
+                                          mbz_gender_file="musicbrainz/mbid_gender.csv",
+                                          gpt_gender_file="gpt_music_data/gpt_gender.csv")),
+
   
   # final dataframe with selected variables
   tar_target(name = df,
@@ -265,6 +283,10 @@ list(
                
                left_join(mbz_artist_country, by = "mbz_artist_id") %>% 
                
+               left_join(artist_language, by = "dz_artist_id") %>% 
+               
+               left_join(mbz_gpt_gender, by = "dz_artist_id") %>% 
+               
                select(
                  dz_name,
                  ends_with("_id"),
@@ -274,28 +296,19 @@ list(
                  starts_with("press_n_"),
                  starts_with("radio_"),
                  starts_with("press_"),
-                 artist_country
+                 artist_country,
+                 gender,
+                 starts_with("lang_")
                  )
   )
 
 )
 
-# ONE PERFECT DUPLICATE (1): "Crash!", dz_artist_id == 271763
+# ONE PERFECT DUPLICATE (1): "Crash!" ---xs dz_artist_id == 271763
 # COMES FROM PRESS I THINK WHERE I CODED HIM TWICE
 # SOLVE LATER
 
-
-
-
-
-
-
-
-
-
-
-
-
+tar_load(df)
 
 
 
