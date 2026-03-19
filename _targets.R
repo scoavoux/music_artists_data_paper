@@ -247,6 +247,11 @@ list(
   tar_target(name = radio_counts,
              command = count_radio_plays(file="records_w3/radio/radio_plays_with_artist_id.csv")),
   
+  tar_target(name = mbz_artist_country,
+             command = make_artist_country(mbz_area_file="musicbrainz/musicbrainz_area.csv",
+                                           area_to_country_file="data/area_country.csv",
+                                           country_rank_file="data/country_rank.csv")),
+  
   
   # final dataframe with selected variables
   tar_target(name = df,
@@ -258,6 +263,8 @@ list(
                # releases
                left_join(mbz_releases, by = "mbz_artist_id") %>% 
                
+               left_join(mbz_artist_country, by = "mbz_artist_id") %>% 
+               
                select(
                  dz_name,
                  ends_with("_id"),
@@ -266,11 +273,25 @@ list(
                  sc_n_ratings,
                  starts_with("press_n_"),
                  starts_with("radio_"),
-                 starts_with("press_")
+                 starts_with("press_"),
+                 artist_country
                  )
   )
 
 )
+
+# ONE PERFECT DUPLICATE (1): "Crash!", dz_artist_id == 271763
+# COMES FROM PRESS I THINK WHERE I CODED HIM TWICE
+# SOLVE LATER
+
+
+
+
+
+
+
+
+
 
 
 
