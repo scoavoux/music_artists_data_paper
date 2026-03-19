@@ -285,7 +285,13 @@ list(
                
                left_join(artist_language, by = "dz_artist_id") %>% 
                
-               left_join(mbz_gpt_gender, by = "dz_artist_id") %>% 
+               left_join(mbz_gpt_gender, by = "dz_artist_id") %>%
+               
+               # compute stream share
+               mutate(
+                 n_plays_share = n_plays / sum(n_plays, na.rm = T) * 100,
+                 n_plays_share_respondent = n_plays_respondent / sum(n_plays_respondent, na.rm = T) * 100
+                 ) %>% 
                
                select(
                  dz_name,
@@ -307,8 +313,6 @@ list(
 # ONE PERFECT DUPLICATE (1): "Crash!" ---xs dz_artist_id == 271763
 # COMES FROM PRESS I THINK WHERE I CODED HIM TWICE
 # SOLVE LATER
-
-tar_load(df)
 
 
 

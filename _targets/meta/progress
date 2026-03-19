@@ -33,8 +33,7 @@ wiki_mbz_names_patch|stem|wiki_mbz_names_patch|0|skipped
 wiki_names_patch|stem|wiki_names_patch|0|skipped
 all_patched|stem|all_patched|0|skipped
 all_final|stem|all_final|0|skipped
-mbz_gpt_gender|stem|mbz_gpt_gender|0|dispatched
-mbz_gpt_gender|stem|mbz_gpt_gender|0|completed
+mbz_gpt_gender|stem|mbz_gpt_gender|0|skipped
 mbz_releases|stem|mbz_releases|0|skipped
 aliases_to_add|stem|aliases_to_add|0|skipped
 press_name_counts|stem|press_name_counts|0|skipped
