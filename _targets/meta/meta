@@ -68,19 +68,12 @@ list_ents_to_drop|function|5345cdb136b8be63|||||||||||||||
 press_corpus|stem|39752901d1bdb4b8|c287ae213c7bd73d|6e266f15d0f2db31|-296614722|bucket=scoavoux*region=NULL*key=music_artist/objects/press_corpus*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20523.4106824436s||0|rds|aws|vector|||1.821||
 dz_names|stem|d105926d394f91f4|451c11b946563c15|ec7f0fbb237cb498|12374183|bucket=scoavoux*region=NULL*key=music_artist/objects/dz_names*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20523.5608574102s||0|rds|aws|vector|||8.024||
 aliases|stem|916f6c2e10136c8e|4b481aaf3b3cdd42|248d69a3d3f7fd67|-838269410|bucket=scoavoux*region=NULL*key=music_artist/objects/aliases*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20523.6353059441s||0|rds|aws|vector|||35.335||
-entities_to_drop|stem|095acb5f1ace964e|e720e289a96706a4|56ccb5ed4d6955b2|256931683|bucket=scoavoux*region=NULL*key=music_artist/objects/entities_to_drop*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20524.5742151084s||0|rds|aws|vector|||1.091||
 make_aliases|function|14733ecdf13fc145|||||||||||||||
-press_named_entities|stem|a7d6713cc2c5f1b6|3ff5913f6b85c573|bb498348f151d80d|582344855|bucket=scoavoux*region=NULL*key=music_artist/objects/press_named_entities*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20525.6415903204s||0|rds|aws|vector|||16.834||
 user_song|stem||125d67bb64b8ef46|9b3e5274f81c0362|1220156739||t20528.3916886491s||0|qs|aws|vector|||0.077||ℹ In index: 1. ℹ With name: hashed_id. Caused by error: ! Invalid <Expression>, external pointer to null
 stream_data|stem|9205d6fd621b4d52|9f4356e95d23a92e|57e6026d742514cd|1174306358|bucket=scoavoux*region=NULL*key=music_artist/objects/stream_data*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20528.3908078679s||0|rds|aws|vector|||2.14||Invalid: UnionNode input schemas must all match, first schema was: hashed_id: string song_id: int64 listening_time: int64 ts_listen: int64 is_listened: int64 media_type: string got schema: hashed_id: string song_id: int64 listening_time: int64 ts_listen: int64 is_listened: int64
 user_song_parquet|stem||cc0c153645d54649|2c530c1562a7fbd1|1473777365||t20528.4010440724s||0|file|aws|vector|||1.844||Invalid: UnionNode input schemas must all match, first schema was: hashed_id: string song_id: int64 listening_time: int64 ts_listen: int64 is_listened: int64 media_type: string got schema: hashed_id: string song_id: int64 listening_time: int64 ts_listen: int64 is_listened: int64
 dz_users|stem|1749c2faa838e163|fd9f48f53270d2db|83c85aa9e6e44528|1155275878|bucket=scoavoux*region=NULL*key=music_artist/objects/dz_users*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20530.5550265408s||0|rds|aws|vector|||1.021||
 dz_songs|stem|8c91d291b7d7af46|ac6b9863cfcb868f|3e8aa7b71f4cf4fd|249174356|bucket=scoavoux*region=NULL*key=music_artist/objects/dz_songs*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20530.5644121624s||0|rds|aws|vector|||589.199||
-press_name_counts|stem|8dd0b124211ed812|346dec4925afca55|9d07436569388017|1845327189|bucket=scoavoux*region=NULL*key=music_artist/objects/press_name_counts*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20530.6155784203s||0|rds|aws|vector|||10.749||
-upd_press_name_counts|stem|f30b0797369f1ad5|ca645d5a63c9aa7b|edd87ee9fde1b414|1329869738|bucket=scoavoux*region=NULL*key=music_artist/objects/upd_press_name_counts*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20530.6192384418s||0|rds|aws|vector|||3.757||
-all_final_press|stem|5ca11ad3a0c5f135|121a6f901ed6d77a|4bc3e1bc82f2a5ac|-349450312|bucket=scoavoux*region=NULL*key=music_artist/objects/all_final_press*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20530.6193363022s||0|rds|aws|vector|||0.371||
-radio_counts|stem|70e78d90eea5946b|f14db74b21cc7791|84d4e584c7ea58fe|-310315281|bucket=scoavoux*region=NULL*key=music_artist/objects/radio_counts*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20530.6386909466s||0|rds|aws|vector|||38.257||
-df|stem|50cec06514f48d58|604241ab2604f779|141517031717800e|1719518045|bucket=scoavoux*region=NULL*key=music_artist/objects/df*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20530.6393519981s||0|rds|aws|vector|||1.365||
 senscritique|stem|cc1b2d09782600ab|78befb15d3ba541e|001004b04c88f801|594925579|bucket=scoavoux*region=NULL*key=music_artist/objects/senscritique*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20530.6733149159s||0|rds|aws|vector|||26.307||
 dz_stream_data|stem|393bf48bc82fe323|d4ebe1d2d7d06e3c|6c93ea176b9916f3|996397651|bucket=scoavoux*region=NULL*key=music_artist/objects/dz_stream_data*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20530.6817283869s||0|rds|aws|vector|||116.938||
 dz_artists|stem|5ca6e287a6bb7a82|44c3315ef9c2d699|ced11a8a9b9b349a|-1146641988|bucket=scoavoux*region=NULL*key=music_artist/objects/dz_artists*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20530.6853504369s||0|rds|aws|vector|||39.871||
@@ -95,10 +88,18 @@ wiki_mbz_names_patch|stem|25be0808b753ffba|04e0bbb1b476d7cb|150e3ea68bea269d|-29
 wiki_names_patch|stem|b4a70269fc987284|75301f814802726c|150e3ea68bea269d|-1562572403|bucket=scoavoux*region=NULL*key=music_artist/objects/wiki_names_patch*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20530.6963269857s||0|rds|aws|vector|||5.978||
 all_patched|stem|b67a24b928068c69|95dc85cc77265990|165cf2b98ab3422e|461700976|bucket=scoavoux*region=NULL*key=music_artist/objects/all_patched*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20530.6964709519s||0|rds|aws|vector|||4.406|Unknown or uninitialised column: `n_ratings`.. Unknown or uninitialised column: `n_ratings`.. Unknown or uninitialised column: `n_ratings`.. Unknown or uninitialised column: `n_ratings`.. Unknown or uninitialised column: `n_ratings`.. Unknown or uninitialised column: `n_ratings`.. Unknown or uninitialised column: `n_ratings`.. Unknown or uninitialised column: `n_ratings`.|
 all_final|stem|374249ea4becfad5|ff357c300aac514f|4f0b879753618e4f|1771459488|bucket=scoavoux*region=NULL*key=music_artist/objects/all_final*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20530.6977380287s||0|rds|aws|vector|||20.719|There were 599 warnings in `mutate()`. The first warning was: ℹ In argument: `keep_dz = colcount_share_by_dzdup ==   max(colcount_share_by_dzdup, na.rm = TRUE)`. ℹ In group 3: `dz_artist_id = '10032898'`. Caused by warning in `max()`: ! no non-missing arguments to max; returning -Inf ℹ Run `dplyr::last_dplyr_warnings()` to see the 598 remaining warnings.. Unknown or uninitialised column: `n_ratings`.|
+mbz_releases|stem|112fa7be221f9228|e53723ed19079694|baac3a4ea79b60f4|2049062744|bucket=scoavoux*region=NULL*key=music_artist/objects/mbz_releases*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20530.7000413933s||0|rds|aws|vector|||47.831||
+press_named_entities|stem|b0654e1825e03835|3ff5913f6b85c573|096b1835ce6dc086|582344855|bucket=scoavoux*region=NULL*key=music_artist/objects/press_named_entities*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20531.3651418423s||0|rds|aws|vector|||16.223||
+entities_to_drop|stem|6c65942baa0a6f38|e720e289a96706a4|5e006baf0dbdcdd7|256931683|bucket=scoavoux*region=NULL*key=music_artist/objects/entities_to_drop*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20531.3651501288s||0|rds|aws|vector|||0.099||
+aliases_to_add|stem|33d689caf04107c2|62c09a2587972c19|2fe759cdaeaee6b4|1367877244|bucket=scoavoux*region=NULL*key=music_artist/objects/aliases_to_add*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20531.3652023277s||0|rds|aws|vector|||3.173||
+press_name_counts|stem|8fed5d7dd2640753|227bf4e180880e24|c0420cf0c76ac11d|1845327189|bucket=scoavoux*region=NULL*key=music_artist/objects/press_name_counts*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20531.3663894918s||0|rds|aws|vector|||8.858||
+upd_press_name_counts|stem|f2ebc4e41dd63837|ca645d5a63c9aa7b|f29b425b8faefe7c|1329869738|bucket=scoavoux*region=NULL*key=music_artist/objects/upd_press_name_counts*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20531.3664694596s||0|rds|aws|vector|||3.829||
+all_final_press|stem|f8a4cc4e31312840|121a6f901ed6d77a|c2be49db6427bcca|-349450312|bucket=scoavoux*region=NULL*key=music_artist/objects/all_final_press*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20531.3665455799s||0|rds|aws|vector|||0.275||
+radio_counts|stem|70e78d90eea5946b|f14db74b21cc7791|a6caff16930e45a6|-310315281|bucket=scoavoux*region=NULL*key=music_artist/objects/radio_counts*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20531.3692635467s||0|rds|aws|vector|||43.693||
 prop_na|function|c201f9db83a66140
 str_normalize|function|3f1125990a04f5a2
 write_s3|function|15e44e053dc7a6c7
-.Random.seed|object|dd2ec7b589207cf3
+.Random.seed|object|322eaadaeda1b1cb
 bind_dz_songs|function|9410e38d81eea067
 initialize_s3|function|25a2772c1c03257f
 mbz_from_wiki|function|09d134ac8e582641
@@ -106,16 +107,16 @@ load_stream_dataset|function|bb226a0874ad554d
 patch_names|function|508c7b22edeb5677
 print_stream_share|function|52edb33faf5a85f1
 bind_press_corpora|function|9f0e20eeaa6cb1cd
-press_counts_to_final|function|aedfcab3715c94c2
+press_counts_to_final|function|f3dca2ffc03025cc
 group_songs_by_artist|function|fb4d52033643f4ea
 stream_share_patch|function|600e47e27ed7d5d1
 make|function|860e3605b48e903a
 load_partitioned_s3|function|ef32fd7856f71aa0
 make_stream_popularity|function|fd5ed8c958a80ddc
-update_press_names|function|ff1a185d62bebeec
+update_press_names|function|1faf2fafe6d768c1
 make_wiki_keys|function|420336bcf27da1f0
 load_streams|function|1071cc9cb346fe44
-count_names_press|function|df930f20c89ebf0a
+count_names_press|function|6c9aecca22b7e81f
 load_s3|function|2f0bfd56597701f8
 clean_liberation|function|bcf27a80b4d11f22
 load_s3_info|function|b201b67fd14b09a5
@@ -125,19 +126,18 @@ patch_sc_dups|function|8b1c2355bc8522cb
 update_rows|function|1b6a3f7a2c34a661
 join_artist_ids|function|69405a9c2dc61e60
 deduplicate_ids|function|d2a10cd85e7a6348
-clean_press_ents|function|e83424a6694c8b9e
+clean_press_ents|function|29e2de226dc0e50a
 load_mbz_releases|function|1ce21eaa45b6e25c
 clean_lemonde|function|4fbc1fe4aba78713
 load_mbz_deezer|function|5c576845a1e17fd0
 load_senscritique|function|be4ef856e91ab722
 load_sc_ratings|function|ac7f50b2722bc4fb
 bind_dz_names|function|7e7a92b84ef5a0dd
-list_aliases|function|5c6958d2fa8860ac
+list_aliases|function|81869414a370e89a
 clean_telerama|function|c58ebab3e25c5aa0
 load_wiki|function|0c5791e820407b00
 load_manual_search|function|2b5d381ac9d288fa
-count_radio_plays|function|50dc04f47b16097c
+count_radio_plays|function|83dc08ed1a3c67db
 make_dz_songs|function|f58dc2882a7702e0
-list_entities_to_drop|function|637244e34d9909c6
-mbz_releases|stem|112fa7be221f9228|e53723ed19079694|baac3a4ea79b60f4|2049062744|bucket=scoavoux*region=NULL*key=music_artist/objects/mbz_releases*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20530.7000413933s||0|rds|aws|vector|||47.831||
-aliases_to_add|stem|f849d18973f21389|62c09a2587972c19|7aa9557cf89ac7d3|1367877244|bucket=scoavoux*region=NULL*key=music_artist/objects/aliases_to_add*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20530.6186079757s||0|rds|aws|vector|||0.94||ℹ In argument: `keep = ifelse(dz_stream_share == max(dz_stream_share),   TRUE, FALSE)`. ℹ In group 1: `dz_name = ''`. Caused by error: ! object 'dz_stream_share' not found
+list_entities_to_drop|function|db48dc9dbb8d291d
+df|stem|85711564efd488b9|d6f2a3adabd219d2|68d35de0d5120ac1|1719518045|bucket=scoavoux*region=NULL*key=music_artist/objects/df*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20531.3749404668s||0|rds|aws|vector|||1.724||

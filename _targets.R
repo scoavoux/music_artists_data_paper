@@ -96,8 +96,11 @@ list(
     
     ##### left-join raw data
     tar_target(name = all,
-               command = join_artist_ids(dz_artists, mbz_deezer,
-                                             senscritique, manual_search, wiki)),
+               command = join_artist_ids(dz_artists, 
+                                         mbz_deezer,
+                                         senscritique, 
+                                         manual_search, 
+                                         wiki)),
     
     # unique matches between deezer and senscritique names
     tar_target(name = sc_names_patch,
@@ -216,15 +219,19 @@ list(
   # AND export the "CHECK" datasets as byproduct!!!
   # implement my dictionaries to remove names and add aliases
   tar_target(name = press_name_counts,
-             command = count_names_press(all_final, press_named_entities, 
-                                         name_count_threshold = 30)),
+             command = count_names_press(all_final, 
+                                         press_named_entities, 
+                                         min_n_mentions = 30)),
   
   tar_target(name = upd_press_name_counts,
-             command = update_press_names(press_name_counts, aliases_to_add, entities_to_drop)),
+             command = update_press_names(press_name_counts, 
+                                          aliases_to_add, 
+                                          entities_to_drop)),
   
   # join press name counts into all_final
   tar_target(name = all_final_press,
-             command = press_counts_to_final(all_final, upd_press_name_counts)),
+             command = press_counts_to_final(all_final, 
+                                             upd_press_name_counts)),
   
   
   # compute mbz release variables
@@ -244,24 +251,26 @@ list(
   # final dataframe with selected variables
   tar_target(name = df,
              command = all_final_press %>% 
-               select(dz_artist_id, 
-                      dz_name,
-                      sc_artist_id,
-                      mbz_artist_id,
-                      starts_with("n_"),
-                      sc_collection_count,
-                      sc_n_ratings,
-                      starts_with("name_count")) %>% 
                
                # radio
                left_join(radio_counts, by = "dz_artist_id") %>% 
                
                # releases
-               left_join(mbz_releases, by = "mbz_artist_id"))
-  
+               left_join(mbz_releases, by = "mbz_artist_id") %>% 
+               
+               select(
+                 dz_name,
+                 ends_with("_id"),
+                 starts_with("n_"),
+                 sc_collection_count,
+                 sc_n_ratings,
+                 starts_with("press_n_"),
+                 starts_with("radio_"),
+                 starts_with("press_")
+                 )
+  )
+
 )
-
-
 
 
 
