@@ -109,4 +109,3 @@ make_artist_gender <- function(all_final, mbz_gender_file, gpt_gender_file){
 
 
 
-

@@ -45,7 +45,6 @@ join_artist_ids <- function(dz_artists,
            mbz_artist_id, 
            sc_artist_id, 
            sc_collection_count, 
-           sc_n_ratings,
            starts_with("n_")) %>% # popularity metrics
     distinct(dz_artist_id, sc_artist_id, mbz_artist_id, .keep_all = TRUE) %>%  # !!!
     as_tibble()

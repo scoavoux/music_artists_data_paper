@@ -23,22 +23,10 @@ print_stream_share <- function(x){
     filter(!is.na(sc_artist_id)) %>% 
     distinct(dz_artist_id, .keep_all = T)
 
-  if(length(x$n_ratings) != 0){
-    mbz_sc_rating <- x %>% 
-      filter(!is.na(mbz_artist_id)) %>% 
-      filter(!is.na(sc_artist_id)) %>% 
-      filter(!is.na(n_ratings)) %>% 
-      distinct(dz_artist_id, .keep_all = T)
-  }
-  else{
-    mbz_sc_rating <- mbz_sc
-  }
-  
   mbz_clean <- sum(mbz$dz_stream_share, na.rm = T)
   sc_clean <- sum(sc$dz_stream_share, na.rm = T)
   mbz_sc_clean <- sum(mbz_sc$dz_stream_share, na.rm = T)
-  mbz_sc_rating_clean <- sum(mbz_sc_rating$dz_stream_share, na.rm = T)
-  
+
   deezer <- x %>% 
     distinct(dz_artist_id, dz_stream_share)
   deezer_clean <- sum(deezer$dz_stream_share, na.rm = T)
@@ -46,19 +34,16 @@ print_stream_share <- function(x){
   dat <- tibble(clean_ids = c("musicbrainz:", 
                               "senscritique:", 
                               "clean:",
-                              "clean with ratings:",
                               "N total:"),
          
          stream_share = c(mbz_clean, 
                           sc_clean, 
                           mbz_sc_clean, 
-                          mbz_sc_rating_clean,
                           deezer_clean),
          
          N = c(nrow(mbz), 
                nrow(sc), 
                nrow(mbz_sc), 
-               nrow(mbz_sc_rating), 
                nrow(deezer)))
 
   print(dat)

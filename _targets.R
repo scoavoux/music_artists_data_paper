@@ -71,9 +71,7 @@ list(
     
     # sc_artist_id (+ metadata) to mbz_artist_id
     tar_target(name = senscritique, 
-               command = load_senscritique(sc_file="senscritique/contacts.csv",
-                                           sc_ratings_file = "senscritique/ratings.csv",
-                                           sc_albums_file = "senscritique/contacts_albums_link.csv")),
+               command = load_senscritique(sc_file="senscritique/contacts.csv")),
     
     # manual searches sc_artist_id to dz_artist_id
     tar_target(name = manual_search,
@@ -169,13 +167,8 @@ list(
                              wiki_names_patch = wiki_names_patch,
                              wiki_mbz_names_patch = wiki_mbz_names_patch,
                              wiki_mbz_ids_patch = wiki_mbz_ids_patch,
-                             dup_sc_patch = dup_sc_patch) %>% 
-                 
-                 ## append ratings (refactor later)
-                 select(-sc_n_ratings) %>% 
-                 left_join(senscritique %>% 
-                             select(sc_artist_id, sc_n_ratings),
-                           by = "sc_artist_id")),
+                             dup_sc_patch = dup_sc_patch)
+               ),
   
   # deduplicate all 3 ids by taking the most popular duplicate on
   # collection_count for dz duplicates, and on dz_stream_share 
@@ -252,6 +245,7 @@ list(
                                            area_to_country_file="data/area_country.csv",
                                            country_rank_file="data/country_rank.csv")),
   
+  # language
   tar_target(name = artist_language,
              command = load_s3("records_w3/artists_songs_languages.csv") %>% 
                as_tibble() %>% 
@@ -265,11 +259,20 @@ list(
                select(dz_artist_id, lang_main, lang_main_nb_songs)
              ),
   
+  # gender
   tar_target(name = mbz_gpt_gender,
              command = make_artist_gender(all_final,
                                           mbz_gender_file="musicbrainz/mbid_gender.csv",
                                           gpt_gender_file="gpt_music_data/gpt_gender.csv")),
-
+  
+  # ratings
+  tar_target(name = sc_ratings,
+             command = make_sc_ratings(sc_albums_ratings_file="/senscritique/ratings.csv",
+                                       sc_albums_list_file="senscritique/contacts_albums_link.csv",
+                                       sc_tracks_ratings_file="senscritique/tracks.csv",
+                                       sc_tracks_list_file="senscritique/contact_tracks_link.csv",
+                                       track_weight = .2)
+             ),
   
   # final dataframe with selected variables
   tar_target(name = df,
@@ -287,6 +290,8 @@ list(
                
                left_join(mbz_gpt_gender, by = "dz_artist_id") %>%
                
+               left_join(sc_ratings, by = "sc_artist_id") %>% 
+               
                # compute stream share
                mutate(
                  n_plays_share = n_plays / sum(n_plays, na.rm = T) * 100,
@@ -298,7 +303,7 @@ list(
                  ends_with("_id"),
                  starts_with("n_"),
                  sc_collection_count,
-                 sc_n_ratings,
+                 starts_with("sc_avg_"),
                  starts_with("press_n_"),
                  starts_with("radio_"),
                  starts_with("press_"),
@@ -310,7 +315,7 @@ list(
 
 )
 
-# ONE PERFECT DUPLICATE (1): "Crash!" ---xs dz_artist_id == 271763
+# ONE PERFECT DUPLICATE (1): "Crash!" ---> dz_artist_id == 271763
 # COMES FROM PRESS I THINK WHERE I CODED HIM TWICE
 # SOLVE LATER
 
