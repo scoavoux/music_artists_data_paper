@@ -1,7 +1,7 @@
 # Preparation ------
 library(targets)
 library(tarchetypes)
-#library(dplyr)
+# library(dplyr)
 
 tar_option_set(
   packages = c("paws", "tidyverse", "arrow"),
@@ -38,8 +38,13 @@ list(
                         is_respondent, 
                         is_control)),
     
+    # make popularity split by control and respondents
     tar_target(name = dz_stream_data,
                command = make_stream_popularity(dz_songs, dz_users)),
+    
+    # make popularity at user-artist level for respondents
+    tar_target(name = respondent_streams,
+               command = make_respondent_plays(dz_songs, dz_users)),
     
     tar_target(name = to_remove_file,
                command = read.csv("data/artists_to_remove.csv")),
@@ -274,23 +279,31 @@ list(
                                        track_weight = .2)
              ),
   
+  
+  # load survey
+  tar_target(name = survey_raw,
+             command = load_s3("records_w3/survey/RECORDS_Wave3_apr_june_23_responses_corrected.csv") %>% 
+               as_tibble() %>% 
+               filter(Progress == 100,
+                      country == "FR")
+             ),
+  
+  tar_target(name = respondent_age_gender,
+             command = make_respondent_demo(respondent_streams, survey_raw)),
+  
+  
   # final dataframe with selected variables
   tar_target(name = df,
              command = all_final_press %>% 
                
                # radio
                left_join(radio_counts, by = "dz_artist_id") %>% 
-               
-               # releases
                left_join(mbz_releases, by = "mbz_artist_id") %>% 
-               
                left_join(mbz_artist_country, by = "mbz_artist_id") %>% 
-               
                left_join(artist_language, by = "dz_artist_id") %>% 
-               
                left_join(mbz_gpt_gender, by = "dz_artist_id") %>%
-               
                left_join(sc_ratings, by = "sc_artist_id") %>% 
+               left_join(respondent_age_gender, by = "dz_artist_id") %>% 
                
                # compute stream share
                mutate(
@@ -309,15 +322,26 @@ list(
                  starts_with("press_"),
                  artist_country,
                  gender,
-                 starts_with("lang_")
+                 starts_with("lang_"),
+                 starts_with("respondent_")
                  )
   )
 
 )
 
-# ONE PERFECT DUPLICATE (1): "Crash!" ---> dz_artist_id == 271763
+# 2 PERFECT DUPLICATES (1): "Crash!" ---> dz_artist_id == 271763
 # COMES FROM PRESS I THINK WHERE I CODED HIM TWICE
 # SOLVE LATER
+
+# df <- df %>% 
+#   add_count(dz_artist_id) %>% 
+#   filter(n > 1)
+
+
+
+
+
+
 
 
 
