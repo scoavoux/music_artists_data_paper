@@ -1,34 +1,36 @@
-
 library(janitor)
 library(stringr)
 
-pcs <- load_s3("PCS2020/L66_Matrice_codification_PCS2020_collecte_2023.csv")
+pcs_raw <- 
 
-
-pcs <- janitor::clean_names(pcs) %>% 
-  filter(libm != "2023") %>% 
-  select(libm:libf) %>% 
-  pivot_longer(cols = c(libm:libf),
-               names_to = "sexe", # select cols??
-               values_to = "pcs_prof") %>% 
-  distinct(pcs_prof)
-
-tar_load(survey_raw)
-
-
-  # Cleaning up data ------
-  clean_up <- function(string){
-    string %>% 
-      stringi::stri_trans_general("Latin-ASCII") %>% 
-      tolower() %>% 
-      str_replace_all(c("[-,\\.']" = " ")) %>% 
-      str_replace_all(c("\\s+" = " "))
-  }
+load_pcs <- function(file="PCS2020/L66_Matrice_codification_PCS2020_collecte_2023.csv"){
   
+  pcs <- load_s3(file)
+  
+  pcs_prof <- pcs %>% 
+    janitor::clean_names() %>% 
+    filter(libm != "2023") %>% 
+    select(libm:libf) %>% 
+    pivot_longer(cols = c(libm:libf),
+                 names_to = "sexe", # select cols??
+                 values_to = "pcs_prof") %>% 
+    distinct(pcs_prof)
+
+  
+  # Cleaning up data ------
   pcs <- pcs %>% 
     distinct(pcs_prof) %>% 
-    mutate(pcs_prof_sam = clean_up(pcs_prof),
-           pcs_prof = str_normalize(pcs_prof))
+    mutate(pcs_prof = str_normalize(pcs_prof))
+  
+  return(pcs)
+}
+
+
+or1 <- load_s3("records_w3/survey/pcs_openrefine1.csv")
+isco_isei_raw <- load_s3("PCS2020/isco_isei.csv") 
+isco_raw <- "PCS2020/L72_Matrice_codification_ISCO_collecte_2023.xlsx" ## convert to csv and reexport to onyxia
+
+openrefine_raw
   
   # recode profession in survey
   survey <- survey_raw %>% 
@@ -65,13 +67,11 @@ tar_load(survey_raw)
   sum(matches$n)
   
   # we export and go through openrefine
-  or1 <- load_s3("records_w3/survey/pcs_openrefine1.csv")
-
   or1 <- or1 %>% 
-    select(-survey_prof) %>% 
-    filter(!(orig_survey_prof %in% matches$orig_survey_prof)) %>% 
-    as_tibble()
-
+    as_tibble() %>% 
+    select(-survey_prof) #%>% 
+    filter(!(orig_survey_prof %in% matches$orig_survey_prof))
+or1
   matches <- or1 %>% 
     mutate(niveau = 4,
            type = "openrefine_handcoded") %>% 
@@ -99,6 +99,7 @@ tar_load(survey_raw)
   #   arrange(desc(n)) %>%
   #   write_csv("profs.csv")
   # Récupérer les codes
+  
   library(googlesheets4)
   gs4_auth(email = "samuel.coavoux@gmail.com")
   recoprof <- read_sheet("1DcVZkiNRS9XbLFJxl_qRtbF1Um9xKkothWOLuUb28vw", col_types = "c") %>% 
@@ -114,8 +115,7 @@ tar_load(survey_raw)
   recoprof <- recoprof %>% 
     select(-n, -PCS3, -PCS2, -Inclassable)
   
-  pppcs <- read_excel("data/temp/L66_Matrice_codification_PCS2020_collecte_2023.xlsx", sheet = 2, skip=8)
-  pppcs <- pppcs %>% 
+  pppcs <- pcs %>% 
     slice(-1) %>% 
     select(-libf, -liste, -natlib) %>% 
     pivot_longer(-libm) %>% 
@@ -123,6 +123,7 @@ tar_load(survey_raw)
     group_by(value) %>% 
     slice(1) %>% 
     select(clean_pcs_prof = "libm", PCS4 = "value")
+  
   handcoded <- survey_raw %>% 
     select(hashed_id, orig_survey_prof, E_statut_pub_priv, E_taille_entreprise,
            E_position_pub, E_position_priv, E_encadre) %>% 
@@ -143,24 +144,26 @@ tar_load(survey_raw)
     select(-clean_pcs_prof2)
   
   ## Prepare PCS encoding table
-  pcs_cod <- read_xlsx("data/temp/L66_Matrice_codification_PCS2020_collecte_2023.xlsx", sheet = 2, skip = 8) %>% filter(libm != "2023") %>% 
+  pcs_cod <- pcs %>% 
+    filter(libm != "2023") %>% 
     select(-liste, -natlib, -codeu) %>% 
     pivot_longer(libm:libf, values_to = "clean_pcs_prof") %>% 
     select(-name) %>% 
-    pivot_longer(-clean_pcs_prof, names_to = "condition_pcs", values_to = "pcs4") %>% 
+    pivot_longer(-clean_pcs_prof, 
+                 names_to = "condition_pcs", 
+                 values_to = "pcs4") %>% 
     distinct()
   
   ## Prepare ISCO encoding table
-  s3$download_file(Bucket = "scoavoux", 
-                   Key = "PCS2020/L72_Matrice_codification_ISCO_collecte_2023.xlsx", 
-                   Filename = "data/temp/L72_Matrice_codification_ISCO_collecte_2023.xlsx")
-  
-  isco_cod <- read_xlsx("data/temp/L72_Matrice_codification_ISCO_collecte_2023.xlsx", sheet = 2, skip = 7) %>% 
+
+  isco_cod <- isco %>% 
     filter(libm != "2023") %>% 
     select(-id, -liste, -codeu) %>% 
     pivot_longer(libm:libf, values_to = "clean_pcs_prof") %>% 
     select(-name) %>% 
-    pivot_longer(-clean_pcs_prof, names_to = "condition_isco", values_to = "isco4") %>% 
+    pivot_longer(-clean_pcs_prof, 
+                 names_to = "condition_isco", 
+                 values_to = "isco4") %>% 
     distinct()
   
   profs <- select(survey_raw, hashed_id, clean_pcs_prof, E_statut_pub_priv:E_position_priv, E_encadre) %>% 
@@ -216,8 +219,7 @@ tar_load(survey_raw)
     ) %>% 
     select(hashed_id, clean_pcs_prof, starts_with("condition_"))
   
-  f <- s3$get_object(Bucket = "scoavoux", Key = "PCS2020/isco_isei.csv")
-  isco_isei <- f$Body %>% rawToChar() %>% read_csv() %>% 
+  isco_isei <- isco_isei %>% 
     rename(isco4 = "isco")
   
   result <- profs %>% 
@@ -232,39 +234,6 @@ tar_load(survey_raw)
            isco3 = str_extract(isco4, "^\\w{3}")) %>% 
     select(hashed_id, isei)
   
-
-
-
-make_endogenous_legitimacy_data <- function(user_artist_peryear, isei, survey_raw){
-  
-  library(tidyverse)
-  library(tidytable)
-  
-  isei <- filter(isei, !is.na(isei))
-  
-  artist_mean_isei <- user_artist_peryear %>% 
-    inner_join(isei) %>% 
-    group_by(artist_id) %>% 
-    mutate(f = l_play / sum(l_play)) %>% 
-    summarise(n_isei = n(),
-              endo_isei_mean_pond = sum(f*isei)) %>% 
-    filter(!is.na(endo_isei_mean_pond))
-  
-  ed <- survey_raw %>% 
-    filter(E_diploma != "", !is.na(E_diploma)) %>% 
-    mutate(higher_ed = as.numeric(E_diploma %in% c("Master, diplôme d'ingénieur.e, DEA, DESS", "Doctorat (y compris médecine, pharmacie, dentaire), HDR" ))) %>% 
-    select(hashed_id, higher_ed) %>% 
-    filter(!is.na(higher_ed))
-  
-  artist_share_higher_education <- user_artist_peryear %>% 
-    inner_join(ed) %>% 
-    group_by(artist_id) %>% 
-    mutate(f = l_play / sum(l_play)) %>% 
-    summarise(endo_share_high_education_pond = sum(f*higher_ed)) %>% 
-    filter(!is.na(endo_share_high_education_pond))
-  
-  return(full_join(artist_mean_isei, artist_share_higher_education))
-}
 
 
 
