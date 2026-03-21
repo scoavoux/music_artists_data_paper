@@ -1,5 +1,5 @@
 
-
+# compute mean age and gender of artists' listeners within respondents
 make_respondent_demo <- function(respondent_streams, survey_raw){
   
   age <- survey_raw %>% 
