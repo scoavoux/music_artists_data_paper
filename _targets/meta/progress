@@ -23,7 +23,8 @@ dz_songs_old|stem|dz_songs_old|0|skipped
 dz_songs_new|stem|dz_songs_new|0|skipped
 dz_songs|stem|dz_songs|0|skipped
 dz_stream_data|stem|dz_stream_data|0|skipped
-respondent_streams|stem|respondent_streams|0|skipped
+respondent_streams|stem|respondent_streams|0|dispatched
+respondent_streams|stem|respondent_streams|0|completed
 dz_artists|stem|dz_artists|0|skipped
 respondent_age_gender|stem|respondent_age_gender|0|dispatched
 respondent_age_gender|stem|respondent_age_gender|0|completed

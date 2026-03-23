@@ -1,7 +1,6 @@
 
-
-
-                           
+# queries for long and short streams 
+# no collect() yet
 query_raw_streams <- function(path_long = "records_w3/streams/streams_long", 
                               path_short = "records_w3/streams/streams_short", 
                               dz_songs=dz_songs, dz_users=dz_users){
@@ -137,6 +136,8 @@ make_stream_popularity <- function(dz_songs, dz_users){
 
 # make user_artist data for respondents
 # needed for user demographics per artist
+# separate function because user-song level calculations
+# break R if applied to all users
 make_respondent_plays <- function(dz_songs, dz_users){
   
   streams <- query_raw_streams(path_long = "records_w3/streams/streams_long", 
@@ -145,10 +146,16 @@ make_respondent_plays <- function(dz_songs, dz_users){
   
   respondent_plays <- streams %>%
     filter(is_respondent == 1) %>% 
-    group_by(hashed_id, dz_artist_feat_id) %>%
-    summarise(n_plays = n(),
+    group_by(hashed_id, song_id, dz_artist_feat_id, w_feat) %>%
+    summarise(n_plays = sum(w_feat),
               .groups = "drop") %>% 
-    select(hashed_id, dz_artist_feat_id, n_plays) %>% 
+
+    group_by(hashed_id, dz_artist_feat_id) %>%
+    summarise(
+      n_plays = sum(n_plays, na.rm = TRUE),
+      .groups = "drop"
+    ) %>%
+    
     collect()
   
   return(respondent_plays)
