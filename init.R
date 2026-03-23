@@ -1,23 +1,28 @@
 needed.packages <- c('targets',
                      'tarchetypes',
+                     'arrow',
                      'visNetwork',
                      'aws.s3',
                      'tidytable',
                      'logging',
                      'dplyr',
-                     'WikidataQueryServiceR',
                      'rstudioapi')
 
-for(pack in needed.packages){
-  if(!(pack %in% rownames(installed.packages())))
-  {install.packages(pack)}
+for(pkg in needed.packages){
+  
+  if(!(pkg %in% rownames(installed.packages())))
+  {install.packages(pkg)}
+  
+  library(pkg)
+  
 }
 
 # special installation for this which is not on CRAN anymore
-install.packages("WikidataQueryServiceR", repos = c(
-  "https://wikimedia.r-universe.dev",
-  "https://cloud.r-project.org"
-))
+# install.packages("WikidataQueryServiceR", repos = c(
+#   "https://wikimedia.r-universe.dev",
+#   "https://cloud.r-project.org"
+# ))
+
 
 
 # set theme and pane layout 
