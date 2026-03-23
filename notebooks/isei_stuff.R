@@ -69,16 +69,26 @@ handcoded <- survey_raw %>%
 
 # Match databases ------
 survey_raw <-  matches %>% 
-  select(orig_survey_prof, clean_pcs_prof = orig_pcs_prof, pcs_niveau = niveau) %>% 
+  select(orig_survey_prof, 
+         clean_pcs_prof = orig_pcs_prof, 
+         pcs_niveau = niveau) %>% 
   right_join(survey_raw) %>% 
   left_join(rename(handcoded, clean_pcs_prof2 = "clean_pcs_prof")) %>% 
   mutate(clean_pcs_prof = ifelse(is.na(clean_pcs_prof), clean_pcs_prof2, clean_pcs_prof)) %>% 
   select(-clean_pcs_prof2)
 
 
-profs <- select(survey_raw, hashed_id, clean_pcs_prof, E_statut_pub_priv:E_position_priv, E_encadre) %>% 
+profs <- select(survey_raw, 
+                hashed_id, 
+                clean_pcs_prof, 
+                E_statut_pub_priv:E_position_priv, 
+                E_encadre) %>% 
 ## --------- PLACEHOLDER FOR SUPER UGLY RECODE BLOCK ---------- ##
 
+
+  
+  
+isco_isei_raw <- load_s3("PCS2020/isco_isei.csv") 
 
 ## OUTPUT: user to isei score table
 result <- profs %>% 
@@ -95,7 +105,14 @@ result <- profs %>%
 
 
 
-
+## chatgpt model
+survey_raw %>%
+  extract_professions() %>%
+  normalize_labels() %>%
+  match_to_pcs() %>%
+  apply_context_rules() %>%
+  map_to_isco() %>%
+  attach_isei()
 
 
 
