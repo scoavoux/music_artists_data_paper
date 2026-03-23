@@ -1,20 +1,11 @@
-needed.packages <- c('targets',
-                     'tarchetypes',
-                     'arrow',
-                     'visNetwork',
-                     'aws.s3',
-                     'tidytable',
-                     'logging',
-                     'dplyr',
-                     'rstudioapi')
 
-for(pkg in needed.packages){
-  
-  if(!(pkg %in% rownames(installed.packages())))
-  {install.packages(pkg)}
-  
-  library(pkg)
-  
+# import all packages listed by renv at once
+needed_packages <- unique(renv::dependencies()[[2]])
+
+for(i in 1:length(needed_packages)){
+
+  library(needed_packages[i], character.only = TRUE)
+
 }
 
 # special installation for this which is not on CRAN anymore

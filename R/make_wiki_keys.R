@@ -1,7 +1,7 @@
 
 make_wiki_keys <- function(wiki_labels, mbz_deezer) {
   
-  library(WikidataQueryServiceR)
+  #library(WikidataQueryServiceR)
   
   options(scipen = 99)
   

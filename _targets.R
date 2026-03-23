@@ -1,8 +1,4 @@
 # Preparation ------
-library(targets)
-library(tarchetypes)
-# library(dplyr)
-
 tar_option_set(
   packages = c("paws", "tidyverse", "arrow"),
   repository = "aws", 
@@ -15,8 +11,6 @@ tar_option_set(
     )
   )
 )
-
-#setwd("/home/onyxia/work/music_artists_data_paper")
 
 tar_source("R")
 

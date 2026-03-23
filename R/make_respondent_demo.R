@@ -1,17 +1,17 @@
 
-make_endogenous_legitimacy_data <- function(respondent_streams, 
+make_respondent_socioecon <- function(respondent_streams, 
                                             # isei, 
                                             survey_raw){
 
   
   # isei <- filter(isei, !is.na(isei))
   # 
-  # artist_mean_isei <- user_artist_peryear %>% 
+  # artist_mean_isei <- respondent_streams %>% 
   #   inner_join(isei) %>% 
-  #   group_by(artist_id) %>% 
-  #   mutate(f = l_play / sum(l_play)) %>% 
+  #   group_by(dz_artist_id) %>% 
+  #   mutate(f = n_plays / sum(n_plays)) %>% 
   #   summarise(n_isei = n(),
-  #             endo_isei_mean_pond = sum(f*isei)) %>% 
+  #             endo_isei_mean_pond = sum(f * isei)) %>% 
   #   filter(!is.na(endo_isei_mean_pond))
   # 
   educ <- survey_raw %>% 
