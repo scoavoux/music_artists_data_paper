@@ -1,3 +1,6 @@
+library(targets)
+library(tarchetypes)
+
 # Preparation ------
 tar_option_set(
   packages = c("paws", "tidyverse", "arrow"),
@@ -13,6 +16,10 @@ tar_option_set(
 )
 
 tar_source("R")
+
+# import all dependencies
+# import_all_pkg(packages = renv::dependencies()[[2]])
+
 
 # List of targets ------
 list(

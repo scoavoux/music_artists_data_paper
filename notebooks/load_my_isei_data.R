@@ -16,18 +16,18 @@ tar_load(survey_raw)
 survey_raw <- survey_raw %>% 
   select(hashed_id, E_FR_prof_femme:E_FR_prof_retr_homme) %>% 
   pivot_longer(-hashed_id, values_to = "orig_survey_prof") %>% 
-  filter(orig_survey_prof != "") %>% 
-  mutate(orig_survey_prof = str_trim(orig_survey_prof)) %>% 
-  select(-name) %>% 
-  right_join(survey_raw, by = "hashed_id")
+  mutate(survey_prof = str_trim(orig_survey_prof),
+         survey_prof = clean_up(survey_prof)) %>% 
+  filter(survey_prof != "") %>% 
+  filter(!is.na(survey_prof)) %>% 
+  right_join(survey_raw, by = "hashed_id") %>% 
+  select(-name)
 
 # list and counts of professions --- formerly all_profs
 survey_professions <- survey_raw %>%  
-  count(orig_survey_prof, name = "n_respondents") %>% 
-  mutate(survey_prof = clean_up(orig_survey_prof)) %>% 
-  filter(!is.na(orig_survey_prof)) %>% 
-  select(orig_survey_prof, survey_prof, n_respondents)
-
+  count(survey_prof, name = "n_respondents") %>% 
+  select(survey_prof, n_respondents) %>% 
+  distinct()
 
 # pcs (L66) ------------------------------------------------------------------
 ### --> list of professions
@@ -47,7 +47,10 @@ pcs_1 <- pcs %>%
                names_to = "sexe", 
                values_to = "orig_pcs_prof") %>% 
   mutate(pcs_prof = clean_up(orig_pcs_prof)) %>% 
+  select(-orig_pcs_prof) %>% 
   distinct()
+
+
 
 # pppcs, whatever this is
 pppcs_2 <- pcs %>% 
@@ -56,16 +59,19 @@ pppcs_2 <- pcs %>%
   pivot_longer(-libm) %>% 
   filter(!is.na(value)) %>% 
   group_by(value) %>% 
-  slice(1) %>% 
-  select(clean_pcs_prof = "libm", 
-         PCS4 = "value")
+  slice(1) %>%
+  select(pcs_prof = "libm", 
+         PCS4 = "value") %>% 
+  mutate(pcs_prof = clean_up(pcs_prof))
+
 
 ## Prepare PCS encoding table
 pcs_cod <- pcs %>% 
   select(-liste, -natlib, -codeu) %>% 
-  pivot_longer(libm:libf, values_to = "clean_pcs_prof") %>% 
+  pivot_longer(libm:libf, values_to = "pcs_prof") %>% 
+  mutate(pcs_prof = clean_up(pcs_prof)) %>% 
   select(-name) %>% 
-  pivot_longer(-clean_pcs_prof, 
+  pivot_longer(-pcs_prof, 
                names_to = "condition_pcs", 
                values_to = "pcs4") %>% 
   distinct()
@@ -80,9 +86,14 @@ openrefine_1 <- load_s3("records_w3/survey/pcs_openrefine1.csv") %>%
   as_tibble()
 
 openrefine_1 <- openrefine_1 %>% 
-  select(-survey_prof) %>% 
-  filter(!(orig_survey_prof %in% matches$orig_survey_prof)) %>% 
-  rename(n_respondents = "n")
+  mutate(pcs_prof = clean_up(orig_pcs_prof),
+         survey_prof = clean_up(orig_survey_prof)) %>% 
+  #filter(!(orig_survey_prof %in% exact_matches_or$orig_survey_prof)) %>% 
+  rename(n_respondents = "n") %>% 
+  select(survey_prof, 
+         pcs_prof, 
+         n_respondents
+         )
 
 
 # isco (L72) ------------------------------------------------------------------
