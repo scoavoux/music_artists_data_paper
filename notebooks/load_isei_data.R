@@ -1,10 +1,7 @@
-# Cleaning up data ------
-clean_up <- function(string){
-  string %>% 
-    stringi::stri_trans_general("Latin-ASCII") %>% 
-    tolower() %>% 
-    str_replace_all(c("[-,\\.']" = " ")) %>% 
-    str_replace_all(c("\\s+" = " "))
+normalize_job <- function(x) {
+  x %>%
+    str_to_lower() %>%
+    str_squish()
 }
 
 # survey_raw ------------------------------------------------------------------
@@ -12,21 +9,24 @@ clean_up <- function(string){
 ### --> survey results
 tar_load(survey_raw)
 
-# recode profession in survey
 survey_raw <- survey_raw %>% 
-  select(hashed_id, E_FR_prof_femme:E_FR_prof_retr_homme) %>% 
-  pivot_longer(-hashed_id, values_to = "orig_survey_prof") %>% 
-  filter(orig_survey_prof != "") %>% 
-  mutate(orig_survey_prof = str_trim(orig_survey_prof)) %>% 
-  select(-name) %>% 
-  right_join(survey_raw, by = "hashed_id")
+  select(hashed_id,
+         E_FR_prof_femme:E_FR_prof_retr_homme,
+         E_statut_pub_priv,
+         E_taille_entreprise,
+         E_position_pub,
+         E_position_priv,
+         E_encadre)
 
-# list and counts of professions --- formerly all_profs
-survey_professions <- survey_raw %>%  
-  count(orig_survey_prof, name = "n_respondents") %>% 
-  mutate(survey_prof = clean_up(orig_survey_prof)) %>% 
-  filter(!is.na(orig_survey_prof)) %>% 
-  select(orig_survey_prof, survey_prof, n_respondents)
+# recode profession in survey
+survey_professions <- survey_raw %>% 
+  pivot_longer(cols = c(E_FR_prof_femme:E_FR_prof_retr_homme), 
+               values_to = "survey_prof") %>% 
+  mutate(survey_prof = normalize_job(survey_prof)) %>% 
+  filter(survey_prof != "") %>% 
+  select(hashed_id, survey_prof, starts_with("E_"))
+
+
 
 
 # pcs (L66) ------------------------------------------------------------------
@@ -37,35 +37,42 @@ survey_professions <- survey_raw %>%
 # clean pcs
 # récupérer noms de la pcs -- pour matcher avec réponses de survey
 # clean
-pcs <- load_s3("PCS2020/L66_Matrice_codification_PCS2020_collecte_2023.csv") 
+pcs_raw <- load_s3("PCS2020/L66_Matrice_codification_PCS2020_collecte_2023.csv") 
 
-pcs_1 <- pcs %>% 
+pcs_professions <- pcs_raw %>% 
   filter(libm != "2023") %>% 
   janitor::clean_names() %>% 
   select(libm:libf) %>% 
   pivot_longer(cols = c(libm:libf),
-               names_to = "sexe", 
-               values_to = "orig_pcs_prof") %>% 
-  mutate(pcs_prof = clean_up(orig_pcs_prof)) %>% 
+               names_to = "sex", 
+               values_to = "pcs_prof") %>% 
+  mutate(pcs_prof = normalize_job(pcs_prof),
+         match_type = "exact") %>% 
+  select(-sex) %>% 
   distinct()
 
-# pppcs, whatever this is
-pppcs_2 <- pcs %>% 
+
+# pppcs: à la fin, on matche
+# dans le google sheets on a des professions non listées dans PCS
+# on leur attribue un code PCS4
+# pppcs prend un nom de profession pour chaque code pcs qui apparait dans la base
+pppcs_2 <- pcs_raw %>% 
   slice(-1) %>% 
   select(-libf, -liste, -natlib) %>% 
   pivot_longer(-libm) %>% 
   filter(!is.na(value)) %>% 
   group_by(value) %>% 
   slice(1) %>% 
-  select(clean_pcs_prof = "libm", 
+  select(pcs_prof = "libm", 
          PCS4 = "value")
 
 ## Prepare PCS encoding table
-pcs_cod <- pcs %>% 
+pcs_cod <- pcs_raw %>% 
   select(-liste, -natlib, -codeu) %>% 
-  pivot_longer(libm:libf, values_to = "clean_pcs_prof") %>% 
+  pivot_longer(libm:libf, values_to = "pcs_prof") %>% 
   select(-name) %>% 
-  pivot_longer(-clean_pcs_prof, 
+  mutate(pcs_prof = normalize_job(pcs_prof)) %>% 
+  pivot_longer(-pcs_prof, 
                names_to = "condition_pcs", 
                values_to = "pcs4") %>% 
   distinct()
@@ -76,25 +83,28 @@ pcs_cod <- pcs %>%
 
 # export and go through openrefine --- fuzzy matching
 # map some survey professions to pcs professions
-openrefine_1 <- load_s3("records_w3/survey/pcs_openrefine1.csv") %>% 
-  as_tibble()
+openrefine_raw <- load_s3("records_w3/survey/pcs_openrefine1.csv") 
 
-openrefine_1 <- openrefine_1 %>% 
-  select(-survey_prof) %>% 
-  filter(!(orig_survey_prof %in% matches$orig_survey_prof)) %>% 
-  rename(n_respondents = "n")
+openrefine_raw <- openrefine_raw %>% 
+  as_tibble() %>% 
+  mutate(survey_prof = normalize_job(orig_survey_prof),
+         pcs_openrefine_prof = normalize_job(orig_pcs_prof)) %>% 
+  filter(!pcs_openrefine_prof %in% survey_professions$survey_prof) %>% 
+  select(-c(orig_survey_prof, orig_pcs_prof, n)) %>% 
+  distinct()
 
 
 # isco (L72) ------------------------------------------------------------------
-isco <- "PCS2020/L72_Matrice_codification_ISCO_collecte_2023.xlsx" ## convert to csv and reexport to onyxia
+pcs_isco <- load_s3("PCS2020/L72_Matrice_codification_ISCO_collecte_2023.csv") ## convert to csv and reexport to onyxia
 
 ## Prepare ISCO encoding table
-isco_cod <- isco %>% 
+pcs_isco <- pcs_isco %>% 
   filter(libm != "2023") %>% 
   select(-id, -liste, -codeu) %>% 
-  pivot_longer(libm:libf, values_to = "clean_pcs_prof") %>% 
+  pivot_longer(libm:libf, values_to = "pcs_prof") %>% 
+  mutate(pcs_prof = normalize_job(pcs_prof)) %>% 
   select(-name) %>% 
-  pivot_longer(-clean_pcs_prof, 
+  pivot_longer(-pcs_prof, 
                names_to = "condition_isco", 
                values_to = "isco4") %>% 
   distinct()
@@ -102,7 +112,7 @@ isco_cod <- isco %>%
 
 # googlesheets recoprof ------------------------------------------------------------------
 handcoded_professions <- load_s3("PCS2020/handcoded_pcs4.csv") %>% 
-  filter(!is.na(PCS4)) %>% 
+  filter(!is.na(PCS4), PCS4 != "X", PCS4 != "") %>% 
   mutate(
     E_statut_pub_priv = ifelse(is.na(E_statut_pub_priv), "", E_statut_pub_priv),
     E_taille_entreprise = ifelse(is.na(E_taille_entreprise), "", E_taille_entreprise),
@@ -117,7 +127,9 @@ handcoded_professions <- load_s3("PCS2020/handcoded_pcs4.csv") %>%
 
 # isco_isei ------------------------------------------------------------------
 ## --> just gets left-joined 
-
+isco_isei <- load_s3("PCS2020/isco_isei.csv") %>% 
+  mutate(isco4 = as.character(isco)) %>% 
+  select(-isco)
 
 
 

@@ -120,7 +120,14 @@ str_normalize <- function(str){
 }
 
 
-
+# clean ISEI strings (sam) ------
+clean_up <- function(string){
+  string %>% 
+    stringi::stri_trans_general("Latin-ASCII") %>% 
+    tolower() %>% 
+    str_replace_all(c("[-,\\.']" = " ")) %>% 
+    str_replace_all(c("\\s+" = " "))
+}
 
 
 

@@ -3,17 +3,16 @@ make_respondent_socioecon <- function(respondent_streams,
                                             # isei, 
                                             survey_raw){
 
-  
-  # isei <- filter(isei, !is.na(isei))
-  # 
-  # artist_mean_isei <- respondent_streams %>% 
-  #   inner_join(isei) %>% 
-  #   group_by(dz_artist_id) %>% 
-  #   mutate(f = n_plays / sum(n_plays)) %>% 
-  #   summarise(n_isei = n(),
-  #             endo_isei_mean_pond = sum(f * isei)) %>% 
-  #   filter(!is.na(endo_isei_mean_pond))
-  # 
+  # isei
+  respondent_isei <- respondent_streams %>%
+    inner_join(isei) %>%
+    group_by(dz_artist_id) %>%
+    mutate(f = n_plays / sum(n_plays)) %>%
+    summarise(n_isei = n(),
+              respondent_mean_isei = sum(f * isei)) %>%
+    filter(!is.na(respondent_mean_isei))
+
+  # share of people with higher education
   educ <- survey_raw %>% 
     filter(E_diploma != "", !is.na(E_diploma)) %>% 
     mutate(higher_ed = as.numeric(E_diploma %in% c("Master, diplôme d'ingénieur.e, DEA, DESS", 
@@ -21,16 +20,17 @@ make_respondent_socioecon <- function(respondent_streams,
     select(hashed_id, higher_ed) %>% 
     filter(!is.na(higher_ed))
   
-  # share of people with higher education
-  audience_share_higher_ed <- respondent_streams %>% 
+  respondent_educ <- respondent_streams %>% 
     inner_join(educ, by = "hashed_id") %>% 
     group_by(dz_artist_feat_id) %>% 
     mutate(f = n_plays / sum(n_plays)) %>% 
     summarise(respondent_higher_ed_share = sum(f * higher_ed)) %>% 
     filter(!is.na(respondent_higher_ed_share))
   
-  return(full_join(#artist_mean_isei, 
-                   artist_share_higher_education, by = "hashed_id"))
+  respondent_socioecon <- respondent_isei %>% 
+    full_join(respondent_educ, by = "hashed_id")
+  
+  return(respondent_socioecon)
 }
 
 
