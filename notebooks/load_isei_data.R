@@ -66,6 +66,8 @@ pppcs_2 <- pcs_raw %>%
   select(pcs_prof = "libm", 
          PCS4 = "value")
 
+
+
 ## Prepare PCS encoding table
 pcs_cod <- pcs_raw %>% 
   select(-liste, -natlib, -codeu) %>% 
@@ -76,6 +78,8 @@ pcs_cod <- pcs_raw %>%
                names_to = "condition_pcs", 
                values_to = "pcs4") %>% 
   distinct()
+
+View(isco_rules)
 
 
 
@@ -95,19 +99,22 @@ openrefine_raw <- openrefine_raw %>%
 
 
 # isco (L72) ------------------------------------------------------------------
-pcs_isco <- load_s3("PCS2020/L72_Matrice_codification_ISCO_collecte_2023.csv") ## convert to csv and reexport to onyxia
+isco_cod <- load_s3("PCS2020/L72_Matrice_codification_ISCO_collecte_2023.csv") ## convert to csv and reexport to onyxia
 
 ## Prepare ISCO encoding table
-pcs_isco <- pcs_isco %>% 
+isco_cod <- isco_cod %>% 
   filter(libm != "2023") %>% 
   select(-id, -liste, -codeu) %>% 
-  pivot_longer(libm:libf, values_to = "pcs_prof") %>% 
-  mutate(pcs_prof = normalize_job(pcs_prof)) %>% 
+  pivot_longer(libm:libf, values_to = "profession") %>% 
+  mutate(profession = normalize_job(profession)) %>% 
   select(-name) %>% 
-  pivot_longer(-pcs_prof, 
+  pivot_longer(-profession,
                names_to = "condition_isco", 
                values_to = "isco4") %>% 
   distinct()
+
+table(isco_cod$condition_isco)
+table(pcs_cod$condition_pcs)
 
 
 # googlesheets recoprof ------------------------------------------------------------------
@@ -121,20 +128,31 @@ handcoded_professions <- load_s3("PCS2020/handcoded_pcs4.csv") %>%
     E_encadre = ifelse(is.na(E_encadre), "", E_encadre)
   ) %>% 
   select(-n, -PCS3, -PCS2, -Inclassable) %>% 
+  rename(pcs4 = "PCS4") %>% 
   as_tibble()
 
 
 
 # isco_isei ------------------------------------------------------------------
-## --> just gets left-joined 
 isco_isei <- load_s3("PCS2020/isco_isei.csv") %>% 
   mutate(isco4 = as.character(isco)) %>% 
-  select(-isco)
+  select(-isco) %>% 
+  as_tibble()
+
+## put ISEI into isco_cod directly
+isei_cod <- isco_cod %>% 
+  inner_join(isco_isei, by = "isco4") %>% 
+  select(-isco4)
 
 
 
+# --- PCS to ISCO
+pcs_isco <- read.csv("data/Matrice_PCS_ISCO_pour_programmes.csv",
+         sep = ";")
 
-
+pcs_isco <- pcs_isco %>% 
+  as_tibble() %>% 
+  select(PCS4, ISCO4)
 
 
 
