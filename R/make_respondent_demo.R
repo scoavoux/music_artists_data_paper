@@ -4,15 +4,15 @@ make_respondent_isei <- function(respondent_streams, raw_isei){
   respondent_isei <- respondent_streams %>%
     inner_join(raw_isei, by = "hashed_id") %>%
     group_by(dz_artist_feat_id) %>%
-    mutate(f = n_plays / sum(n_plays)) %>%
+    mutate(f = n_plays / sum(n_plays, na.rm = T)) %>%
     summarise(n_isei = n(),
-              respondent_mean_isei = sum(f * isei)) %>%
+              respondent_mean_isei = sum(f * isei, na.rm = T)) %>%
     filter(!is.na(respondent_mean_isei))
 
   return(respondent_isei)
 }
 
-make_respondent_highered <- function(survey_raw, respondent_streams){
+make_respondent_educ <- function(survey_raw, respondent_streams){
   
   # make share of respondents with higher education for artists
   educ <- survey_raw %>% 
@@ -22,20 +22,20 @@ make_respondent_highered <- function(survey_raw, respondent_streams){
     select(hashed_id, higher_ed) %>% 
     filter(!is.na(higher_ed))
   
-  respondent_highered <- respondent_streams %>% 
+  respondent_educ <- respondent_streams %>% 
     inner_join(educ, by = "hashed_id") %>% 
     group_by(dz_artist_feat_id) %>% 
-    mutate(f = n_plays / sum(n_plays)) %>% 
-    summarise(respondent_higher_ed_share = sum(f * higher_ed)) %>% 
+    mutate(f = n_plays / sum(n_plays, na.rm = T)) %>% 
+    summarise(respondent_higher_ed_share = sum(f * higher_ed, na.rm = T)) %>% 
     filter(!is.na(respondent_higher_ed_share))
   
-  return(respondent_highered)
+  return(respondent_educ)
   
 }
 
 # compute mean age and gender of artists' listeners within respondents
 make_respondent_demo <- function(respondent_streams, survey_raw, 
-                                 respondent_highered, respondent_isei){
+                                 respondent_educ, respondent_isei){
   
   age <- survey_raw %>% 
     mutate(age = 2023 - E_birth_year) %>% 
@@ -51,7 +51,7 @@ make_respondent_demo <- function(respondent_streams, survey_raw,
     inner_join(age, by = "hashed_id") %>% 
     group_by(dz_artist_feat_id) %>% 
     mutate(f = n_plays / sum(n_plays)) %>% 
-    summarise(respondent_mean_age = sum(f * age))
+    summarise(respondent_mean_age = sum(f * age, na.rm = T))
   
   # share of females within artist's respondents
   respondent_share_female <- respondent_streams %>% 
@@ -59,13 +59,13 @@ make_respondent_demo <- function(respondent_streams, survey_raw,
     group_by(dz_artist_feat_id) %>% 
     mutate(f = n_plays / sum(n_plays)) %>% 
     filter(E_gender == "Une femme") %>% 
-    summarise(respondent_female_share = sum(f))
+    summarise(respondent_female_share = sum(f, na.rm = T))
   
   
   respondent_demographics <- respondent_age %>% 
     
     full_join(respondent_share_female, by = "dz_artist_feat_id") %>% # CHANGE ONCE dz_feat_id IS DEALT WITH
-    full_join(respondent_higher_ed, by = "dz_artist_feat_id") %>% # CHANGE ONCE dz_feat_id IS DEALT WITH
+    full_join(respondent_educ, by = "dz_artist_feat_id") %>% # CHANGE ONCE dz_feat_id IS DEALT WITH
     full_join(respondent_isei, by = "dz_artist_feat_id") %>% # CHANGE ONCE dz_feat_id IS DEALT WITH
     
     rename(dz_artist_id = "dz_artist_feat_id") %>%  # CHANGE ONCE dz_feat_id IS DEALT WITH

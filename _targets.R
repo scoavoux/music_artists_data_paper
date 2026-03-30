@@ -300,13 +300,13 @@ list(
   tar_target(name = respondent_isei,
              command = make_respondent_isei(respondent_streams, raw_isei)),
   
-  tar_target(name = respondent_highered,
-             command = make_respondent_highered(survey_raw, respondent_streams)),
+  tar_target(name = respondent_educ,
+             command = make_respondent_educ(survey_raw, respondent_streams)),
   
   # combine respondent education, isei, age and gender
   tar_target(name = respondent_demographics,
              command = make_respondent_demo(respondent_streams, survey_raw,
-                                            respondent_highered, respondent_isei)),
+                                            respondent_educ, respondent_isei)),
   
 
   # final dataframe with selected variables
