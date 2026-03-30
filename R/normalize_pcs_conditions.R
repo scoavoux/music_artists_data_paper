@@ -1,3 +1,4 @@
+## conversion table from normalized survey variables to isco conditions
 isco_rules <- tibble::tribble(
   ~priority, ~pos_group,     ~encadre, ~condition_isco,
   
@@ -17,7 +18,7 @@ isco_rules <- tibble::tribble(
 )
 
 
-
+## normalize survey variables
 normalize_for_isco <- function(df) {
   
   df %>%
@@ -58,7 +59,7 @@ normalize_for_isco <- function(df) {
     )
 }
 
-
+## assign an isco condition based on the normalized survey variables
 assign_condition_isco <- function(df, rules = isco_rules) {
   
   df_norm <- normalize_for_isco(df)

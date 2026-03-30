@@ -1,42 +1,41 @@
+make_respondent_isei <- function(respondent_streams, raw_isei){
 
-make_respondent_socioecon <- function(respondent_streams, 
-                                            # isei, 
-                                            survey_raw){
-
-  # isei
+  # make avg isei of artists
   respondent_isei <- respondent_streams %>%
-    inner_join(isei) %>%
-    group_by(dz_artist_id) %>%
+    inner_join(raw_isei, by = "hashed_id") %>%
+    group_by(dz_artist_feat_id) %>%
     mutate(f = n_plays / sum(n_plays)) %>%
     summarise(n_isei = n(),
               respondent_mean_isei = sum(f * isei)) %>%
     filter(!is.na(respondent_mean_isei))
 
-  # share of people with higher education
+  return(respondent_isei)
+}
+
+make_respondent_highered <- function(survey_raw, respondent_streams){
+  
+  # make share of respondents with higher education for artists
   educ <- survey_raw %>% 
     filter(E_diploma != "", !is.na(E_diploma)) %>% 
     mutate(higher_ed = as.numeric(E_diploma %in% c("Master, diplôme d'ingénieur.e, DEA, DESS", 
-                                                   "Doctorat (y compris médecine, pharmacie, dentaire), HDR" ))) %>% 
+                                                   "Doctorat (y compris médecine, pharmacie, dentaire), HDR"))) %>% 
     select(hashed_id, higher_ed) %>% 
     filter(!is.na(higher_ed))
   
-  respondent_educ <- respondent_streams %>% 
+  respondent_highered <- respondent_streams %>% 
     inner_join(educ, by = "hashed_id") %>% 
     group_by(dz_artist_feat_id) %>% 
     mutate(f = n_plays / sum(n_plays)) %>% 
     summarise(respondent_higher_ed_share = sum(f * higher_ed)) %>% 
     filter(!is.na(respondent_higher_ed_share))
   
-  respondent_socioecon <- respondent_isei %>% 
-    full_join(respondent_educ, by = "hashed_id")
+  return(respondent_highered)
   
-  return(respondent_socioecon)
 }
 
-
-  
 # compute mean age and gender of artists' listeners within respondents
-make_respondent_demo <- function(respondent_streams, survey_raw){
+make_respondent_demo <- function(respondent_streams, survey_raw, 
+                                 respondent_highered, respondent_isei){
   
   age <- survey_raw %>% 
     mutate(age = 2023 - E_birth_year) %>% 
@@ -47,15 +46,15 @@ make_respondent_demo <- function(respondent_streams, survey_raw){
     filter(E_gender %in% c("Un homme", "Une femme")) %>% 
     select(hashed_id, E_gender)
   
-  # mean age of artist's audience
-  audience_age <- respondent_streams %>% 
+  # mean age of artist's respondents
+  respondent_age <- respondent_streams %>% 
     inner_join(age, by = "hashed_id") %>% 
     group_by(dz_artist_feat_id) %>% 
     mutate(f = n_plays / sum(n_plays)) %>% 
-    summarise(respondent_avg_age = sum(f * age))
+    summarise(respondent_mean_age = sum(f * age))
   
-  # share of females within artist's audience
-  audience_share_female <- respondent_streams %>% 
+  # share of females within artist's respondents
+  respondent_share_female <- respondent_streams %>% 
     inner_join(gender, by = "hashed_id") %>% 
     group_by(dz_artist_feat_id) %>% 
     mutate(f = n_plays / sum(n_plays)) %>% 
@@ -63,16 +62,35 @@ make_respondent_demo <- function(respondent_streams, survey_raw){
     summarise(respondent_female_share = sum(f))
   
   
-  respondent_demographics <- audience_age %>% 
-    full_join(audience_share_female, by = "dz_artist_feat_id") %>% 
-    mutate(dz_artist_id = as.character(dz_artist_feat_id)) %>% 
-    select(dz_artist_id, 
-           respondent_avg_age, 
-           respondent_female_share)
+  respondent_demographics <- respondent_age %>% 
     
+    full_join(respondent_share_female, by = "dz_artist_feat_id") %>% # CHANGE ONCE dz_feat_id IS DEALT WITH
+    full_join(respondent_higher_ed, by = "dz_artist_feat_id") %>% # CHANGE ONCE dz_feat_id IS DEALT WITH
+    full_join(respondent_isei, by = "dz_artist_feat_id") %>% # CHANGE ONCE dz_feat_id IS DEALT WITH
+    
+    rename(dz_artist_id = "dz_artist_feat_id") %>%  # CHANGE ONCE dz_feat_id IS DEALT WITH
+  
+    select(dz_artist_id, 
+           respondent_mean_age, 
+           respondent_female_share,
+           respondent_higher_ed_share,
+           respondent_mean_isei)
+
   return(respondent_demographics)
   
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

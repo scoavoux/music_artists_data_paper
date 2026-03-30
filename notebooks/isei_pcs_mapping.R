@@ -1,15 +1,5 @@
 
 
-t <- isco_cod %>% 
-  distinct(profession, isco4, .keep_all = T)
-
-
-t %>% 
-  add_count(profession) %>% 
-  filter(n > 1)
-
-
-
 profs <- assign_condition_isco(survey_professions)
 
 profs <- profs %>% 
@@ -31,10 +21,9 @@ profs <- profs %>%
 #   inner_join(pcs_isco, by = c(pcs4 = "PCS4"))
 # 
 
-
-# REPLACE WITH ISCO CONDITIONS!
-isco_cod <- bind_rows(isco_cod, handcoded_ready) %>% 
-  distinct()
+# integrate handcoded to isco
+# isco_cod <- bind_rows(isco_cod, handcoded_ready) %>% 
+#   distinct()
 
 
 ## ------- 2. coalesce openrefine recodes with survey professions
@@ -46,14 +35,15 @@ profs <- profs %>%
 
 ## ------ 3. append isei through joining by profession + isco condition
 t <- profs %>% 
-  left_join(isei_cod, by = c(c(survey_prof = "pcs_prof"), 
+  left_join(isei_cod, by = c(c(survey_prof = "profession"), 
                             "condition_isco"))
 
-prop_na(t)$isei # 30% of NAs (36% without hc, 38% with neither hc nor openrefine)
+prop_na(t)$isei # 30% of NAs 
+
+t <- t %>% 
+  arrange(desc(isei))
 
 
-
-  
 
 
 

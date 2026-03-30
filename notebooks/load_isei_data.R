@@ -1,22 +1,8 @@
-normalize_job <- function(x) {
-  x %>%
-    str_to_lower() %>%
-    str_squish()
-}
+library(dplyr)
+library(tidyr)
+library(tidyverse)
+library(stringi)
 
-# survey_raw ------------------------------------------------------------------
-## survey_prof derived from it
-### --> survey results
-tar_load(survey_raw)
-
-survey_raw <- survey_raw %>% 
-  select(hashed_id,
-         E_FR_prof_femme:E_FR_prof_retr_homme,
-         E_statut_pub_priv,
-         E_taille_entreprise,
-         E_position_pub,
-         E_position_priv,
-         E_encadre)
 
 # recode profession in survey
 survey_professions <- survey_raw %>% 
@@ -25,8 +11,6 @@ survey_professions <- survey_raw %>%
   mutate(survey_prof = normalize_job(survey_prof)) %>% 
   filter(survey_prof != "") %>% 
   select(hashed_id, survey_prof, starts_with("E_"))
-
-
 
 
 # pcs (L66) ------------------------------------------------------------------
@@ -79,6 +63,7 @@ pcs_cod <- pcs_raw %>%
                values_to = "pcs4") %>% 
   distinct()
 
+
 View(isco_rules)
 
 
@@ -98,23 +83,6 @@ openrefine_raw <- openrefine_raw %>%
   distinct()
 
 
-# isco (L72) ------------------------------------------------------------------
-isco_cod <- load_s3("PCS2020/L72_Matrice_codification_ISCO_collecte_2023.csv") ## convert to csv and reexport to onyxia
-
-## Prepare ISCO encoding table
-isco_cod <- isco_cod %>% 
-  filter(libm != "2023") %>% 
-  select(-id, -liste, -codeu) %>% 
-  pivot_longer(libm:libf, values_to = "profession") %>% 
-  mutate(profession = normalize_job(profession)) %>% 
-  select(-name) %>% 
-  pivot_longer(-profession,
-               names_to = "condition_isco", 
-               values_to = "isco4") %>% 
-  distinct()
-
-table(isco_cod$condition_isco)
-table(pcs_cod$condition_pcs)
 
 
 # googlesheets recoprof ------------------------------------------------------------------
@@ -130,19 +98,6 @@ handcoded_professions <- load_s3("PCS2020/handcoded_pcs4.csv") %>%
   select(-n, -PCS3, -PCS2, -Inclassable) %>% 
   rename(pcs4 = "PCS4") %>% 
   as_tibble()
-
-
-
-# isco_isei ------------------------------------------------------------------
-isco_isei <- load_s3("PCS2020/isco_isei.csv") %>% 
-  mutate(isco4 = as.character(isco)) %>% 
-  select(-isco) %>% 
-  as_tibble()
-
-## put ISEI into isco_cod directly
-isei_cod <- isco_cod %>% 
-  inner_join(isco_isei, by = "isco4") %>% 
-  select(-isco4)
 
 
 

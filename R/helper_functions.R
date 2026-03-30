@@ -120,13 +120,21 @@ str_normalize <- function(str){
 }
 
 
-# clean ISEI strings (sam) ------
-clean_up <- function(string){
-  string %>% 
-    stringi::stri_trans_general("Latin-ASCII") %>% 
-    tolower() %>% 
-    str_replace_all(c("[-,\\.']" = " ")) %>% 
-    str_replace_all(c("\\s+" = " "))
+# clean profession descriptions for isei
+normalize_job <- function(string) {
+  
+  require(stringi)
+  
+  string %>%
+    str_to_lower() %>% # tolower
+    stri_trans_general("Latin-ASCII") %>%  # rm accents
+    
+    str_remove_all("[.,!?;:]") %>% 
+    
+    str_remove_all("\\b(de|du|des|la|le|l'|en|et|d')\\b") %>% 
+    
+    str_squish() # rm whitespaces
+  
 }
 
 

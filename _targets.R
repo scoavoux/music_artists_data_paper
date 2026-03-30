@@ -17,8 +17,6 @@ tar_option_set(
 
 tar_source("R")
 
-# import all dependencies
-# import_all_pkg(packages = renv::dependencies()[[2]])
 
 
 # List of targets ------
@@ -281,6 +279,8 @@ list(
              ),
   
   
+  
+  ### --------------------------- RESPONDENT DEMOGRAPHICS
   # load survey
   tar_target(name = survey_raw,
              command = load_s3("records_w3/survey/RECORDS_Wave3_apr_june_23_responses_corrected.csv") %>% 
@@ -289,22 +289,41 @@ list(
                       country == "FR")
              ),
   
-  tar_target(name = respondent_age_gender,
-             command = make_respondent_demo(respondent_streams, survey_raw)),
+  # compute isei scores of respondent
+  # TEMP: delete target once isei is stable
+  tar_target(name = raw_isei,
+             command = make_raw_isei(survey_raw, 
+                                            isco_isei_file = "PCS2020/isco_isei.csv", 
+                                            isco_file = "PCS2020/L72_Matrice_codification_ISCO_collecte_2023.csv", 
+                                            openrefine_file = "records_w3/survey/pcs_openrefine1.csv")),
+
+  tar_target(name = respondent_isei,
+             command = make_respondent_isei(respondent_streams, raw_isei)),
   
+  tar_target(name = respondent_highered,
+             command = make_respondent_highered(survey_raw, respondent_streams)),
   
+  # combine respondent education, isei, age and gender
+  tar_target(name = respondent_demographics,
+             command = make_respondent_demo(respondent_streams, survey_raw,
+                                            respondent_highered, respondent_isei)),
+  
+
   # final dataframe with selected variables
   tar_target(name = df,
              command = all_final_press %>% 
                
-               # radio
+              
                left_join(radio_counts, by = "dz_artist_id") %>% 
                left_join(mbz_releases, by = "mbz_artist_id") %>% 
                left_join(mbz_artist_country, by = "mbz_artist_id") %>% 
                left_join(artist_language, by = "dz_artist_id") %>% 
                left_join(mbz_gpt_gender, by = "dz_artist_id") %>%
                left_join(sc_ratings, by = "sc_artist_id") %>% 
-               left_join(respondent_age_gender, by = "dz_artist_id") %>% 
+
+               # respondent demographics
+               left_join(respondent_demographics, by = "dz_artist_id") %>% 
+
                
                # compute stream share
                mutate(
@@ -337,6 +356,16 @@ list(
 # df <- df %>% 
 #   add_count(dz_artist_id) %>% 
 #   filter(n > 1)
+
+
+
+
+
+
+
+
+
+
 
 
 
