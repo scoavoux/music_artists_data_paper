@@ -1,8 +1,8 @@
-deduplicate_ids <- function(all){
+deduplicate_ids <- function(artists_to_patch){
   
   require(dplyr)
   
-  all <- all %>% 
+  all <- artists_to_patch %>% 
     
     group_by(dz_artist_id) %>% 
     mutate(colcount_share_by_dzdup = sc_collection_count / sum(sc_collection_count, na.rm = TRUE))  %>% 

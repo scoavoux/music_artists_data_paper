@@ -11,8 +11,7 @@ patch_names <- function(all,
                         ref_name,
                         all_name) {
 
-  require(logging)
-  
+
   ref_id   <- rlang::sym(ref_id)
   ref_name <- rlang::sym(ref_name)
   all_name <- rlang::sym(all_name)
@@ -107,8 +106,7 @@ patch_deezer_dups <- function(ref,
                               all_name = "dz_name"){
   
   require(dplyr)
-  require(logging)
-  
+
   ref_id   <- rlang::sym(ref_id)
   ref_name <- rlang::sym(ref_name)
   all_name <- rlang::sym(all_name)
@@ -187,7 +185,6 @@ patch_sc_dups <- function(all, senscritique){
 update_rows <- function(all, ..., by = "dz_artist_id"){
   
   require(dplyr)
-  require(logging)
   require(stringr)
   
   patches <- list(...)
@@ -195,14 +192,11 @@ update_rows <- function(all, ..., by = "dz_artist_id"){
   
   for(i in seq_along(patches)){
     
-    loginfo("patching %s to all", patch_names[i])
-    
     all <- all %>% 
       rows_update(patches[[i]], by = by)
     
     print_stream_share(all)
-    loginfo(strrep("-", 40))
-    
+
   }
   
   return(all)

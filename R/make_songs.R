@@ -1,6 +1,8 @@
 ### load items_old and/or items_new
-make_dz_songs <- function(to_remove = to_remove_file,
-                       file = "records_w3/items/songs.snappy.parquet") {
+make_dz_songs <- function(to_remove_file, file) {
+  
+  to_remove <- read.csv(to_remove_file)
+  
   df <- load_s3(file,
                 col_select = c("song_id",
                                "artist_id",
@@ -85,10 +87,10 @@ bind_dz_names <- function(file_1, file_2){
 
 }
 
-
+# group dz_songs by artist
 group_songs_by_artist <- function(dz_songs, dz_stream_data){
   
-  dz_artists <- dz_songs %>% 
+    dz_artists <- dz_songs %>% 
     ungroup() %>% 
     mutate(dz_artist_id = as.character(dz_artist_feat_id)) %>%  # ATTENTION: renaming feat_id to id here!!
     group_by(dz_artist_id) %>% 

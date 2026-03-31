@@ -48,7 +48,7 @@ make_artist_country <- function(mbz_area_file,
 
 
 # LOAD GENDER FROM MBZ AND GPT, COALESCE BOTH
-make_artist_gender <- function(all_final, mbz_gender_file, gpt_gender_file){
+make_artist_gender <- function(artists, mbz_gender_file, gpt_gender_file){
   
   mbz_gender <- load_s3(mbz_gender_file)
   
@@ -65,10 +65,10 @@ make_artist_gender <- function(all_final, mbz_gender_file, gpt_gender_file){
     select(dz_artist_id, gender) %>% 
     as_tibble()
   
-  all_final <- all_final %>% 
+  artists <- artists %>% 
     select(dz_artist_id, mbz_artist_id)
   
-  mbz_gpt_gender <- all_final %>% 
+  mbz_gpt_gender <- artists %>% 
     
     # mbz if available
     left_join(mbz_gender, by = "mbz_artist_id") %>%

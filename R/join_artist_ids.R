@@ -1,16 +1,19 @@
 # binds all "raw" id files to one dataset
 
-join_artist_ids <- function(dz_artists, 
-                                mbz_deezer, 
-                                senscritique, 
-                                manual_search,
-                                wiki) {
+join_artist_ids <- function(dz_songs, 
+                            dz_stream_data,
+                            mbz_deezer, 
+                            senscritique, 
+                            manual_search,
+                            wiki) {
   
   library(dplyr)
   library(stringr)
-  library(logging)
   
-
+  # group dz_songs by artist -----------------
+  artists <- group_songs_by_artist(dz_songs, dz_stream_data)
+  
+  
   # PROCESS RAW -------------------------------------------
   
   # musicbrainz keys
@@ -27,8 +30,8 @@ join_artist_ids <- function(dz_artists,
     filter(!is.na(dz_artist_id)) %>%
     select(dz_artist_id, wiki_name)
 
-  # JOIN ALL ---------------------------------------------
-  all <- dz_artists %>% 
+  # JOIN ALL IDs TO ARTISTS ---------------------------------------------
+  artists <- artists %>% 
     left_join(mbz_deezer_senscritique, by = "dz_artist_id") %>% 
     left_join(manual_search, by = "dz_artist_id") %>% 
     left_join(wiki, by = "dz_artist_id") %>% # add wiki for names
@@ -49,9 +52,9 @@ join_artist_ids <- function(dz_artists,
     distinct(dz_artist_id, sc_artist_id, mbz_artist_id, .keep_all = TRUE) %>%  # !!!
     as_tibble()
 
-  print_stream_share(all)
+  print_stream_share(artists)
   
-  return(all)
+  return(artists)
 }
 
 

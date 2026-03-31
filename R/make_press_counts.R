@@ -41,10 +41,10 @@ clean_press_ents <- function(file){
 
 
 ## make a df of the aliases to add the press_n_mentionss of to real artists
-list_aliases <- function(file1, file2, all_final){
+list_aliases <- function(file1, file2, artists){
   
   # prepare all_final
-  all_final <- all_final %>% 
+  artists <- artists %>% 
     filter(!is.na(sc_artist_id) & !is.na(mbz_artist_id)) %>% # complete cases
     mutate(dz_name = str_normalize(dz_name)) %>% # normalize name
     group_by(dz_name) %>% 
@@ -62,7 +62,7 @@ list_aliases <- function(file1, file2, all_final){
   
   added_aliases <- ents_without_match %>% 
     filter(is_alias == 1 & dz_name != "") %>% 
-    left_join(all_final, by = "dz_name") %>%
+    left_join(artists, by = "dz_name") %>%
     select(ent_name, dz_name,
            starts_with("press_n_mentions")) %>% 
     as_tibble()
@@ -110,10 +110,10 @@ list_entities_to_drop <- function(file){
 
 ## join press press_n_mentionss to all_final and export the 
 ## 2 csv files to be hand-coded
-count_names_press <- function(all_final, press_named_entities, min_n_mentions){
+count_names_press <- function(artists, press_named_entities, min_n_mentions){
   
   # prepare all_final
-  all_final <- all_final %>% 
+  artists <- artists %>% 
     filter(!is.na(sc_artist_id) & !is.na(mbz_artist_id)) %>% # complete cases
     mutate(dz_name = str_normalize(dz_name)) %>% # normalize name
     group_by(dz_name) %>% 
@@ -127,7 +127,7 @@ count_names_press <- function(all_final, press_named_entities, min_n_mentions){
     select(dz_name, n_plays, dz_artist_id)
   
     # ------------- 1. match on name in dz_names
-  press_name_counts <- all_final %>% 
+  press_name_counts <- artists %>% 
     left_join(press_named_entities, by = c(dz_name = "ent_name")) %>% 
     mutate(corr_pop = abs(log(n_plays / press_n_mentions))) %>% # MIX WITH ARTICLE_COUNT?
     arrange(desc(press_n_mentions))
@@ -186,12 +186,12 @@ update_press_names <- function(press_name_counts, aliases_to_add, entities_to_dr
 
 ## integrate press name counts to all_final, making sure only the
 ## identified wrong cases get NA --- all others == 0
-press_counts_to_final <- function(all_final, upd_press_name_counts){
+make_press_counts <- function(artists, upd_press_name_counts){
   
   upd_press_name_counts <- upd_press_name_counts %>% 
     select(-c(dz_name, n_plays))
   
-  all_final_press <- all_final %>% 
+  artists <- artists %>% 
     left_join(upd_press_name_counts, by = "dz_artist_id") %>%
     mutate(
       matched = dz_artist_id %in% upd_press_name_counts$dz_artist_id,
@@ -200,9 +200,8 @@ press_counts_to_final <- function(all_final, upd_press_name_counts){
     ) %>% # make sure only the hand-coded NAs are NA, all others == 0
     select(-matched)
   
-  return(all_final_press)
+  return(artists)
 }
-
 
 
 
