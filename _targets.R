@@ -290,6 +290,13 @@ list(
                                   respondent_educ, 
                                   respondent_isei)),
   
+  # -------------- GENRE 
+  tar_target(deezer_genres,
+             make_dz_genres()),
+  
+  tar_target(sc_genre,
+             make_sc_genre()),
+  
 
   # final dataframe with selected variables
   tar_target(df,
@@ -309,7 +316,11 @@ list(
 
                # respondent demographics
                left_join(respondent_demographics, by = "dz_artist_id") %>% 
-
+               
+               # genres
+               left_join(deezer_genres, by = "dz_artist_id") %>% 
+               left_join(sc_genre, by = "sc_artist_id") %>% 
+               
                
                # compute stream share
                mutate(
@@ -321,6 +332,7 @@ list(
                  dz_name,
                  ends_with("_id"),
                  starts_with("n_"),
+                 starts_with("genre_"),
                  sc_collection_count,
                  starts_with("sc_avg_"),
                  starts_with("press_n_"),
@@ -342,8 +354,6 @@ list(
 # df <- df %>% 
 #   add_count(dz_artist_id) %>% 
 #   filter(n > 1)
-
-
 
 
 
