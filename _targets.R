@@ -49,7 +49,7 @@ list(
     # bind old and new songs and names, join to streams
     tar_target(dz_names,
                bind_dz_names(file_1 = "records_w3/items/artists_data.snappy.parquet",
-                                       file_2 = "interim/new_artists_names_from_api.csv")),
+                            file_2 = "interim/new_artists_names_from_api.csv")),
     
     tar_target(dz_songs_old,
                make_dz_songs(to_remove_file = "data/artists_to_remove.csv",
@@ -57,7 +57,7 @@ list(
     
     tar_target(dz_songs_new,
                make_dz_songs(to_remove_file = "data/artists_to_remove.csv",
-                                    file = "records_w3/items/song.snappy.parquet")),
+                              file = "records_w3/items/song.snappy.parquet")),
     
     tar_target(dz_songs,
                bind_dz_songs(dz_songs_old, dz_songs_new, dz_names)),
@@ -342,6 +342,16 @@ list(
 # df <- df %>% 
 #   add_count(dz_artist_id) %>% 
 #   filter(n > 1)
+
+
+
+
+
+
+
+
+
+
 
 
 

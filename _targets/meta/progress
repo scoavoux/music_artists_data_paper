@@ -21,7 +21,8 @@ dz_songs|stem|dz_songs|0|skipped
 dz_stream_data|stem|dz_stream_data|0|skipped
 respondent_streams|stem|respondent_streams|0|skipped
 artists_to_patch|stem|artists_to_patch|0|skipped
-respondent_educ|stem|respondent_educ|0|skipped
+respondent_educ|stem|respondent_educ|0|dispatched
+respondent_educ|stem|respondent_educ|0|completed
 respondent_isei|stem|respondent_isei|0|skipped
 mbz_names_patch|stem|mbz_names_patch|0|skipped
 wiki_names_patch|stem|wiki_names_patch|0|skipped
@@ -31,7 +32,8 @@ sc_names_patch|stem|sc_names_patch|0|skipped
 dup_dz_sc_patch|stem|dup_dz_sc_patch|0|skipped
 dup_sc_patch|stem|dup_sc_patch|0|skipped
 wiki_mbz_ids_patch|stem|wiki_mbz_ids_patch|0|skipped
-respondent_demographics|stem|respondent_demographics|0|skipped
+respondent_demographics|stem|respondent_demographics|0|dispatched
+respondent_demographics|stem|respondent_demographics|0|completed
 artists|stem|artists|0|skipped
 press_name_counts|stem|press_name_counts|0|skipped
 aliases_to_add|stem|aliases_to_add|0|skipped

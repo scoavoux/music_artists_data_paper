@@ -5,29 +5,29 @@ make_respondent_isei <- function(respondent_streams, raw_isei){
     inner_join(raw_isei, by = "hashed_id") %>%
     group_by(dz_artist_feat_id) %>%
     mutate(f = n_plays / sum(n_plays, na.rm = T)) %>%
-    summarise(n_isei = n(),
-              respondent_mean_isei = sum(f * isei, na.rm = T)) %>%
-    filter(!is.na(respondent_mean_isei))
+    summarise(respondent_n_valid_isei = n(),
+              respondent_mean_isei = sum(f * isei, na.rm = T))
 
   return(respondent_isei)
 }
+
+
 
 make_respondent_educ <- function(survey_raw, respondent_streams){
   
   # make share of respondents with higher education for artists
   educ <- survey_raw %>% 
     filter(E_diploma != "", !is.na(E_diploma)) %>% 
-    mutate(higher_ed = as.numeric(E_diploma %in% c("Master, diplôme d'ingénieur.e, DEA, DESS", 
-                                                   "Doctorat (y compris médecine, pharmacie, dentaire), HDR"))) %>% 
-    select(hashed_id, higher_ed) %>% 
-    filter(!is.na(higher_ed))
-  
+    mutate(higher_ed = ifelse(str_detect(E_diploma, "Licence|Master|Doctorat"), 1, 0)) %>% 
+    mutate(graduate_ed = ifelse(str_detect(E_diploma, "Master|Doctorat"), 1, 0)) %>% 
+    select(hashed_id, higher_ed, graduate_ed)
+
   respondent_educ <- respondent_streams %>% 
     inner_join(educ, by = "hashed_id") %>% 
     group_by(dz_artist_feat_id) %>% 
     mutate(f = n_plays / sum(n_plays, na.rm = T)) %>% 
-    summarise(respondent_higher_ed_share = sum(f * higher_ed, na.rm = T)) %>% 
-    filter(!is.na(respondent_higher_ed_share))
+    summarise(respondent_higher_ed_share = sum(f * higher_ed, na.rm = T),
+              respondent_graduate_ed_share = sum(f * graduate_ed, na.rm = T))
   
   return(respondent_educ)
   
@@ -74,7 +74,9 @@ make_respondent_demo <- function(respondent_streams, survey_raw,
            respondent_mean_age, 
            respondent_female_share,
            respondent_higher_ed_share,
-           respondent_mean_isei)
+           respondent_graduate_ed_share,
+           respondent_mean_isei,
+           respondent_n_valid_isei)
 
   return(respondent_demographics)
   
