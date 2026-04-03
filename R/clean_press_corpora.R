@@ -12,8 +12,6 @@ clean_telerama <- function(telerama_file){
   
   telerama <- telerama %>% 
     
-    # clean_dates() %>% 
-    
     # mutate existing and new vars
     mutate(
       
@@ -82,7 +80,6 @@ clean_lemonde <- function(lemonde_filepath){
   lemonde <- vector("list", length = 12L)
   
   # there are some small errors (bad dates in parsed data); we correct them below
-  
   for(i in 1:12){
     lemonde[[i]] <- load_s3(paste0("french_media/", lemonde_filepath, 10L:22L,".csv")[i])
     print(i)
@@ -196,7 +193,6 @@ clean_liberation <- function(liberation_file){
 bind_press_corpora <- function(telerama_file, lefigaro_file, 
                                liberation_file, lemonde_filepath){
   
-  # formerly in separate targets
   telerama <- clean_telerama(telerama_file)
   lefigaro <- clean_lefigaro(lefigaro_file)
   liberation <- clean_liberation(liberation_file)

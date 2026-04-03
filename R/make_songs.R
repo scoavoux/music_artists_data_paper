@@ -20,8 +20,7 @@ make_dz_songs <- function(to_remove_file, file) {
 }
 
 
-bind_dz_songs <- function(dz_songs_old, dz_songs_new, #dz_streams, 
-                          dz_names){
+bind_dz_songs <- function(dz_songs_old, dz_songs_new, dz_names){
   
   # bind items_old and items_new
   # prioritize deezer_id of items_new
@@ -52,10 +51,6 @@ bind_dz_songs <- function(dz_songs_old, dz_songs_new, #dz_streams,
     group_by(song_id) %>%
     mutate(w_feat = 1 / n_distinct(dz_artist_feat_id))
   
-  ## join to streams
-  #songs <- songs %>% 
-   #inner_join(dz_streams, by = "song_id") ## inner_join appropriate??
-
   ## add deezer names to debug joins with other ids
   songs <- songs %>% 
     left_join(dz_names, by = "dz_artist_feat_id") 
@@ -70,8 +65,8 @@ bind_dz_names <- function(file_1, file_2){
   scraped_names <- load_s3(file = file_2)
   
   names <- names %>% 
-    mutate(dz_artist_feat_id = as.character(artist_id),
-           dz_name = name) %>% # CHANGED TO DEEZER_FEAT_ID
+    mutate(dz_artist_feat_id = as.character(artist_id), # CHANGED TO DEEZER_FEAT_ID
+           dz_name = name) %>% 
     select(dz_artist_feat_id, dz_name)
   
   scraped_names <- scraped_names %>% 
@@ -87,23 +82,6 @@ bind_dz_names <- function(file_1, file_2){
 
 }
 
-# group dz_songs by artist
-group_songs_by_artist <- function(dz_songs, dz_stream_data){
-  
-    dz_artists <- dz_songs %>% 
-    ungroup() %>% 
-    mutate(dz_artist_id = as.character(dz_artist_feat_id)) %>%  # ATTENTION: renaming feat_id to id here!!
-    group_by(dz_artist_id) %>% 
-    summarise(dz_name = first(dz_name),
-              .groups = "drop") %>% 
-    
-    # NEW 18/03: ADD POP HERE!
-    inner_join(dz_stream_data, by = "dz_artist_id") %>% 
-    
-    arrange(desc(n_plays))
-  
-  return(dz_artists)
-}
 
 
   

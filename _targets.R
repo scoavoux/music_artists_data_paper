@@ -37,6 +37,9 @@ list(
                         is_respondent, 
                         is_control)),
     
+    ## ---- streams: 2 targets because calculating user-song popularity
+    ## for all users is too intensive computationally
+    
     # make popularity split by control and respondents
     tar_target(dz_stream_data,
                make_stream_popularity(dz_songs, dz_users)),
@@ -45,7 +48,6 @@ list(
     tar_target(respondent_streams,
                make_respondent_plays(dz_songs, dz_users)),
     
-
     # bind old and new songs and names, join to streams
     tar_target(dz_names,
                bind_dz_names(file_1 = "records_w3/items/artists_data.snappy.parquet",
@@ -132,7 +134,7 @@ list(
     
     # mbz ids retrieved from wiki
     tar_target(wiki_mbz_ids_patch,
-               mbz_from_wiki(artists_to_patch, wiki)),
+               patch_mbz_from_wiki(artists_to_patch, wiki)),
     
     # unique matches between duplicated deezer names and
     # unique sc names when one deezer duplicate has 90% of streams
@@ -173,10 +175,10 @@ list(
                ),
 
   tar_target(press_corpus,
-             bind_press_corpora(telerama_file="telerama_raw.csv",
-                                lefigaro_file="lefigaro-complet-v0.csv",
-                                liberation_file="liberation-complet-v2.csv", 
-                                lemonde_filepath="lemonde/lemonde-20")),
+             bind_press_corpora(telerama_file = "telerama_raw.csv",
+                                lefigaro_file = "lefigaro-complet-v0.csv",
+                                liberation_file = "liberation-complet-v2.csv", 
+                                lemonde_filepath ="lemonde/lemonde-20")),
   
   # load entities file separately
   tar_target(press_named_entities,
@@ -206,11 +208,7 @@ list(
                                 aliases_to_add, 
                                 entities_to_drop)),
   
-  # tar_target(press_n_mentions,
-  #            make_press_counts(artists, upd_press_name_counts)),
-  # 
   # compute mbz release variables
-  # left_join this to all_final later
   tar_target(mbz_releases,
              load_mbz_releases(artists,
                                release_file="musicbrainz/musicbrainz_releases.csv",
@@ -245,7 +243,8 @@ list(
   tar_target(mbz_gpt_gender,
              make_artist_gender(artists,
                                 mbz_gender_file="musicbrainz/mbid_gender.csv",
-                                gpt_gender_file="gpt_music_data/gpt_gender.csv")),
+                                gpt_gender_file="gpt_music_data/gpt_gender.csv")
+             ),
   
   # ratings
   tar_target(sc_ratings,
@@ -302,11 +301,10 @@ list(
   tar_target(df,
              artists %>% 
                
-               # press
-               # left_join(press_n_mentions, by = "dz_artist_id") %>% # check if this works
-               
+               # press counts updated with aliases counts
                make_press_counts(upd_press_name_counts) %>% 
              
+               # artist information
                left_join(radio_counts, by = "dz_artist_id") %>% 
                left_join(mbz_releases, by = "mbz_artist_id") %>% 
                left_join(mbz_artist_country, by = "mbz_artist_id") %>% 
@@ -322,12 +320,13 @@ list(
                left_join(sc_genre, by = "sc_artist_id") %>% 
                
                
-               # compute stream share
+               # compute final stream share
                mutate(
                  n_plays_share = n_plays / sum(n_plays, na.rm = T) * 100,
                  n_plays_share_respondent = n_plays_respondent / sum(n_plays_respondent, na.rm = T) * 100
                  ) %>% 
                
+               # select needed variables
                select(
                  dz_name,
                  ends_with("_id"),
@@ -354,21 +353,6 @@ list(
 # df <- df %>% 
 #   add_count(dz_artist_id) %>% 
 #   filter(n > 1)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

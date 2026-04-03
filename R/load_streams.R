@@ -134,10 +134,8 @@ make_stream_popularity <- function(dz_songs, dz_users){
 
 
 
-# make user_artist data for respondents
-# needed for user demographics per artist
-# separate function because user-song level calculations
-# break R if applied to all users
+# make user_artist data for respondents --> is needed for user demographics per artist
+# separate function because user-song level calculations break R if applied to all users
 make_respondent_plays <- function(dz_songs, dz_users){
   
   streams <- query_raw_streams(path_long = "records_w3/streams/streams_long", 

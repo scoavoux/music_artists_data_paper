@@ -23,6 +23,7 @@ clean_press_ents <- function(file){
   ents <- ents %>% 
     as_tibble() %>% 
     mutate(ent_name = str_normalize(ent_name)) %>% 
+    
     group_by(ent_name) %>% 
     # summarize name counts for name duplicates
     mutate(press_n_mentions = sum(name_count),
@@ -31,8 +32,10 @@ clean_press_ents <- function(file){
            press_n_mentions_liberation = sum(name_count_liberation),
            press_n_mentions_telerama = sum(name_count_telerama)) %>% 
     ungroup() %>% 
-    distinct(ent_name, .keep_all = T) %>% # keep only one duplicate
+    
+    distinct(ent_name, .keep_all = T) %>% # keep only unique ents
     filter(str_length(ent_name) > 2) %>% # remove short ents
+    
     select(c(name_id, ent_name, article_id, 
              starts_with("press_n_mentions")))
   
@@ -49,7 +52,6 @@ list_aliases <- function(file1, file2, artists){
     mutate(dz_name = str_normalize(dz_name)) %>% # normalize name
     group_by(dz_name) %>% 
     
-    # START AGAIN HERE LATER +++++++++++++++++++++++++++
     mutate(keep = ifelse(n_plays == max(n_plays), 
                          TRUE, 
                          FALSE)) %>% # deduplicate CHANGE: SUM OF press_n_mentions INSTEAD!!

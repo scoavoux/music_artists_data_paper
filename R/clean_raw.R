@@ -189,13 +189,6 @@ load_mbz_deezer <- function(file) {
     mutate_if(is.integer, as.character) %>% # ids to str for clean joins
     select(mbz_artist_id, dz_artist_id, mbz_name) # only keep relevant ids + name
   
-  # 77 cases are simply wrong --- dropped them
-  ## they lead to albums, tracks, or non-deezer profiles
-  # collapsed_clean %>% 
-  # filter(str_detect(deezer_id, "\\D"))
-  
-  # write_s3(collapsed_clean, "interim/musicbrainz_urls_collapsed_new.csv")
-  
   return(mbz_deezer)
 }
 

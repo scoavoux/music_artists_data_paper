@@ -28,8 +28,7 @@ patch_names <- function(all,
     filter(n == 1) %>% 
     
     anti_join(all, by = setNames(rlang::as_string(ref_id),
-                                 rlang::as_string(ref_id))) # %>% 
-    # distinct() # distinct perfect duplicates!!
+                                 rlang::as_string(ref_id)))
 
   ## rows in all missing IDs
   miss <- all %>%
@@ -68,7 +67,7 @@ patch_names <- function(all,
 # extra function to get some mbz_ids from wikidata
 # take missing mbz_artist_ids in all, 
 
-mbz_from_wiki <- function(all, wiki){
+patch_mbz_from_wiki <- function(all, wiki){
   
   mbz_missing <- all %>% 
     filter(is.na(mbz_artist_id)) 
@@ -86,7 +85,6 @@ mbz_from_wiki <- function(all, wiki){
     filter(n_deezer == 1, n_mbz == 1) %>% 
     
     mutate(mbz_artist_id = mbz_artist_id.y) %>% 
-    # distinct(dz_artist_id, mbz_artist_id, .keep_all = T) %>% 
     select(dz_artist_id, dz_name, mbz_artist_id)
   
   return(mbz_from_wiki)
@@ -123,8 +121,7 @@ patch_deezer_dups <- function(ref,
   unique_ref <- ref %>% 
     add_count(!!ref_name) %>% 
     filter(n == 1) %>% # unique names only
-    select(!!ref_id, !!ref_name) # %>% 
-    # distinct() # distinct perfect duplicates!!
+    select(!!ref_id, !!ref_name)
   
   matches <- patch_names(all = all_stream_share,
                          ref = unique_ref,
@@ -145,9 +142,9 @@ patch_sc_dups <- function(all, senscritique){
   # ----------- subset all to unique names missing sc_artist_ids
   ## *added 0.9 filtering condition to include some deezer dups!
   all_unique_sc <- all %>%
-    group_by(dz_name) %>% # maybe: name, dz_artist_id?
+    group_by(dz_name) %>% 
     mutate(n_plays_byname = n_plays / sum(n_plays)) %>% 
-    filter(n_plays_byname > 0.90) %>% 
+    filter(n_plays_byname > 0.9) %>% 
     add_count(dz_name) %>%
     filter(n == 1) %>%
     filter(is.na(sc_artist_id)) %>% 
@@ -155,8 +152,6 @@ patch_sc_dups <- function(all, senscritique){
   
   # ------------ prepare senscritique
   sc_unique <- senscritique %>% 
-    # keep the condition like this for now: adding the other variables adds like 30 cases
-    # but unsure about the cases (e.g., there are weird ones with very few albums)
     mutate(sc_collection_count = as.integer(sc_collection_count)) %>% 
     filter(sc_collection_count > 0) %>% # remove irrelevant artists 
     group_by(sc_name) %>% 
@@ -181,7 +176,7 @@ patch_sc_dups <- function(all, senscritique){
 
 # wrapper for dplyr::rows_update: takes a list of patches,
 # passes them to all with rows_update sequentially, and returns
-# the enriched dataset with metrics on the stream share
+# the enriched dataset with metrics on n_plays share
 update_rows <- function(all, ..., by = "dz_artist_id"){
   
   require(dplyr)
