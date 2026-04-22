@@ -1,4 +1,17 @@
   
+load_genres_from_albums <- function(file){
+  
+  albums <- read.csv(file)
+  
+  
+  
+}
+
+
+
+
+
+
 
 make_dz_genres <- function(){
   
