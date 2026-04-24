@@ -8,8 +8,7 @@ artist_genre_release <- albums %>%
   ungroup() %>%
   select(
     dz_artist_id = artist_id,
-    genre_release = genre,
-    prop_release
+    genre_release = genre
   )
 
 
@@ -26,8 +25,7 @@ artist_genre_fans <- albums %>%
   ungroup() %>%
   select(
     dz_artist_id = artist_id,
-    genre_fans = genre,
-    prop_fans
+    genre_fans = genre
   )
 
 
@@ -47,8 +45,7 @@ artist_genre_early <- albums %>%
   ungroup() %>%
   select(
     dz_artist_id = artist_id,
-    genre_early = genre,
-    prop_early
+    genre_early = genre
   )
 
 
@@ -62,15 +59,8 @@ t <- df %>%
     genre_release,
     genre_fans,
     genre_early,
-    genre_early_fans,
-    prop_release,
-    prop_fans,
-    prop_early,
-    prop_early_fans,
     genre_dz_main
   )
-
-
 
 
 
@@ -82,15 +72,19 @@ t %>%
   )
 
 
-t %>%
+disagree <- t %>%
   filter(
     genre_release != genre_fans |
       genre_release != genre_early
   )
 
 
+disagree_500 <- disagree %>% 
+  select(-starts_with("prop_")) %>% 
+  slice(1:500)
 
 
+write.table(disagree_500, "data/genre_disagree_500.csv", sep = ";")
 
 
 
