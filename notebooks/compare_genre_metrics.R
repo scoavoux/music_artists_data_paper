@@ -1,90 +1,66 @@
-artist_genre_release <- albums %>%
-  group_by(artist_id, genre) %>%
-  summarise(n_release = n(), .groups = "drop") %>%
-  group_by(artist_id) %>%
-  mutate(prop_release = n_release / sum(n_release)) %>%
-  arrange(artist_id, desc(prop_release)) %>%
-  slice(1) %>%
-  ungroup() %>%
-  select(
-    dz_artist_id = artist_id,
-    genre_release = genre
-  )
-
-
-artist_genre_fans <- albums %>%
-  group_by(artist_id, genre) %>%
-  summarise(
-    fans_sum = sum(fans, na.rm = TRUE),
-    .groups = "drop"
-  ) %>%
-  group_by(artist_id) %>%
-  mutate(prop_fans = fans_sum / sum(fans_sum)) %>%
-  arrange(artist_id, desc(prop_fans)) %>%
-  slice(1) %>%
-  ungroup() %>%
-  select(
-    dz_artist_id = artist_id,
-    genre_fans = genre
-  )
-
-
-n_early <- 3
-
-artist_genre_early <- albums %>%
-  arrange(artist_id, release_date) %>%
-  group_by(artist_id) %>%
-  slice_head(n = n_early) %>%
-  ungroup() %>%
-  group_by(artist_id, genre) %>%
-  summarise(n_early_release = n(), .groups = "drop") %>%
-  group_by(artist_id) %>%
-  mutate(prop_early = n_early_release / sum(n_early_release)) %>%
-  arrange(artist_id, desc(prop_early)) %>%
-  slice(1) %>%
-  ungroup() %>%
-  select(
-    dz_artist_id = artist_id,
-    genre_early = genre
-  )
-
-
-t <- df %>%
-  left_join(artist_genre_release, by = "dz_artist_id") %>%
-  left_join(artist_genre_fans,    by = "dz_artist_id") %>%
-  left_join(artist_genre_early,   by = "dz_artist_id") %>%
-  select(
-    dz_name,
-    n_plays_share,
-    genre_release,
-    genre_fans,
-    genre_early,
-    genre_dz_main
-  )
+library(tidyr)
 
 
 
-t %>%
-  summarise(
-    release_vs_fans  = mean(genre_release == genre_fans, na.rm = TRUE),
-    release_vs_early = mean(genre_release == genre_early, na.rm = TRUE),
-    fans_vs_early    = mean(genre_fans == genre_early, na.rm = TRUE)
-  )
+
+tar_load(df)
 
 
-disagree <- t %>%
-  filter(
-    genre_release != genre_fans |
-      genre_release != genre_early
-  )
+t <- df %>% 
+  left_join(artist_main_genres, by = "dz_artist_id") %>% 
+  select(dz_name, genre_1, genre_2, n_plays_share)
 
 
-disagree_500 <- disagree %>% 
-  select(-starts_with("prop_")) %>% 
-  slice(1:500)
+# ------- W/ RECORD TYPE WEIGHTS
+# ------- TO REDUCE NAS ON GENRE_2
+# 
+# artist_main_genres <- albums %>%
+#   mutate(
+#     weight = log(fans + 1)
+#   ) %>%
+#   
+#   # 1. Detect availability of release types
+#   group_by(dz_artist_id) %>%
+#   mutate(
+#     has_album = any(record_type == "album"),
+#     has_ep    = any(record_type == "ep")
+#   ) %>%
+#   ungroup() %>%
+#   
+#   # 2. Apply tier-based weighting
+#   mutate(
+#     type_multiplier = case_when(
+#       has_album & record_type == "album"  ~ 1,
+#       has_album & record_type == "ep"     ~ 0.5,
+#       has_album & record_type == "single" ~ 0.25,
+#       
+#       !has_album & has_ep & record_type == "ep"     ~ 1,
+#       !has_album & has_ep & record_type == "single" ~ 0.5,
+#       
+#       TRUE ~ 1  # only singles case
+#     ),
+#     weighted_score = weight * type_multiplier
+#   ) %>%
+#   
+#   # 3. Aggregate per genre
+#   group_by(dz_artist_id, genre) %>%
+#   summarise(
+#     genre_weight = sum(weighted_score, na.rm = TRUE),
+#     .groups = "drop"
+#   ) %>%
+#   
+#   # 4. Extract top 2 genres
+#   group_by(dz_artist_id) %>%
+#   arrange(desc(genre_weight), genre, .by_group = TRUE) %>%
+#   summarise(
+#     genre_1 = first(genre),
+#     genre_2 = dplyr::nth(genre, 2),
+#     .groups = "drop"
+#   )
 
 
-write.table(disagree_500, "data/genre_disagree_500.csv", sep = ";")
+
+
 
 
 

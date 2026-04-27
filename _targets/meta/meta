@@ -102,7 +102,6 @@ dz_songs_new|stem|0e04756b590f5a50|cf294cf1f3689cf4|3b5bc81dea375035|-563022001|
 dz_songs_old|stem|4e35e4dbf7426ea0|b78c76a3230b1d60|3b5bc81dea375035|-431654433|bucket=scoavoux*region=NULL*key=music_artist/objects/dz_songs_old*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20543.4295425129s||0|rds|aws|vector|||262.255||
 press_corpus|stem|39752901d1bdb4b8|473b25a3955f3291|b998c30ebb9e9e56|-296614722|bucket=scoavoux*region=NULL*key=music_artist/objects/press_corpus*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20543.4532495537s||0|rds|aws|vector|||377.163|There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(date)`. Caused by warning: ! All formats failed to parse. No formats found.. NAs introduced by coercion to integer range. One or more parsing issues, call `problems()` on your data frame for details, e.g.:   dat <- vroom(...)   problems(dat). There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(date)`. Caused by warning: ! All formats failed to parse. No formats found.. NAs introduced by coercion to integer range. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  3 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  4 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  5 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  2 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  1 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  1 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  2 failed to parse.|
 artists_to_patch|stem|d4dcca71708a4afb|0bbc09b81f1daf90|3c2595bfa96e5b41|-1957689600|bucket=scoavoux*region=NULL*key=music_artist/objects/artists_to_patch*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20543.4554751426s||0|rds|aws|vector|||55.35|Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 2266 of `x` matches multiple rows in `y`. ℹ Row 41836 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.. Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 74 of `x` matches multiple rows in `y`. ℹ Row 1281 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.. Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 3 of `x` matches multiple rows in `y`. ℹ Row 81945 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.|
-wiki_mbz_ids_patch|stem|e3c2188e1951b409|9dd49d064c0ab1c5|4a428a9d7f7c9788|-1891922533|bucket=scoavoux*region=NULL*key=music_artist/objects/wiki_mbz_ids_patch*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20543.4575362083s||0|rds|aws|vector|||0.386|Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 109 of `x` matches multiple rows in `y`. ℹ Row 418723 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.|
 mbz_names_patch|stem|107493ba31b83678|29badad73dfa0a21|74a68b2341802ab5|1575924386|bucket=scoavoux*region=NULL*key=music_artist/objects/mbz_names_patch*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20543.460008471s||0|rds|aws|vector|||24.466||
 wiki_names_patch|stem|18485cf22d8f2144|2f0deba6822eaf11|d8366bce9f279d97|-1562572403|bucket=scoavoux*region=NULL*key=music_artist/objects/wiki_names_patch*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20543.4601408673s||0|rds|aws|vector|||6.416||
 wiki_mbz_names_patch|stem|9fe2ba72ac17957f|1aa33fe4b4668220|d8366bce9f279d97|-292486489|bucket=scoavoux*region=NULL*key=music_artist/objects/wiki_mbz_names_patch*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20543.4602293952s||0|rds|aws|vector|||4.459||
@@ -110,18 +109,23 @@ dup_dz_mbz_patch|stem|915a7fcfaf10071e|b298ac14e48c066e|bb1265a44c0ec6f2|1571603
 sc_names_patch|stem|f54673873b26ec61|206661486f93397b|fbdd4402ff514a57|1614796117|bucket=scoavoux*region=NULL*key=music_artist/objects/sc_names_patch*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20543.4612177305s||0|rds|aws|vector|||13.46||
 dup_dz_sc_patch|stem|3bc02c6535e11c5d|0dce6eda298d9d15|e19822816f5fb063|-1090140241|bucket=scoavoux*region=NULL*key=music_artist/objects/dup_dz_sc_patch*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20543.4617190098s||0|rds|aws|vector|||38.939||
 dup_sc_patch|stem|3644df391d431d6a|03540b7d7e24c3f6|d13c1d37bbae0048|1805590592|bucket=scoavoux*region=NULL*key=music_artist/objects/dup_sc_patch*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20543.4621135288s||0|rds|aws|vector|||30.081||
-artists|stem|c12528f6bc86c5fc|934258d7034f7a19|977eee4bda88e568|1571941084|bucket=scoavoux*region=NULL*key=music_artist/objects/artists*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20543.4640223542s||0|rds|aws|vector|||24.712|There were 599 warnings in `mutate()`. The first warning was: ℹ In argument: `keep_dz = colcount_share_by_dzdup ==   max(colcount_share_by_dzdup, na.rm = TRUE)`. ℹ In group 3: `dz_artist_id = '10032898'`. Caused by warning in `max()`: ! no non-missing arguments to max; returning -Inf ℹ Run `dplyr::last_dplyr_warnings()` to see the 598 remaining warnings.|
 press_name_counts|stem|b6e21a068d597788|6d91109e579d027a|e20fe5ac7623d4e6|1845327189|bucket=scoavoux*region=NULL*key=music_artist/objects/press_name_counts*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20543.4641410096s||0|rds|aws|vector|||6.57||
 aliases_to_add|stem|33d689caf04107c2|5213e4388421d557|bf3f523b4e6c601e|1367877244|bucket=scoavoux*region=NULL*key=music_artist/objects/aliases_to_add*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20543.4641988289s||0|rds|aws|vector|||3.559||
 mbz_releases|stem|112fa7be221f9228|d875b53f4adcdab5|4d8eef6daa9ac7b2|2049062744|bucket=scoavoux*region=NULL*key=music_artist/objects/mbz_releases*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20543.4648153274s||0|rds|aws|vector|||51.257||
 press_counts_to_final|function|545836bb3636c3ba
-mbz_gpt_gender|stem|9f5ea2c32ec54343|250f89d2960fc905|b4d29900205f7d9c|1763035277|bucket=scoavoux*region=NULL*key=music_artist/objects/mbz_gpt_gender*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20543.4667536818s||0|rds|aws|vector|||5.716||
 press_n_mentions|stem||599efee8f67601f2|932234f673c54642|1475833057||t20543.4690065578s||0|rds|aws|vector|||1.478||ℹ In argument: `starts_with(press_)`. Caused by error: ! object 'press_' not found
 respondent_isei|stem|0ea21543f3982a44|cbf0a44f9357fb34|be19f2e3a95a90d2|1351537299|bucket=scoavoux*region=NULL*key=music_artist/objects/respondent_isei*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20544.3968760857s||0|rds|aws|vector|||12.199|Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 68330 of `x` matches multiple rows in `y`. ℹ Row 2134 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.|
 respondent_educ|stem|cdfdca87322ced6f|4c2131e588bef2a5|2f828c23584d4adb|-2039250833|bucket=scoavoux*region=NULL*key=music_artist/objects/respondent_educ*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20544.4015480581s||0|rds|aws|vector|||19.232||
 respondent_demographics|stem|97afc31dfb8aea1c|e9cf384a117bab8b|bfe45f8b39e322bf|-199194786|bucket=scoavoux*region=NULL*key=music_artist/objects/respondent_demographics*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20544.4022229156s||0|rds|aws|vector|||26.453||
 deezer_main_genre|stem|22b6512f9fa6029e|249102e6d4c4afa9|83c85aa9e6e44528|651539942|bucket=scoavoux*region=NULL*key=music_artist/objects/deezer_main_genre*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20544.4184570564s||0|rds|aws|vector|||8.283||
 mbz_from_wiki|function|09d134ac8e582641
+sc_genre|stem|bb8d91f6a49e1435|205b46b93cc9f21f|8289d8044b900d94|-1810805198|bucket=scoavoux*region=NULL*key=music_artist/objects/sc_genre*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20544.5314929639s||0|rds|aws|vector|||37.135|Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 1 of `x` matches multiple rows in `y`. ℹ Row 876676 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.|
+deezer_genres|stem|6032e304b274ec0c|dc04138e6b9dcdb6|a943f00bad5ae8a6|1809850381|bucket=scoavoux*region=NULL*key=music_artist/objects/deezer_genres*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20544.5315687374s||0|rds|aws|vector|||5.757||
+df|stem|0c666a48521df2e6|946ff2208bc4d465|3951a4fdc3f376e5|1719518045|bucket=scoavoux*region=NULL*key=music_artist/objects/df*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20544.5317940886s||0|rds|aws|vector|||7.638|Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 50303 of `x` matches multiple rows in `y`. ℹ Row 242711 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.|
+map_deezer_genres|function|1a5802ccb5cf8c74
+wiki_mbz_ids_patch|stem|142cdd34324db906|44761bf037e2d2c2|8be55e6a40271ee4|-1891922533|bucket=scoavoux*region=NULL*key=music_artist/objects/wiki_mbz_ids_patch*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20570.6184606213s||0|rds|aws|vector|||0.705|Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 109 of `x` matches multiple rows in `y`. ℹ Row 418723 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.|
+artists|stem|2fc967fbffe8520c|934258d7034f7a19|5bdbc787c25bdfb8|1571941084|bucket=scoavoux*region=NULL*key=music_artist/objects/artists*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20570.618774636s||0|rds|aws|vector|||20.926|There were 599 warnings in `mutate()`. The first warning was: ℹ In argument: `keep_dz = colcount_share_by_dzdup ==   max(colcount_share_by_dzdup, na.rm = TRUE)`. ℹ In group 3: `dz_artist_id = '10032898'`. Caused by warning in `max()`: ! no non-missing arguments to max; returning -Inf ℹ Run `dplyr::last_dplyr_warnings()` to see the 598 remaining warnings.|
+mbz_gpt_gender|stem|81d69f85f9282e81|250f89d2960fc905|49d5b9f960e49a30|1763035277|bucket=scoavoux*region=NULL*key=music_artist/objects/mbz_gpt_gender*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20570.6188469295s||0|rds|aws|vector|||3.975||
 normalize_job|function|78c2081b2942cdad
 initialize_s3|function|25a2772c1c03257f
 str_normalize|function|3f1125990a04f5a2
@@ -129,9 +133,10 @@ group_songs_by_artist|function|fb4d52033643f4ea
 make_wiki_keys|function|f12d8209a06c8dec
 print_stream_share|function|b85726e296e794de
 make|function|860e3605b48e903a
-.Random.seed|object|20e88014a601c846
+.Random.seed|object|67c747909446b821
 write_s3|function|15e44e053dc7a6c7
 patch_names|function|04bb03cb24de6935
+patch_mbz_from_wiki|function|09d134ac8e582641
 make_press_counts|function|014c268d8bb87006
 make_respondent_demo|function|c843d73a6463fd0f
 bind_dz_songs|function|9410e38d81eea067
@@ -142,7 +147,7 @@ make_respondent_educ|function|e437cd6307480718
 load_partitioned_s3|function|ef32fd7856f71aa0
 prop_na|function|c201f9db83a66140
 make_respondent_isei|function|382caedb2c5eb59a
-isco_rules|object|4a1ebee3379a340d
+isco_rules|object|b3f763829654fe2a
 normalize_for_isco|function|034468f07097ed90
 load_s3_info|function|b201b67fd14b09a5
 load_s3|function|2f0bfd56597701f8
@@ -156,12 +161,13 @@ patch_sc_dups|function|f406c616ae17b967
 patch_deezer_dups|function|26f65e16a8885eba
 make_stream_popularity|function|874ce6c89181f21b
 make_respondent_plays|function|4f19add1496625c1
-assign_condition_isco|function|7ef7d672b258445d
+assign_condition_isco|function|ff1962e1ac74e5a8
 load_sc_ratings|function|ac7f50b2722bc4fb
 clean_press_ents|function|29e2de226dc0e50a
 load_manual_search|function|2b5d381ac9d288fa
 count_radio_plays|function|83dc08ed1a3c67db
 make_artist_gender|function|7f5f6c983feeab90
+make_genres_from_albums|function|9d19a1ec19564a2b
 clean_lemonde|function|bde41cd7f1227e37
 make_sc_ratings|function|ec226e9b0e23b60d
 make_sc_genre|function|ded389dc4389b3a6
@@ -176,8 +182,6 @@ make_artist_country|function|a07a973b642c3ebb
 clean_telerama|function|b70d0ce9cff5f457
 make_dz_songs|function|3474bf0b62a67ca0
 load_mbz_deezer|function|5c576845a1e17fd0
-make_raw_isei|function|f573efc8ba2812e1
+make_raw_isei|function|56e48ca59afcee4b
 bind_press_corpora|function|1399678af3d6d880
-sc_genre|stem|bb8d91f6a49e1435|205b46b93cc9f21f|8289d8044b900d94|-1810805198|bucket=scoavoux*region=NULL*key=music_artist/objects/sc_genre*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20544.5314929639s||0|rds|aws|vector|||37.135|Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 1 of `x` matches multiple rows in `y`. ℹ Row 876676 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.|
-deezer_genres|stem|6032e304b274ec0c|dc04138e6b9dcdb6|a943f00bad5ae8a6|1809850381|bucket=scoavoux*region=NULL*key=music_artist/objects/deezer_genres*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20544.5315687374s||0|rds|aws|vector|||5.757||
-df|stem|0c666a48521df2e6|946ff2208bc4d465|3951a4fdc3f376e5|1719518045|bucket=scoavoux*region=NULL*key=music_artist/objects/df*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20544.5317940886s||0|rds|aws|vector|||7.638|Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 50303 of `x` matches multiple rows in `y`. ℹ Row 242711 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.|
+genres_from_albums|stem||cfa3437a49488a26|737ef521a3e80b4e|-1717554609||t20570.5906648194s||0|rds|aws|vector|||1.281||NoSuchKey (HTTP 404). The specified key does not exist.

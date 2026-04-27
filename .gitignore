@@ -58,3 +58,4 @@ data/temp/
 
 # python
 sql/.ipynb_checkpoints/
+.positai

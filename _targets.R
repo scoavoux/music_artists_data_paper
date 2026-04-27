@@ -297,6 +297,10 @@ list(
   tar_target(sc_genre,
              make_sc_genre()),
   
+  tar_target(genres_from_albums,
+             make_genres_from_albums(album_file="records_w3/genres_from_albums.csv",
+                                     genre_mapping_file="records_w3/deezer_genre_mapping.csv")),
+  
 
   # final dataframe with selected variables
   tar_target(df,
@@ -319,7 +323,7 @@ list(
                # genres
                left_join(deezer_genres, by = "dz_artist_id") %>% 
                left_join(sc_genre, by = "sc_artist_id") %>% 
-               
+               left_join(genres_from_albums, by = "dz_artist_id") %>% 
                
                # compute final stream share
                mutate(
