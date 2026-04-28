@@ -6,7 +6,7 @@ query_raw_streams <- function(path_long = "records_w3/streams/streams_long",
                               dz_songs=dz_songs, dz_users=dz_users){
   
   song_artist_weights <- dz_songs %>% 
-    select(song_id, dz_artist_feat_id, w_feat)
+    select(song_id, dz_artist_id, w_feat)
   
   # ---------------------------------------------------------------
   # LOAD STREAMS
@@ -30,7 +30,7 @@ query_raw_streams <- function(path_long = "records_w3/streams/streams_long",
            song_id > 0) %>%
     inner_join(song_artist_weights, by = "song_id") %>% 
     inner_join(dz_users, by = c("hashed_id")) %>%
-    select(hashed_id, song_id, dz_artist_feat_id, is_respondent, w_feat)
+    select(hashed_id, song_id, dz_artist_id, is_respondent, w_feat)
   
   
   path_short <- arrow::open_dataset(
@@ -55,7 +55,7 @@ query_raw_streams <- function(path_long = "records_w3/streams/streams_long",
            song_id > 0) %>% 
     inner_join(song_artist_weights, by = "song_id") %>% 
     inner_join(dz_users, by = c("hashed_id")) %>%
-    select(hashed_id, song_id, dz_artist_feat_id, is_respondent, w_feat)
+    select(hashed_id, song_id, dz_artist_id, is_respondent, w_feat)
   
   
   streams_query <- union_all(streams_short, streams_long)
@@ -72,26 +72,27 @@ make_stream_popularity <- function(dz_songs, dz_users){
   
   streams <- query_raw_streams(path_long = "records_w3/streams/streams_long", 
                                path_short = "records_w3/streams/streams_short", 
-                               dz_songs=dz_songs, dz_users=dz_users)
+                               dz_songs=dz_songs, 
+                               dz_users=dz_users)
   
   # ---------- N_PLAYS AND N_USERS
   # make n_plays at group-song level
   plays <- streams %>%
-    group_by(song_id, dz_artist_feat_id, 
+    group_by(song_id, dz_artist_id, 
              is_respondent, w_feat) %>%
     summarise(n_plays = sum(w_feat),
               .groups = "drop") %>% 
-    select(song_id, dz_artist_feat_id, is_respondent, n_plays)
+    select(song_id, dz_artist_id, is_respondent, n_plays)
   
   
   # make n_users at group-artist levels
   artist_user_counts <- streams %>%
-    group_by(dz_artist_feat_id, is_respondent) %>%
+    group_by(dz_artist_id, is_respondent) %>%
     summarise(
       n_users = n_distinct(hashed_id),
       .groups = "drop"
     ) %>% 
-    select(dz_artist_feat_id, is_respondent, n_users)
+    select(dz_artist_id, is_respondent, n_users)
   
   
   # ---------------------------------------------------------------
@@ -99,7 +100,7 @@ make_stream_popularity <- function(dz_songs, dz_users){
   artist_popularity <- plays %>%
     
     # aggregate dz_stream_count to group
-    group_by(dz_artist_feat_id, is_respondent) %>%
+    group_by(dz_artist_id, is_respondent) %>%
     summarise(
       n_plays = sum(n_plays, na.rm = TRUE),
       .groups = "drop"
@@ -108,7 +109,7 @@ make_stream_popularity <- function(dz_songs, dz_users){
     # add dz_stream_user_count (agg by group already)
     inner_join(
       artist_user_counts,
-      by = c("dz_artist_feat_id", "is_respondent")
+      by = c("dz_artist_id", "is_respondent")
     ) %>%
     
     collect()
@@ -124,7 +125,7 @@ make_stream_popularity <- function(dz_songs, dz_users){
     ) %>% 
     rename(n_plays = "n_plays_control",
            n_users = "n_users_control",
-           dz_artist_id = "dz_artist_feat_id") %>% 
+           dz_artist_id = "dz_artist_id") %>% 
     
     # filter out artists with no plays in control group
     filter(!is.na(n_plays)) 
@@ -144,11 +145,11 @@ make_respondent_plays <- function(dz_songs, dz_users){
   
   respondent_plays <- streams %>%
     filter(is_respondent == 1) %>% 
-    group_by(hashed_id, song_id, dz_artist_feat_id, w_feat) %>%
+    group_by(hashed_id, song_id, dz_artist_id, w_feat) %>%
     summarise(n_plays = sum(w_feat),
               .groups = "drop") %>% 
 
-    group_by(hashed_id, dz_artist_feat_id) %>%
+    group_by(hashed_id, dz_artist_id) %>%
     summarise(
       n_plays = sum(n_plays, na.rm = TRUE),
       .groups = "drop"

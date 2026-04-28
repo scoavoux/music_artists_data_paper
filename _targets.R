@@ -298,7 +298,7 @@ list(
              make_sc_genre()),
   
   tar_target(genres_from_albums,
-             make_genres_from_albums(album_file="records_w3/genres_from_albums.csv",
+             make_genres_from_albums(album_file="records_w3/genres_from_albums.parquet",
                                      genre_mapping_file="records_w3/deezer_genre_mapping.csv")),
   
 

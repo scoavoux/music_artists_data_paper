@@ -3,7 +3,7 @@ group_songs_by_artist <- function(dz_songs, dz_stream_data){
   
   dz_artists <- dz_songs %>% 
     ungroup() %>% 
-    mutate(dz_artist_id = as.character(dz_artist_feat_id)) %>%  # ATTENTION: renaming feat_id to id here!!
+    mutate(dz_artist_id = as.character(dz_artist_id)) %>% 
     group_by(dz_artist_id) %>% 
     summarise(dz_name = first(dz_name),
               .groups = "drop") %>% 
