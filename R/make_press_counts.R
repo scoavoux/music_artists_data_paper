@@ -84,7 +84,7 @@ list_aliases <- function(file1, file2, artists){
 # make a df of entities which get NA either because 
 # they are non-musical artists or homonyms of famous artists
 list_entities_to_drop <- function(file){
-  
+
   press_outliers_checked <- load_s3(file)
   
   # non-artists or ambiguous names

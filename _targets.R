@@ -352,11 +352,19 @@ list(
 )
 
 # 2 PERFECT DUPLICATES (1): "Crash!" ---> dz_artist_id == 271763
-# COMES FROM PRESS I THINK WHERE I CODED HIM TWICE
-# SOLVE LATER
+# comes from press entities, where i coded them twice
 
-# df <- df %>% 
-#   add_count(dz_artist_id) %>% 
-#   filter(n > 1)
+# and Dj Geny Tur, which is coded twice in mbz_gpt_gender,
+# once as male once as female --> resolved it temporarily by choosing one
+
+
+
+
+
+
+
+
+
+
 
 

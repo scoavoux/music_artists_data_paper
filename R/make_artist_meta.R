@@ -82,7 +82,9 @@ make_artist_gender <- function(artists, mbz_gender_file, gpt_gender_file){
       gender = coalesce(gender_mbz, gender_gpt)
     ) %>%
     
-    select(dz_artist_id, gender)
+    select(dz_artist_id, gender) %>% 
+    
+    distinct(dz_artist_id, .keep_all = TRUE) # TEMP: TO RESOLVE DUPLICATE 2244301
   
   return(mbz_gpt_gender)
 }
