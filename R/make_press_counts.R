@@ -43,7 +43,7 @@ clean_press_ents <- function(file){
 }
 
 
-## make a df of the aliases to add the press_n_mentionss of to real artists
+## make a df of the aliases to add the press_n_mentions of to real artists
 list_aliases <- function(file1, file2, artists){
   
   # prepare all_final
