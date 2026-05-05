@@ -1,23 +1,3 @@
-## conversion table from normalized survey variables to isco conditions
-isco_rules <- tibble::tribble(
-  ~priority, ~pos_group,     ~encadre, ~condition_isco,
-  
-  1, "cadre",        "yes", "ingcad_supv",
-  2, "cadre",        "no",  "ingcad_nsupv",
-  
-  3, "intermediate", "yes", "tecam_supv",
-  4, "intermediate", "no",  "tecam_nsupv",
-  
-  5, "worker",       "yes", "ouvemp_supv",
-  6, "worker",       "no",  "ouvemp_nsupv",
-  
-  7, "none",         "yes", "nr_supv",
-  8, "none",         "no",  "nr_nsupv",
-  
-  99, NA, NA, "ssvaran"
-)
-
-
 ## normalize survey variables
 normalize_for_isco <- function(df) {
   
@@ -60,12 +40,31 @@ normalize_for_isco <- function(df) {
 }
 
 ## assign an isco condition based on the normalized survey variables
-assign_condition_isco <- function(df, rules = isco_rules) {
+assign_condition_isco <- function(df) {
+  
+  ## conversion table from normalized survey variables to isco conditions
+  isco_rules <- tibble::tribble(
+    ~priority, ~pos_group,     ~encadre, ~condition_isco,
+    
+    1, "cadre",        "yes", "ingcad_supv",
+    2, "cadre",        "no",  "ingcad_nsupv",
+    
+    3, "intermediate", "yes", "tecam_supv",
+    4, "intermediate", "no",  "tecam_nsupv",
+    
+    5, "worker",       "yes", "ouvemp_supv",
+    6, "worker",       "no",  "ouvemp_nsupv",
+    
+    7, "none",         "yes", "nr_supv",
+    8, "none",         "no",  "nr_nsupv",
+    
+    99, NA, NA, "ssvaran"
+  )
   
   df_norm <- normalize_for_isco(df)
   
   df_norm %>%
-    left_join(rules, by = c("pos_group", "encadre")) %>%
+    left_join(isco_rules, by = c("pos_group", "encadre")) %>%
     
     # fallback if no match
     mutate(
