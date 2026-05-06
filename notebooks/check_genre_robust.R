@@ -32,15 +32,16 @@ frq(mbz_genre_top$mbz_genre, sort.frq = "desc")
 dat <- df %>% 
   select(dz_name, dz_artist_id, mbz_artist_id,
          genre_1, genre_2, genre_dz_main) %>% 
-  left_join(mbz_genre_top, by = "mbz_artist_id") %>% 
+  left_join(mbz_genre, by = "mbz_artist_id") %>% 
   mutate(genre_1 = str_to_lower(genre_1),
          genre_2 = str_to_lower(genre_2))
 
 
 # genre tables
-mbz_genre_frq <- frq(mbz_genre$mbz_genre, sort.frq = "desc")
-dz_genre_frq <- frq(df$genre_1, sort.frq = "desc")
+mbz_genre_frq <- frq(mbz_genre$mbz_genre, sort.frq = "desc")[[1]]
+dz_genre_frq <- frq(df$genre_1, sort.frq = "desc")[[1]]
 
+write.csv2(mbz_genre_frq, "data/mbz_genre_frq.csv", sep = ";")
 
 # 23 valid deezer genres
 pop, 
@@ -68,13 +69,6 @@ musique asiatique,
 musique arabe,
 musique indienne
 
-genre_rename <- c(electronic = electro, # dance??
-                  classical = classique,
-                  hip hop = rap/hip Hop,
-                  alternative rock = alternative,
-                  latin = latino,
-                  
-                  )
 
 main_genres <- c("rock", 
                  "electronic", # include downtempo 
@@ -149,6 +143,39 @@ genre_map <- genre_map %>%
 t <- mbz_genre %>% 
   filter(mbz_genre %in% c("electronic", "electro")) %>% 
   arrange(desc(n_plays_share))
+
+
+# faire les aggrégations faciles
+# croiser avec deezer
+
+df %>% 
+  filter(dz_name == "Gloria Gaynor") %>% 
+  select(dz_name, genre_1, genre_2)
+
+
+
+mbz_genre %>% 
+  filter(dz_name == "David Guetta")
+
+
+mbz_genre %>% 
+  filter(mbz_genre == "house") %>% 
+  filter(n_albums > 2)
+
+
+# RECODE TABLE
+rec <- read.csv("data/mbz_genre_frq.csv", sep = ";")
+
+rec <- rec %>% 
+  as_tibble() %>% 
+  filter(recode_genre != "")
+
+mbz_genre <- mbz_genre %>% 
+  left_join(rec, by = "mbz_genre")
+
+## now aggregate: biggest genre by artist
+## and look at NAs + correlation with deezer
+
 
 
 
