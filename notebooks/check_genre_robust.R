@@ -43,128 +43,10 @@ dz_genre_frq <- frq(df$genre_1, sort.frq = "desc")[[1]]
 
 write.csv2(mbz_genre_frq, "data/mbz_genre_frq.csv", sep = ";")
 
-# 23 valid deezer genres
-pop, 
-electro, 
-rap, 
-alternative, 
-classique, 
-rock, 
-dance,
-jazz, 
-latino, 
-r&b, 
-films/jeux vidéo, 
-reggae, 
-folk,
-country, 
-metal, 
-chanson française, 
-soul & funk, 
-blues
-
-musique africaine, 
-musique brésilienne,  
-musique asiatique,
-musique arabe,
-musique indienne
-
-
-main_genres <- c("rock", 
-                 "electronic", # include downtempo 
-                 "pop", 
-                 "jazz", 
-                 "classical", 
-
-                 "hip hop", 
-                 "punk", 
-                 "folk",
-                 "metal", 
-                 "blues", 
-
-                 "electro",
-                 "alternative rock", 
-                 "downtempo", 
-                 "techno", 
-                 "latin",
-                 
-                 "experimental", # include industrial
-                 "noise", 
-                 "ambient")
-
-
-
-
-map_to_main <- function(genre, main_genres) {
-  matches <- main_genres[str_detect(
-    genre,
-    paste0("\\b", main_genres, "\\b")
-  )]
-  
-  if (length(matches) == 0) {
-    return(NA_character_)
-  } else {
-    return(matches[1])
-  }
-}
-
-mbz_genres <- unique(mbz_genre$mbz_genre)
-
-# test with 300 genres first
-genre_map <- mbz_genre_300 %>%
-  distinct(mbz_genre) %>%
-  mutate(
-    genre_clean = mbz_genre %>%
-      str_to_lower() %>%
-      str_replace_all("-", " ") %>%
-      str_replace_all("&", "and"),
-    
-    main_genre = map_chr(genre_clean, map_to_main, main_genres)
-  )
-
-
-genre_map %>% 
-  filter(str_detect(genre_clean, "pop"))
-
-
-
-t <- df %>% 
-  inner_join(mbz_genre, by = "mbz_artist_id") %>% 
-  select(dz_name, mbz_artist_id, mbz_genre, n_albums)
-
-t %>% 
-  distinct(mbz_artist_id)
-
-
-genre_map <- genre_map %>% 
-  arrange(desc(main_genre))
-
-
-t <- mbz_genre %>% 
-  filter(mbz_genre %in% c("electronic", "electro")) %>% 
-  arrange(desc(n_plays_share))
-
-
-# faire les aggrégations faciles
-# croiser avec deezer
-
-df %>% 
-  filter(dz_name == "Gloria Gaynor") %>% 
-  select(dz_name, genre_1, genre_2)
-
-
-
-mbz_genre %>% 
-  filter(dz_name == "David Guetta")
-
-
-mbz_genre %>% 
-  filter(mbz_genre == "house") %>% 
-  filter(n_albums > 2)
 
 
 # RECODE TABLE
-rec <- read.csv("data/mbz_genre_frq.csv", sep = ";")
+rec <- load_s3("data/mbz_genre_frq.csv", sep = ";")
 
 rec <- rec %>% 
   as_tibble() %>% 
@@ -175,6 +57,7 @@ mbz_genre <- mbz_genre %>%
 
 ## now aggregate: biggest genre by artist
 ## and look at NAs + correlation with deezer
+
 
 
 
