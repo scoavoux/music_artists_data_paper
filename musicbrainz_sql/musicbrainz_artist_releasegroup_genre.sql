@@ -127,7 +127,8 @@ WITH
   rg_genre AS (
     SELECT DISTINCT
       rgt.release_group AS release_group_id,
-      g.name            AS genre_name
+      g.name            AS genre_name,
+      rgt.count         AS genre_votes
     FROM release_group_tag rgt
     JOIN tag t
       ON t.id = rgt.tag
@@ -143,7 +144,8 @@ SELECT
   rga.artist_mbid,
   rga.n_releases,
   rga.album_type,
-  rgg.genre_name
+  rgg.genre_name,
+  rgg.genre_votes
 FROM rg_artist rga
 LEFT JOIN rg_genre rgg
   ON rgg.release_group_id = rga.release_group_id
