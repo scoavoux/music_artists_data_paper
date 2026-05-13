@@ -1,3 +1,4 @@
+COPY (
 SELECT 
   a.gid AS artist_mbid,
   a.name,
@@ -7,4 +8,5 @@ FROM artist a
 JOIN artist_tag at ON at.artist = a.id
 JOIN tag t         ON t.id = at.tag
 JOIN genre g       ON g.name = t.name
-WHERE at.count > 0;
+WHERE at.count > 0
+) TO STDOUT WITH CSV HEADER;
