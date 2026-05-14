@@ -347,7 +347,15 @@ list(
                  starts_with("lang_"),
                  starts_with("respondent_")
                  )
-  )
+  ),
+  
+  tar_target(mbz_genre_album,
+             load_mbz_genre_album(df, 
+                                  file="musicbrainz/musicbrainz_artist_releasegroup_genre.csv")),
+  
+  tar_target(mbz_genre_artist,
+             load_mbz_genre_artist(df, file="musicbrainz/musicbrainz_artist_genre.csv"))
+  
 
 )
 
@@ -357,9 +365,6 @@ list(
 # and Dj Geny Tur, which is coded twice in mbz_gpt_gender,
 # once as male once as female --> resolved it temporarily by choosing one
 
-
-  
-  
 
 
 
