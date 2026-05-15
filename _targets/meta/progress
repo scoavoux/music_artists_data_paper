@@ -44,5 +44,4 @@ upd_press_name_counts|stem|upd_press_name_counts|0|skipped
 df|stem|df|0|skipped
 mbz_genre_artist|stem|mbz_genre_artist|0|dispatched
 mbz_genre_artist|stem|mbz_genre_artist|0|completed
-mbz_genre_album|stem|mbz_genre_album|0|dispatched
-mbz_genre_album|stem|mbz_genre_album|0|completed
+mbz_genre_album|stem|mbz_genre_album|0|skipped

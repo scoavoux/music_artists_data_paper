@@ -26,6 +26,8 @@ load_mbz_genre_album <- function(df, file){
 
 load_mbz_genre_artist <- function(df, file){
   
+  require(sjmisc)
+  
   genres_raw <- load_s3(file)
   
   genres <- genres_raw %>% 
@@ -40,18 +42,25 @@ load_mbz_genre_artist <- function(df, file){
            mbz_genre = "genre_name", 
            genre_count, 
            n_plays_share)
+  
+  ## filter genres by genre_count and frq
+  genre_frq <- frq(genres$mbz_genre, sort.frq = "desc")[[1]]
+  genre_frq <- genre_frq %>% 
+    select(val, frq) %>% 
+    as_tibble()
+  
+  genres <- genres %>% 
+    left_join(genre_frq, by = c(mbz_genre = "val"))
+  
+  genres <- genres %>% 
+    group_by(mbz_artist_id) %>% 
+    filter(genre_count == max(genre_count)) %>% 
+    filter(frq == max(frq)) %>% 
+    ungroup()
 
   return(genres)
 
 }
-
-tar_load(mbz_genre_artist)
-mbz_genre_artist
-tar_load(mbz_genre_album)
-mbz_genre_album
-
-
-
 
 
 

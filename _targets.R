@@ -1,6 +1,5 @@
 library(targets)
 library(tarchetypes)
-library(dplyr)
 
 # Preparation ------
 tar_option_set(
@@ -301,6 +300,14 @@ list(
              make_genres_from_albums(album_file="records_w3/genres_from_albums.parquet",
                                      genre_mapping_file="records_w3/deezer_genre_mapping.csv")),
   
+  tar_target(mbz_genre_album,
+             load_mbz_genre_album(df, 
+                                  file="musicbrainz/musicbrainz_artist_releasegroup_genre.csv")),
+  
+  tar_target(mbz_genre_artist,
+             load_mbz_genre_artist(df, file="musicbrainz/musicbrainz_artist_genre.csv")),
+  
+  
 
   # final dataframe with selected variables
   tar_target(df,
@@ -347,14 +354,7 @@ list(
                  starts_with("lang_"),
                  starts_with("respondent_")
                  )
-  ),
-  
-  tar_target(mbz_genre_album,
-             load_mbz_genre_album(df, 
-                                  file="musicbrainz/musicbrainz_artist_releasegroup_genre.csv")),
-  
-  tar_target(mbz_genre_artist,
-             load_mbz_genre_artist(df, file="musicbrainz/musicbrainz_artist_genre.csv"))
+  )
   
 
 )
