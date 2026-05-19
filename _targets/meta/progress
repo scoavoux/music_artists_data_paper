@@ -8,6 +8,8 @@ survey_raw|stem|survey_raw|0|skipped
 radio_counts|stem|radio_counts|0|skipped
 dz_users|stem|dz_users|0|skipped
 press_corpus|stem|press_corpus|0|skipped
+mbz_genre_artist|stem|mbz_genre_artist|0|skipped
+mbz_genre_album|stem|mbz_genre_album|0|skipped
 entities_to_drop|stem|entities_to_drop|0|skipped
 senscritique|stem|senscritique|0|skipped
 dz_songs_old|stem|dz_songs_old|0|skipped
@@ -41,7 +43,5 @@ aliases_to_add|stem|aliases_to_add|0|skipped
 mbz_releases|stem|mbz_releases|0|skipped
 mbz_gpt_gender|stem|mbz_gpt_gender|0|skipped
 upd_press_name_counts|stem|upd_press_name_counts|0|skipped
-df|stem|df|0|skipped
-mbz_genre_artist|stem|mbz_genre_artist|0|dispatched
-mbz_genre_artist|stem|mbz_genre_artist|0|completed
-mbz_genre_album|stem|mbz_genre_album|0|skipped
+df|stem|df|0|dispatched
+df|stem|df|0|completed

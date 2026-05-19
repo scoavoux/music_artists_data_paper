@@ -301,11 +301,10 @@ list(
                                      genre_mapping_file="records_w3/deezer_genre_mapping.csv")),
   
   tar_target(mbz_genre_album,
-             load_mbz_genre_album(df, 
-                                  file="musicbrainz/musicbrainz_artist_releasegroup_genre.csv")),
+             load_mbz_genre_album(file="musicbrainz/musicbrainz_artist_releasegroup_genre.csv")),
   
   tar_target(mbz_genre_artist,
-             load_mbz_genre_artist(df, file="musicbrainz/musicbrainz_artist_genre.csv")),
+             load_mbz_genre_artist(file="musicbrainz/musicbrainz_artist_genre.csv")),
   
   
 
@@ -315,7 +314,7 @@ list(
                
                # press counts updated with aliases counts
                make_press_counts(upd_press_name_counts) %>% 
-             
+               
                # artist information
                left_join(radio_counts, by = "dz_artist_id") %>% 
                left_join(mbz_releases, by = "mbz_artist_id") %>% 
@@ -331,6 +330,10 @@ list(
                left_join(deezer_genres, by = "dz_artist_id") %>% 
                left_join(sc_genre, by = "sc_artist_id") %>% 
                left_join(genres_from_albums, by = "dz_artist_id") %>% 
+               
+               left_join(mbz_genre_artist, by = "mbz_artist_id") %>% 
+               left_join(mbz_genre_album, by = "mbz_artist_id") %>% 
+               
                
                # compute final stream share
                mutate(
@@ -359,11 +362,21 @@ list(
 
 )
 
-# 2 PERFECT DUPLICATES (1): "Crash!" ---> dz_artist_id == 271763
-# comes from press entities, where i coded them twice
 
-# and Dj Geny Tur, which is coded twice in mbz_gpt_gender,
-# once as male once as female --> resolved it temporarily by choosing one
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

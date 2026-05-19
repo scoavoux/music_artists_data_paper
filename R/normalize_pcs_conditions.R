@@ -42,18 +42,21 @@ normalize_for_isco <- function(df) {
 ## assign an isco condition based on the normalized survey variables
 assign_condition_isco <- function(df) {
   
-  ## conversion table from normalized survey variables to isco conditions
+  ## conversion table from normalized survey variables to pcs-like conditions
   isco_rules <- tibble::tribble(
     ~priority, ~pos_group,     ~encadre, ~condition_isco,
     
-    1, "cadre",        "yes", "ingcad_supv",
-    2, "cadre",        "no",  "ingcad_nsupv",
+    # first category
+    1, "cadre",        "yes", "ingcad_supv", # ingénieur/cadre supervisory --> ISCO 1
+    2, "cadre",        "no",  "ingcad_nsupv", # ingénieur/cadre non supervisory --> ISCO 2
     
-    3, "intermediate", "yes", "tecam_supv",
-    4, "intermediate", "no",  "tecam_nsupv",
+    # second category
+    3, "intermediate", "yes", "tecam_supv", # technicien/cadre supervisory --> ISCO 3/7
+    4, "intermediate", "no",  "tecam_nsupv", # technicien/cadre non supervisory --> ISCO 3
     
-    5, "worker",       "yes", "ouvemp_supv",
-    6, "worker",       "no",  "ouvemp_nsupv",
+    # worker
+    5, "worker",       "yes", "ouvemp_supv", # ouvrier/employé supervisory
+    6, "worker",       "no",  "ouvemp_nsupv", # ouvrier/employé non supervisory
     
     7, "none",         "yes", "nr_supv",
     8, "none",         "no",  "nr_nsupv",
@@ -75,7 +78,6 @@ assign_condition_isco <- function(df) {
       )
     )
 }
-
 
 
 

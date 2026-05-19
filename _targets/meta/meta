@@ -126,11 +126,11 @@ isco_rules|object|b3f763829654fe2a
 mbz_gpt_gender|stem|c89df12c800dd098|250f89d2960fc905|cb80f62a3c854d0f|1763035277|bucket=scoavoux*region=NULL*key=music_artist/objects/mbz_gpt_gender*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20571.4048632854s||0|rds|aws|vector|||4.31||
 sc_ratings|stem|575f72f4e8bdc92c|1e9d79b3e8c2e9a1|524658c19ff0fa11|1264422810|bucket=scoavoux*region=NULL*key=music_artist/objects/sc_ratings*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20587.3477272747s||0|rds|aws|vector|||30.492||
 raw_isei|stem|fbfc79a91989dbc5|13da7dd7e40940ca|0789c69042f1b906|254500139|bucket=scoavoux*region=NULL*key=music_artist/objects/raw_isei*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20587.347765712s||0|rds|aws|vector|||1.501|Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 1229 of `x` matches multiple rows in `y`. ℹ Row 86 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.|
-df|stem|f624eb4447fd157f|5b0668aa96f7a6e3|72f3c4264e2223e3|1719518045|bucket=scoavoux*region=NULL*key=music_artist/objects/df*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20587.3479656531s||0|rds|aws|vector|||4.519||
 load_mbz_genre|function|a6cdade43c74295b
 mbz_genre|stem|a6ef34f7899a3427|baf08555cd4a94f2|6e7d26ab04818489|-936911057|bucket=scoavoux*region=NULL*key=music_artist/objects/mbz_genre*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20587.3557252285s||0|rds|aws|vector|||13.09||
-mbz_genre_album|stem|a0ba345e1f7cc1e7|cc6c739ed3c86dab|879e3b3d1bde5419|2002099094|bucket=scoavoux*region=NULL*key=music_artist/objects/mbz_genre_album*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20587.3651348939s||0|rds|aws|vector|||15.452||
 artists_to_patch|stem|247c53c43e051edf|0bbc09b81f1daf90|c701a031d499661a|-1957689600|bucket=scoavoux*region=NULL*key=music_artist/objects/artists_to_patch*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20588.5253909229s||0|rds|aws|vector|||63.031|Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 2266 of `x` matches multiple rows in `y`. ℹ Row 41836 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.. Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 74 of `x` matches multiple rows in `y`. ℹ Row 1281 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.. Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 3 of `x` matches multiple rows in `y`. ℹ Row 81945 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.|
+mbz_genre_artist|stem|58af3a4e5a652697|71f2147b68a544fd|54a20b17189e3e48|971648595|bucket=scoavoux*region=NULL*key=music_artist/objects/mbz_genre_artist*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20592.5917672734s||0|rds|aws|vector|||15.985||
+mbz_genre_album|stem|64e80e0424fa0d79|77212f7bd59b9d3c|02589a191d812c09|2002099094|bucket=scoavoux*region=NULL*key=music_artist/objects/mbz_genre_album*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20592.5976777188s||0|rds|aws|vector|||58.499||
 normalize_job|function|78c2081b2942cdad
 initialize_s3|function|25a2772c1c03257f
 str_normalize|function|3f1125990a04f5a2
@@ -138,7 +138,7 @@ group_songs_by_artist|function|5c0eee2150ca3f30
 make_wiki_keys|function|f12d8209a06c8dec
 print_stream_share|function|b85726e296e794de
 make|function|860e3605b48e903a
-.Random.seed|object|005f21078e3f321b
+.Random.seed|object|5b6f41c103ebfcf6
 write_s3|function|15e44e053dc7a6c7
 patch_names|function|04bb03cb24de6935
 patch_mbz_from_wiki|function|09d134ac8e582641
@@ -166,7 +166,7 @@ patch_deezer_dups|function|26f65e16a8885eba
 make_stream_popularity|function|994b69449084a5e2
 make_respondent_plays|function|0dd4abed1c1be808
 assign_condition_isco|function|9f8a4dbd08bb0a96
-load_mbz_genre_artist|function|18fc04f038f25cb6
+load_mbz_genre_artist|function|55c5656d573e9ded
 load_sc_ratings|function|ac7f50b2722bc4fb
 clean_press_ents|function|29e2de226dc0e50a
 load_manual_search|function|2b5d381ac9d288fa
@@ -187,7 +187,7 @@ clean_telerama|function|b70d0ce9cff5f457
 make_artist_country|function|a07a973b642c3ebb
 make_dz_songs|function|3474bf0b62a67ca0
 load_mbz_deezer|function|5c576845a1e17fd0
-load_mbz_genre_album|function|ec1e4eececb66f3e
+load_mbz_genre_album|function|b43e0ae25e00b1fd
 make_raw_isei|function|ae716da3da2c068b
 bind_press_corpora|function|1399678af3d6d880
-mbz_genre_artist|stem|d12a08f79abd9fcc|9682ad584d981e39|5d8ac59fe122c5c8|971648595|bucket=scoavoux*region=NULL*key=music_artist/objects/mbz_genre_artist*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20588.5368977105s||0|rds|aws|vector|||5.055||
+df|stem|003a76830f737e16|8b89cd2bab92edfd|f97cb4337a33f248|1719518045|bucket=scoavoux*region=NULL*key=music_artist/objects/df*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20592.5984304112s||0|rds|aws|vector|||7.19||

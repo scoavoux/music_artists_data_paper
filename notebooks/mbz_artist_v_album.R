@@ -1,25 +1,10 @@
+library(sjmisc)
 
 tar_load(mbz_genre_artist)
 
-# overall genre frequency
-mbz_genre_artist_frq <- frq(mbz_genre_artist$mbz_genre, sort.frq = "desc")[[1]]
-mbz_genre_artist_frq <- mbz_genre_artist_frq %>% 
-  select(val, frq) %>% 
-  as_tibble()
+# with overall genre frequency col "frq"
 
-mbz_genre_artist <- mbz_genre_artist %>% 
-  left_join(mbz_genre_artist_frq, by = c(mbz_genre = "val"))
-
-mbz_genre_artist <- mbz_genre_artist %>% 
-  group_by(mbz_artist_id) %>% 
-  filter(genre_count == max(genre_count)) %>% 
-  filter(frq == max(frq)) %>% 
-  ungroup()
-
-frq(mbz_genre_artist$mbz_genre, sort.frq = "desc")[[1]]
-
-
-# ------------------ COMPARE THIS WITH ALBUMS
+# ------------------ COMPARE WITH ALBUMS
 
 tar_load(mbz_genre_album)
 
@@ -65,10 +50,10 @@ artist_v_album %>%
   ungroup() %>%
   ggplot(aes(x = album_genre, y = artist_genre, fill = pct)) +
   geom_tile(color = "white") +
-  #geom_text(
-   # aes(label = scales::percent(pct, accuracy = 1)),
-    #size = 3
-  #) +
+  geom_text(
+    aes(label = scales::percent(pct, accuracy = 1)),
+    size = 3
+  ) +
   scale_fill_viridis_c(
     limits = c(0, 1),
     labels = scales::percent

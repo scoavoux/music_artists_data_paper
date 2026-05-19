@@ -3,6 +3,7 @@ library(tidyr)
 library(tidyverse)
 library(stringi)
 
+tar_load(survey_raw)
 
 # recode profession in survey
 survey_professions <- survey_raw %>% 

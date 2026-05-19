@@ -217,8 +217,3 @@ bind_press_corpora <- function(telerama_file, lefigaro_file,
 
 
 
-
-
-
-
-
