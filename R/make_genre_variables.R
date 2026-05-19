@@ -1,6 +1,6 @@
 
 
-make_genres_from_albums <- function(album_file, genre_mapping_file){
+load_dz_genre_album <- function(album_file, genre_mapping_file){
   
   albums <- load_s3(album_file)
   
@@ -42,41 +42,27 @@ make_genres_from_albums <- function(album_file, genre_mapping_file){
     group_by(dz_artist_id) %>%
     arrange(desc(genre_weight), genre, .by_group = TRUE) %>%
     summarise(
-      genre_1 = first(genre),
-      genre_2 = dplyr::nth(genre, 2),
+      genre_dz_album_1 = first(genre),
+      genre_dz_album_2 = dplyr::nth(genre, 2),
       .groups = "drop"
     )
   
   return(main_genres)
 }
 
-
-
-make_dz_genres <- function(){
+make_dz_genre_artist <- function(){
   
   # ------------------- DEEZER MAIN GENRE
-  genre_dz_main <- load_s3("records_w3/items/artists_data.snappy.parquet") 
+  genre_dz_artist <- load_s3("records_w3/items/artists_data.snappy.parquet") 
   
-  genre_dz_main <- genre_dz_main %>% 
+  genre_dz_artist <- genre_dz_artist %>% 
     mutate(dz_artist_id = as.character(artist_id),
            dz_name = name,
-           genre_dz_main = main_genre) %>% 
-    filter(!is.na(genre_dz_main)) %>% 
-    select(dz_artist_id, genre_dz_main)
+           genre_dz_artist = main_genre) %>% 
+    filter(!is.na(genre_dz_artist)) %>% 
+    select(dz_artist_id, genre_dz_artist)
   
-  # ---------------- DEEZER GENRE FROM ALBUMS
-  genres_dz_albums <- read_csv("data/genres_from_deezer_albums.csv")
-  
-  genres_dz_albums <- genres_dz_albums %>% 
-    mutate(dz_artist_id = as.character(artist_id),
-           genre_dz_albums = genre) %>% 
-    select(dz_artist_id, genre_dz_albums) %>% 
-    as_tibble()
-  
-  # ------------------- JOIN
-  genre_dz <- full_join(genre_dz_main, genres_dz_albums, by = "dz_artist_id")
-  
-  return(genre_dz)
+  return(genre_dz_artist)
 }
   
   

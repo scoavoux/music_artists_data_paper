@@ -290,14 +290,14 @@ list(
                                   respondent_isei)),
   
   # -------------- GENRE 
-  tar_target(deezer_genres,
-             make_dz_genres()),
+  tar_target(dz_genre_artist,
+             make_dz_genre_artist()),
   
   tar_target(sc_genre,
              make_sc_genre()),
   
-  tar_target(genres_from_albums,
-             make_genres_from_albums(album_file="records_w3/genres_from_albums.parquet",
+  tar_target(dz_genre_album,
+             load_dz_genre_album(album_file="records_w3/genres_from_albums.parquet",
                                      genre_mapping_file="records_w3/deezer_genre_mapping.csv")),
   
   tar_target(mbz_genre_album,
@@ -327,9 +327,11 @@ list(
                left_join(respondent_demographics, by = "dz_artist_id") %>% 
                
                # genres
-               left_join(deezer_genres, by = "dz_artist_id") %>% 
-               left_join(sc_genre, by = "sc_artist_id") %>% 
-               left_join(genres_from_albums, by = "dz_artist_id") %>% 
+               
+               # left_join(sc_genre, by = "sc_artist_id") %>% 
+               
+               left_join(dz_genre_artist, by = "dz_artist_id") %>% 
+               left_join(dz_genre_album, by = "dz_artist_id") %>% 
                
                left_join(mbz_genre_artist, by = "mbz_artist_id") %>% 
                left_join(mbz_genre_album, by = "mbz_artist_id") %>% 
