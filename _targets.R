@@ -183,7 +183,7 @@ list(
   
   # load entities file separately
   tar_target(press_named_entities,
-             clean_press_ents("press_files/extracted_ents_1203.csv")),
+             clean_press_ents("press_files/extracted_ents_2105.csv")), # CHANGED FROM 1203 TO NEW ENT FILE
   
   # names to drop
   tar_target(entities_to_drop,

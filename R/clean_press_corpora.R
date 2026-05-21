@@ -225,16 +225,20 @@ bind_press_corpora <- function(telerama_file, lefigaro_file,
 }
 
 
-
-
-
-
-
-
-
-
-
-
+# # load entities file separately
+# extracted_ents <- load_s3("press_files/extracted_ents_1203.csv")
+# 
+# # names to drop
+# press_outliers_checked <- load_s3("press_files/press_outliers_checked_1003.csv")
+# 
+# # aliases to update
+# ents_without_match_checked <- load_s3("press_files/ents_without_match_checked_1003.csv")
+# 
+# 
+# extracted_ents %>% as_tibble()
+# press_outliers_checked
+# ents_without_match_checked
+# 
 
 
 
