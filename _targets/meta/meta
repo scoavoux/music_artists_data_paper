@@ -92,7 +92,6 @@ make_respondent_highered|function|9929a086aa60d6e1
 respondent_highered|stem|a0f51589d58e3440|6b09d7e2f2abcbd1|acb81170f960fdb5|-1808060270|bucket=scoavoux*region=NULL*key=music_artist/objects/respondent_highered*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20542.4335721515s||0|rds|aws|vector|||0.005||could not find function 'make_respondent_highered'
 dz_songs_new|stem|0e04756b590f5a50|cf294cf1f3689cf4|3b5bc81dea375035|-563022001|bucket=scoavoux*region=NULL*key=music_artist/objects/dz_songs_new*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20543.4257437222s||0|rds|aws|vector|||114.636||
 dz_songs_old|stem|4e35e4dbf7426ea0|b78c76a3230b1d60|3b5bc81dea375035|-431654433|bucket=scoavoux*region=NULL*key=music_artist/objects/dz_songs_old*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20543.4295425129s||0|rds|aws|vector|||262.255||
-press_corpus|stem|39752901d1bdb4b8|473b25a3955f3291|b998c30ebb9e9e56|-296614722|bucket=scoavoux*region=NULL*key=music_artist/objects/press_corpus*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20543.4532495537s||0|rds|aws|vector|||377.163|There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(date)`. Caused by warning: ! All formats failed to parse. No formats found.. NAs introduced by coercion to integer range. One or more parsing issues, call `problems()` on your data frame for details, e.g.:   dat <- vroom(...)   problems(dat). There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(date)`. Caused by warning: ! All formats failed to parse. No formats found.. NAs introduced by coercion to integer range. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  3 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  4 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  5 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  2 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  1 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  1 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  2 failed to parse.|
 press_counts_to_final|function|545836bb3636c3ba
 press_n_mentions|stem||599efee8f67601f2|932234f673c54642|1475833057||t20543.4690065578s||0|rds|aws|vector|||1.478||ℹ In argument: `starts_with(press_)`. Caused by error: ! object 'press_' not found
 deezer_main_genre|stem|22b6512f9fa6029e|249102e6d4c4afa9|83c85aa9e6e44528|651539942|bucket=scoavoux*region=NULL*key=music_artist/objects/deezer_main_genre*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20544.4184570564s||0|rds|aws|vector|||8.283||
@@ -134,6 +133,8 @@ mbz_genre_album|stem|64e80e0424fa0d79|77212f7bd59b9d3c|02589a191d812c09|20020990
 make_genres_from_albums|function|9d19a1ec19564a2b
 make_dz_genres|function|32b9da5115f590dc
 dz_genre_album|stem|4f5bd8e31d20127b|bd4733a63a22d6db|ccd37ed6deeb1851|1612074548|bucket=scoavoux*region=NULL*key=music_artist/objects/dz_genre_album*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20592.6072783489s||0|rds|aws|vector|||61.831||
+dz_genre_artist|stem|ccaec9b220fe44bf|b1a8603d87ec14a5|c83e519e078e995f|503571680|bucket=scoavoux*region=NULL*key=music_artist/objects/dz_genre_artist*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20592.6141315509s||0|rds|aws|vector|||5.91||
+df|stem|dace99a3a16e1edd|64126c94c5f211b1|26b55fe236f7a0cf|1719518045|bucket=scoavoux*region=NULL*key=music_artist/objects/df*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20592.6143688943s||0|rds|aws|vector|||6.301||
 normalize_job|function|78c2081b2942cdad
 initialize_s3|function|25a2772c1c03257f
 str_normalize|function|3f1125990a04f5a2
@@ -141,7 +142,7 @@ group_songs_by_artist|function|5c0eee2150ca3f30
 make_wiki_keys|function|f12d8209a06c8dec
 print_stream_share|function|b85726e296e794de
 make|function|860e3605b48e903a
-.Random.seed|object|8b56987a72edd22e
+.Random.seed|object|1792b0a8a06422bc
 write_s3|function|15e44e053dc7a6c7
 patch_names|function|04bb03cb24de6935
 patch_mbz_from_wiki|function|09d134ac8e582641
@@ -192,6 +193,5 @@ make_dz_songs|function|3474bf0b62a67ca0
 load_mbz_deezer|function|5c576845a1e17fd0
 load_mbz_genre_album|function|b43e0ae25e00b1fd
 make_raw_isei|function|ae716da3da2c068b
-bind_press_corpora|function|1399678af3d6d880
-dz_genre_artist|stem|ccaec9b220fe44bf|b1a8603d87ec14a5|c83e519e078e995f|503571680|bucket=scoavoux*region=NULL*key=music_artist/objects/dz_genre_artist*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20592.6141315509s||0|rds|aws|vector|||5.91||
-df|stem|dace99a3a16e1edd|64126c94c5f211b1|26b55fe236f7a0cf|1719518045|bucket=scoavoux*region=NULL*key=music_artist/objects/df*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20592.6143688943s||0|rds|aws|vector|||6.301||
+bind_press_corpora|function|4ab9b6ff1a975cf3
+press_corpus|stem|891901539a271fbc|dab109838db53fc3|ee71ed0cd40556a3|-296614722|bucket=scoavoux*region=NULL*key=music_artist/objects/press_corpus*endpoint=aHR0cHM6Ly9taW5pby5sYWIuc3NwY2xvdWQuZnIv*version=|t20594.3551042611s||0|rds|aws|vector|||343.873|There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(date)`. Caused by warning: ! All formats failed to parse. No formats found.. NAs introduced by coercion to integer range. One or more parsing issues, call `problems()` on your data frame for details, e.g.:   dat <- vroom(...)   problems(dat). There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(date)`. Caused by warning: ! All formats failed to parse. No formats found.. NAs introduced by coercion to integer range. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  3 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  4 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  5 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  2 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  1 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  1 failed to parse.. There was 1 warning in `mutate()`. ℹ In argument: `date = ymd(publidate)`. Caused by warning: !  2 failed to parse.|

@@ -191,7 +191,10 @@ clean_liberation <- function(liberation_file){
 
 
 bind_press_corpora <- function(telerama_file, lefigaro_file, 
-                               liberation_file, lemonde_filepath){
+                               liberation_file, lemonde_filepath,
+                               bert_reviews_file){
+  
+  bert_reviews <- load_s3(bert_reviews_file)
   
   telerama <- clean_telerama(telerama_file)
   lefigaro <- clean_lefigaro(lefigaro_file)
@@ -204,13 +207,34 @@ bind_press_corpora <- function(telerama_file, lefigaro_file,
     select(source, article_text) %>% 
     distinct(article_text, .keep_all = T) %>% # REMOVE DUPLICATE TEXTS
     mutate(article_id = row_number()) %>%
+    filter(!str_detect(article_text, "^NA")) %>%  # delete articles when title starts with NA
     as_tibble()
   
-  head(press_corpus)
+  # select prescriptive music reviews from BERT prediction
+  press_corpus <- press_corpus %>% 
+    inner_join(bert_reviews, by = "article_id") %>% 
+    filter(prediction == "prescriptive") %>% 
+    select(-prediction)
+  
+  # export to csv for NER processing
+  write.csv2(press_corpus, "data/press_corpus.csv", 
+             fileEncoding = "UTF-8")
   
   return(press_corpus)
   
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

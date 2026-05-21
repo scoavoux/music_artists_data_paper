@@ -178,7 +178,8 @@ list(
              bind_press_corpora(telerama_file = "telerama_raw.csv",
                                 lefigaro_file = "lefigaro-complet-v0.csv",
                                 liberation_file = "liberation-complet-v2.csv", 
-                                lemonde_filepath = "lemonde/lemonde-20")),
+                                lemonde_filepath = "lemonde/lemonde-20",
+                                bert_reviews_file = "press_files/bert_review_classif.csv")),
   
   # load entities file separately
   tar_target(press_named_entities,
