@@ -82,26 +82,13 @@ load_sc_ratings <- function(sc_ratings_file, sc_albums_file){
 
 # ----------------- SENSCRITIQUE ---------------------------
 
-load_senscritique <- function(sc_file, sc_ratings_file, sc_albums_file){
+load_senscritique <- function(sc_file){
   
   require(dplyr)
   require(stringr)
   
   senscritique <- load_s3(sc_file)
-  ratings <- load_s3(sc_ratings_file)
-  sc_alb <- load_s3(sc_albums_file)
-  
-  # create n_ratings
-  ratings <- ratings %>% 
-    group_by(product_id) %>% 
-    summarise(rating = sum(rating)) %>% 
-    inner_join(sc_alb, by = "product_id") %>% 
-    mutate(sc_artist_id = contact_id) %>% 
-    group_by(sc_artist_id) %>% 
-    summarise(n_ratings = sum(rating)) %>% 
-    filter(!is.na(n_ratings)) %>% 
-    select(sc_artist_id, n_ratings)
-  
+
   clean_senscritique <- senscritique %>% 
     
     # set "" names as NA
@@ -110,11 +97,9 @@ load_senscritique <- function(sc_file, sc_ratings_file, sc_albums_file){
       mbz_artist_id = na_if(mbz_id, ""),
       sc_name = contact_name,
       sc_name = na_if(sc_name, ""),
-      collection_count = ifelse(is.na(collection_count), 0, collection_count)
+      sc_collection_count = ifelse(is.na(collection_count), 0, collection_count)
       ) %>% 
     
-    left_join(ratings, by = "sc_artist_id") %>% 
-
     # id cols to character for clean joins
     mutate(sc_artist_id = as.character(sc_artist_id),
            mbz_artist_id = as.character(mbz_artist_id)) %>%
@@ -122,8 +107,11 @@ load_senscritique <- function(sc_file, sc_ratings_file, sc_albums_file){
     # clean (2) dirty ids
     mutate(mbz_id = str_remove(mbz_id, "https://musicbrainz.org/artist/")) %>%
     
-  select(sc_artist_id, sc_name, collection_count, 
-         mbz_artist_id, n_ratings) %>% 
+  select(sc_artist_id, 
+         sc_name, 
+         sc_collection_count, 
+         mbz_artist_id) %>% 
+    
   as_tibble()
   
   return(clean_senscritique)
@@ -200,13 +188,6 @@ load_mbz_deezer <- function(file) {
     mutate(dz_artist_id = coalesce(dz_artist_id.y, dz_artist_id.x)) %>% # take clean ID if possible
     mutate_if(is.integer, as.character) %>% # ids to str for clean joins
     select(mbz_artist_id, dz_artist_id, mbz_name) # only keep relevant ids + name
-  
-  # 77 cases are simply wrong --- dropped them
-  ## they lead to albums, tracks, or non-deezer profiles
-  # collapsed_clean %>% 
-  # filter(str_detect(deezer_id, "\\D"))
-  
-  # write_s3(collapsed_clean, "interim/musicbrainz_urls_collapsed_new.csv")
   
   return(mbz_deezer)
 }
