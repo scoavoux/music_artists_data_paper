@@ -12,6 +12,7 @@ make_dz_songs <- function(to_remove_file, file) {
               by = "artist_id") %>% 
     
     select(song_id,
+           album_id, # ADDED 2205
            song_title,
            dz_artist_feat_id = "artists_ids",
            dz_artist_id = "artist_id")
@@ -20,7 +21,7 @@ make_dz_songs <- function(to_remove_file, file) {
 }
 
 
-bind_dz_songs <- function(dz_songs_old, dz_songs_new, dz_names){
+bind_dz_songs <- function(dz_songs_old, dz_songs_new, classical_albums, dz_names){
   
   # bind items_old and items_new
   # prioritize deezer_id of items_new
@@ -34,14 +35,34 @@ bind_dz_songs <- function(dz_songs_old, dz_songs_new, dz_names){
   songs <-  songs %>% 
     filter(!is.na(songs$dz_artist_id))
   
+  # --------------------------------------------------
+  # ADD CLASSICAL COMPOSERS AS EXTRA FEATURED ARTISTS
+  # --------------------------------------------------
+
+  songs <- songs %>% 
+    
+    left_join(classical_albums, by = "album_id") %>% 
+    
+    mutate(
+      dz_artist_feat_id = map2(
+        dz_artist_feat_id,
+        composer_dz_artist_id,
+        ~ unique(c(.x, .y))
+      )
+    ) %>% 
+    
+    select(-composer_dz_artist_id)
+  
+  
   # separate rows of featurings
   songs <- songs %>% 
     mutate(dz_artist_id = map_chr(dz_artist_feat_id, # CONVERT FEAT TO ID
-                                    ~ paste(as.integer(.x), 
-                                            collapse = ","))) %>% 
+                                  ~ paste(as.integer(.x), 
+                                          collapse = ","))) %>% 
     filter(!is.na(dz_artist_id)) %>% 
     separate_rows(dz_artist_id, sep = ",") %>% 
     select(song_id,
+           album_id, # ADDED 2205
            song_title,
            dz_artist_id)
   

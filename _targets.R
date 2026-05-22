@@ -62,9 +62,13 @@ list(
                               file = "records_w3/items/song.snappy.parquet")),
     
     tar_target(dz_songs,
-               bind_dz_songs(dz_songs_old, dz_songs_new, dz_names)),
+               bind_dz_songs(dz_songs_old, dz_songs_new, 
+                             classical_albums, dz_names)),
     
     
+    tar_target(classical_albums,
+               filter_classical_albums(album_file="records_w3/genres_from_albums.parquet",
+                                       genre_mapping_file="records_w3/deezer_genre_mapping.csv")),
     
     # -------- load and process raw ID data
     
@@ -366,7 +370,9 @@ list(
 )
 
 
-
+t <- df %>% 
+  filter(dz_artist_id %in% c(1900, 5695, 6144, 5176)) %>% 
+  select(dz_name, starts_with("n_plays"))
 
 
 
