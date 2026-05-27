@@ -26,7 +26,7 @@ list(
 
     # maybe put in clean_raw
     tar_target(dz_users,
-               load_s3("records_w3/RECORDS_hashed_user_group.parquet") %>% 
+               load_s3("replication_data/hashed_user_group.parquet") %>% 
                  mutate(
                    is_respondent = ifelse(is_respondent == TRUE, 1, 0),
                    is_control = ifelse(is_in_control_group == TRUE, 1, 0)) %>% 
@@ -55,11 +55,11 @@ list(
     
     tar_target(dz_songs_old,
                make_dz_songs(to_remove_file = "data/artists_to_remove.csv",
-                             file = "records_w3/items/songs.snappy.parquet")),
+                             file = "records_w3/songs_old.parquet")),
     
     tar_target(dz_songs_new,
                make_dz_songs(to_remove_file = "data/artists_to_remove.csv",
-                              file = "records_w3/items/song.snappy.parquet")),
+                              file = "replication_data/songs_new.parquet")),
     
     tar_target(dz_songs,
                bind_dz_songs(dz_songs_old, dz_songs_new, 
