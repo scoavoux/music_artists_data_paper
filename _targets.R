@@ -370,12 +370,6 @@ list(
 )
 
 
-t <- df %>% 
-  filter(dz_artist_id %in% c(1900, 5695, 6144, 5176)) %>% 
-  select(dz_name, starts_with("n_plays"))
-
-
-
 
 
 
