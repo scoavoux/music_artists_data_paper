@@ -110,15 +110,36 @@ load_s3_info <- function(file, bucket = "scoavoux", ...) {
 
 
 ### export data
-write_s3 <- function(x, file, FUN = readr::write_csv){
+write_s3 <- function(x, file, FUN = write_function){
   
-  aws.s3::s3write_using(
-    x,
-    FUN = FUN,
-    object = file,
-    bucket = "scoavoux",
-    opts = list("region" = "")
-  )
+  require(arrow)
+  
+  write_function <- readr::write_csv
+  
+  if(grepl("\\.csv", file)) {
+    
+    aws.s3::s3write_using(
+      x,
+      FUN = write_function,
+      object = file,
+      bucket = "scoavoux",
+      opts = list("region" = "")
+    )
+    
+  }
+  
+  if(grepl("\\.parquet", file)) {
+    
+    write_function <- arrow::write_parquet
+    
+    aws.s3::s3write_using(
+      x,
+      FUN = write_function,
+      object = file,
+      bucket = "scoavoux",
+      opts = list("region" = "")
+    )
+  }
   
 }
 
