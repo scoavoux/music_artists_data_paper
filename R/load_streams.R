@@ -161,10 +161,10 @@ make_respondent_plays <- function(dz_songs, dz_users){
 }
 
 
+t <- bind_dz_names(file_1 = "records_w3/items/artists_data.snappy.parquet",
+              file_2 = "interim/new_artists_names_from_api.csv")
 
-
-
-
+tar_load(dz_names)
 
 
 

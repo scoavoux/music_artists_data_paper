@@ -6,7 +6,7 @@
 # release-level data to artist-level metrics
 
 
-load_mbz_releases <- function(artists, release_file, dates_active_file, genre){
+load_mbz_releases <- function(release_file, dates_active_file, genre){
   
   # -------------------- PREPARE INPUTS ----------------------
   # main release file
@@ -20,21 +20,14 @@ load_mbz_releases <- function(artists, release_file, dates_active_file, genre){
   
   # changed genre 2805
   genre <- genre %>% 
-    select(dz_artist_id, genre_dz_album_1)
-  
-  dz_names <- artists %>% 
-    filter(!is.na(mbz_artist_id)) %>% 
-    select(mbz_artist_id, dz_name, dz_artist_id)
+    select(mbz_artist_id, genre_mbz_album_1)
   
   # -------------------- BUILD AND CLEAN RELEASES DATASET ----------------
   release_data <- release_file %>%  
     as_tibble() %>% 
     rename(mbz_artist_id = "mbid") %>% 
-    right_join(dz_names, by = c("mbz_artist_id")) %>%
-    rename(dz_artist_id = "dz_artist_id.x",
-           dz_name = "dz_name.x") %>% 
-    left_join(dz_genre_album, by = "dz_artist_id") %>% 
-  
+    left_join(genre, by = "mbz_artist_id") %>% 
+    
     mutate(secondary_type_name = ifelse(secondary_type_name == "", 
                                         NA, 
                                         secondary_type_name)) %>% 
@@ -52,7 +45,7 @@ load_mbz_releases <- function(artists, release_file, dates_active_file, genre){
     
     # limit release dates to end of collaboration year + 2
     left_join(dates_active, by = "mbz_artist_id") %>% 
-    mutate(last_active_year = case_when(genre_dz_album_1 == "Classique" ~ 9999, # for composers
+    mutate(last_active_year = case_when(genre_mbz_album_1 == "classical" ~ 9999, # for composers
                                         is.na(end_date_year) ~ NA, # for still active artists
                                         TRUE ~ end_date_year)) %>% 
     filter(first_release_date_year < last_active_year + 2 | is.na(last_active_year)) %>% 

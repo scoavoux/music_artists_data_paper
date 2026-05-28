@@ -8,13 +8,15 @@ set.seed(12345)
 tar_load(df)
 
 
+tar_load(mbz_genre_artist)
 # -------------------------------------------
 
 # 1. SELECT ARTISTS TO INCLUDE
 artist_sample <- df %>% 
-  slice_head(n = 1000) %>% 
-  mutate(dz_artist_id = as.integer(dz_artist_id)) %>% 
-  select(dz_artist_id, dz_name, mbz_artist_id)
+  slice_head(n = 50) %>% 
+  mutate(dz_artist_id = as.integer(dz_artist_id),
+         sc_artist_id = as.integer(sc_artist_id)) %>% 
+  select(dz_artist_id, dz_name, mbz_artist_id, sc_artist_id)
 
 # -------------------------------------------
 
@@ -27,6 +29,7 @@ tar_load(dz_songs_new)
 dz_songs_new_sample <- dz_songs_new %>% 
   rename(artists_ids = dz_artist_feat_id,
          artist_id = dz_artist_id) %>%  
+  mutate(artist_id = as.integer(artist_id)) %>% 
   inner_join(artist_sample, by = c(artist_id = "dz_artist_id"))
 
 tar_load(dz_songs_old)
@@ -34,11 +37,23 @@ tar_load(dz_songs_old)
 dz_songs_old_sample <- dz_songs_old %>% 
   rename(artists_ids = dz_artist_feat_id,
          artist_id = dz_artist_id) %>%  
+  mutate(artist_id = as.integer(artist_id)) %>% 
   inner_join(artist_sample, by = c(artist_id = "dz_artist_id"))
 
 
-write_s3(dz_songs_old_sample, "replication_data/songs_old.parquet")
-write_s3(dz_songs_new_sample, "replication_data/songs_new.parquet")
+write_s3(dz_songs_old_sample, "replication_data/songs_old_sim.parquet")
+write_s3(dz_songs_new_sample, "replication_data/songs_new_sim.parquet")
+
+
+### RECOMPUTE ARTIST SAMPLE
+artist_sample_2 <- df %>% 
+  mutate(dz_artist_id = as.integer(dz_artist_id),
+         sc_artist_id = as.integer(sc_artist_id)) %>% 
+  inner_join(dz_songs_new_sample, by = c(dz_artist_id = "artist_id")) %>% 
+  select(dz_artist_id, 
+         dz_name = "dz_name.x", 
+         mbz_artist_id = "mbz_artist_id.x", 
+         sc_artist_id)
 
 
 # ---------------------- dz_users
@@ -56,7 +71,7 @@ users <- users %>%
                                 replace = T),
          is_in_control_group = ifelse(is_respondent == FALSE, TRUE, FALSE))
 
-write_s3(users, "replication_data/hashed_user_group.parquet")
+write_s3(users, "replication_data/hashed_user_group_sim.parquet")
 
 
 
@@ -69,7 +84,7 @@ write_s3(users, "replication_data/hashed_user_group.parquet")
 song_id <- dz_songs_new_sample$song_id
 length(song_id)
 
-n <- 100000
+n <- 20000
 streams_long <- tibble(is_listened = 1,
                        ts_listen = round(rnorm(n, mean = 1735191661, sd = 50000)),
                        song_id = sample(rep(song_id, length.out = n)), # recycle song_id
@@ -77,7 +92,7 @@ streams_long <- tibble(is_listened = 1,
                        hashed_id = sample(rep(1:1000, length.out = n)))
 
 
-n <- 5000
+n <- 1000
 streams_short <- tibble(is_listened = 1,
                        ts_listen = round(rnorm(n, mean = 1645191661, sd = 50000)),
                        media_id = sample(rep(song_id, length.out = n)), # recycle song_id
@@ -131,31 +146,40 @@ sc <- load_s3("senscritique/contacts.csv")
 
 sc <- sc %>% 
   tibble() %>% 
-  filter(collection_count > 50) %>% 
+  
   mutate(across(all_of(c("collection_count", "product_count")), sample))
 
 write_s3(sc, "replication_data/contacts_sim.csv")
 
 # --------------------------- sc_ratings
 
-ratings <- load_s3("senscritique/ratings.csv")
-ratings <- ratings %>% 
-  mutate(across(all_of(colnames(ratings)), sample))
-write_s3(ratings, "replication_data/ratings_sim.csv")
-
 co_alb_link <- load_s3("senscritique/contacts_albums_link.csv")
 co_alb_link <- co_alb_link %>% 
-  mutate(across(all_of(colnames(co_alb_link)), sample))
+  mutate(across(all_of(colnames(co_alb_link)), sample)) %>% 
+  inner_join(artist_sample, by = c(contact_id = "sc_artist_id")) %>% 
+  slice_sample(n = 5000)
 write_s3(co_alb_link, "replication_data/contacts_albums_link_sim.csv")
+
+ratings <- load_s3("senscritique/ratings.csv")
+ratings <- ratings %>% 
+  mutate(across(all_of(colnames(ratings)), sample)) %>% 
+  inner_join(co_alb_link, by = "product_id") %>% 
+  slice_sample(n = 5000)
+
+write_s3(ratings, "replication_data/ratings_sim.csv")
 
 tracks <- load_s3("senscritique/tracks.csv")
 tracks <- tracks %>% 
-  mutate(across(all_of(colnames(tracks)), sample))
+  mutate(across(all_of(colnames(tracks)), sample)) %>% 
+  slice_sample(n = 5000)
 write_s3(tracks, "replication_data/tracks_sim.csv")
 
 co_tracks_link <- load_s3("senscritique/contact_tracks_link.csv")
 co_tracks_link <- co_tracks_link %>% 
-  mutate(across(all_of(colnames(co_tracks_link)), sample))
+  mutate(across(all_of(colnames(co_tracks_link)), sample)) %>% 
+  inner_join(artist_sample, by = c(contact_id = "sc_artist_id")) %>% 
+  slice_sample(n = 5000)
+
 write_s3(co_tracks_link, "replication_data/contact_tracks_link_sim.csv")
 
 
@@ -204,8 +228,62 @@ write_s3(mbz_releases, "replication_data/musicbrainz_releases_sim.csv")
 
 # ------------------------------- dz genres from albums
 
-"records_w3/genres_from_albums.parquet"
+genres <- load_s3("records_w3/genres_from_albums.parquet")
 
+
+# ---------------------------- mbz genre
+
+mbz_genre_album <- load_s3("musicbrainz/musicbrainz_artist_releasegroup_genre.csv")
+mbz_genre_album <- mbz_genre_album %>% 
+  inner_join(artist_sample, by = c(artist_mbid = "mbz_artist_id")) %>% 
+  slice_sample(n = 5000)
+write_s3(mbz_genre_album, "replication_data/musicbrainz_artist_releasegroup_genre_sim.csv")
+
+
+mbz_genre_artist <- load_s3("musicbrainz/musicbrainz_artist_genre.csv")
+mbz_genre_artist <- mbz_genre_artist %>% 
+  inner_join(artist_sample, by = c(artist_mbid = "mbz_artist_id")) %>% 
+  slice_sample(n = 5000)
+write_s3(mbz_genre_artist, "replication_data/musicbrainz_artist_genre_sim.csv")
+
+
+# ---------------------------
+
+mbz_area <- load_s3("musicbrainz/musicbrainz_area.csv")
+mbz_area <- mbz_area %>% 
+  inner_join(artist_sample, by = c(mbid = "mbz_artist_id"))
+write_s3(mbz_area, "replication_data/musicbrainz_area_sim.csv")
+
+
+# ------------------------------
+
+
+dz_genre_album <- load_s3("records_w3/genres_from_albums.parquet")
+dz_genre_album <- dz_genre_album %>% 
+  mutate(artist_id = as.integer(artist_id)) %>% 
+  inner_join(artist_sample, by = c(artist_id = "dz_artist_id")) %>% 
+  mutate(artist_id = as.character(artist_id)) %>% 
+  slice_sample(n = 5000)
+write_s3(dz_genre_album, "replication_data/genres_from_albums_sim.parquet")
+
+
+# ----------------------------------
+
+press_ents <- load_s3("press_files/extracted_ents_2105.csv")
+
+press_ents <- press_ents %>% 
+  arrange(desc(name_count)) %>% 
+  slice_head(n = 5000)
+write_s3(press_ents, "replication_data/extracted_ents_2105_sim.csv")
+
+
+# ----------------------------------
+
+wiki <- load_s3("interim/wiki_labels.csv")
+wiki <- wiki %>% 
+  inner_join(artist_sample, by = c(label = "dz_name")) %>% 
+  distinct(dz_artist_id, .keep_all = T)
+write_s3(wiki, "replication_data/wiki_labels_sim.csv")
 
 
 

@@ -86,63 +86,78 @@ load_partitioned_s3 <- function(
 
 
 ##### TEMP --- return variable list of a file
-load_s3_info <- function(file, bucket = "scoavoux", ...) {
+load_s3_info <- function(file,
+                         bucket = "scoavoux",
+                         simulation = SIMULATION,
+                         local_dir = "data/simulated",
+                         ...) {
   
+  # -----------------------------
+  # LOCAL SIMULATION MODE
+  # -----------------------------
+  if (simulation) {
+    
+    path <- file.path(local_dir, file)
+    
+    if (grepl("\\.csv$", file)) {
+      
+      dat <- data.table::fread(path, nrows = 0, ...)
+      return(names(dat))
+      
+    }
+    
+    if (grepl("\\.parquet$", file)) {
+      
+      dat <- arrow::read_parquet(path,
+                                 as_data_frame = FALSE)$schema
+      
+      return(names(dat))
+      
+    }
+    
+    stop("Unsupported file type: ", file)
+  }
+  
+  # -----------------------------
+  # S3 PRODUCTION MODE
+  # -----------------------------
   s3 <- initialize_s3()
   
-  if(grepl("\\.csv", file)) {
-    obj <- s3$get_object(Bucket = bucket, Key = file) # load object from s3 bucket
-    txt <- rawToChar(obj$Body) # raw bytes to UTF-8 text
-    dat <- data.table::fread(input = txt, nrows = 0, ...) 
+  if (grepl("\\.csv$", file)) {
+    
+    obj <- s3$get_object(
+      Bucket = bucket,
+      Key = file
+    )
+    
+    txt <- rawToChar(obj$Body)
+    
+    dat <- data.table::fread(
+      input = txt,
+      nrows = 0,
+      ...
+    )
+    
     return(names(dat))
   }
   
-  
-  if(grepl("\\.parquet", file)) {
-    obj <- s3$get_object(Bucket = bucket, Key = file)
-    dat <- arrow::read_parquet(obj$Body, as_data_frame = F)$schema # arrow reads parquet directly from raw vector
+  if (grepl("\\.parquet$", file)) {
+    
+    obj <- s3$get_object(
+      Bucket = bucket,
+      Key = file
+    )
+    
+    dat <- arrow::read_parquet(
+      obj$Body,
+      as_data_frame = FALSE
+    )$schema
+    
     return(names(dat))
   }
   
   stop("Unsupported file type: ", file)
-  
 }
-
-
-### export data
-write_s3 <- function(x, file, FUN = write_function){
-  
-  require(arrow)
-  
-  write_function <- readr::write_csv
-  
-  if(grepl("\\.csv", file)) {
-    
-    aws.s3::s3write_using(
-      x,
-      FUN = write_function,
-      object = file,
-      bucket = "scoavoux",
-      opts = list("region" = "")
-    )
-    
-  }
-  
-  if(grepl("\\.parquet", file)) {
-    
-    write_function <- arrow::write_parquet
-    
-    aws.s3::s3write_using(
-      x,
-      FUN = write_function,
-      object = file,
-      bucket = "scoavoux",
-      opts = list("region" = "")
-    )
-  }
-  
-}
-
 
 
 

@@ -181,10 +181,10 @@ list(
   tar_target(press_corpus,
              bind_press_corpora(telerama_file = "telerama_raw.csv",
                                 lefigaro_file = "lefigaro-complet-v0.csv",
-                                liberation_file = "liberation-complet-v2.csv", 
+                                liberation_file = "liberation-complet-v2.csv",
                                 lemonde_filepath = "lemonde/lemonde-20",
                                 bert_reviews_file = "press_files/bert_review_classif.csv")),
-  
+
   # load entities file separately
   tar_target(press_named_entities,
              clean_press_ents("press_files/extracted_ents_2105.csv")), # CHANGED FROM 1203 TO NEW ENT FILE
@@ -215,8 +215,7 @@ list(
   
   # compute mbz release variables
   tar_target(mbz_releases,
-             load_mbz_releases(artists,
-                               release_file="musicbrainz/musicbrainz_releases.csv",
+             load_mbz_releases(release_file="musicbrainz/musicbrainz_releases.csv",
                                dates_active_file="/musicbrainz/mbid_artist_end_date.csv",
                                genre=dz_genre_album)), # PLACEHOLDER!
   
