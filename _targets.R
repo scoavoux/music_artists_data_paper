@@ -26,7 +26,7 @@ list(
 
     # maybe put in clean_raw
     tar_target(dz_users,
-               load_s3("replication_data/hashed_user_group.parquet") %>% 
+               load_s3("records_w3/RECORDS_hashed_user_group.parquet") %>% 
                  mutate(
                    is_respondent = ifelse(is_respondent == TRUE, 1, 0),
                    is_control = ifelse(is_in_control_group == TRUE, 1, 0)) %>% 
@@ -55,11 +55,11 @@ list(
     
     tar_target(dz_songs_old,
                make_dz_songs(to_remove_file = "data/artists_to_remove.csv",
-                             file = "records_w3/songs_old.parquet")),
+                             file = "records_w3/items/songs.snappy.parquet")),
     
     tar_target(dz_songs_new,
                make_dz_songs(to_remove_file = "data/artists_to_remove.csv",
-                              file = "replication_data/songs_new.parquet")),
+                              file = "records_w3/items/song.snappy.parquet")),
     
     tar_target(dz_songs,
                bind_dz_songs(dz_songs_old, dz_songs_new, 
@@ -218,7 +218,7 @@ list(
              load_mbz_releases(artists,
                                release_file="musicbrainz/musicbrainz_releases.csv",
                                dates_active_file="/musicbrainz/mbid_artist_end_date.csv",
-                               genre_file="records_w3/items/artists_data.snappy.parquet")), # PLACEHOLDER!
+                               genre=dz_genre_album)), # PLACEHOLDER!
   
   # compute 2 radio variables
   # integrate later
@@ -253,7 +253,7 @@ list(
   
   # ratings
   tar_target(sc_ratings,
-             make_sc_ratings(sc_albums_ratings_file="/senscritique/ratings.csv",
+             make_sc_ratings(sc_albums_ratings_file="senscritique/ratings.csv", # REMOVED / in filepath
                                        sc_albums_list_file="senscritique/contacts_albums_link.csv",
                                        sc_tracks_ratings_file="senscritique/tracks.csv",
                                        sc_tracks_list_file="senscritique/contact_tracks_link.csv",
@@ -295,12 +295,7 @@ list(
                                   respondent_isei)),
   
   # -------------- GENRE 
-  tar_target(dz_genre_artist,
-             make_dz_genre_artist()),
-  
-  tar_target(sc_genre,
-             make_sc_genre()),
-  
+
   tar_target(dz_genre_album,
              load_dz_genre_album(album_file="records_w3/genres_from_albums.parquet",
                                      genre_mapping_file="records_w3/deezer_genre_mapping.csv")),
@@ -332,10 +327,8 @@ list(
                left_join(respondent_demographics, by = "dz_artist_id") %>% 
                
                # genres
-               
-               # left_join(sc_genre, by = "sc_artist_id") %>% 
-               
-               left_join(dz_genre_artist, by = "dz_artist_id") %>% 
+
+               # left_join(dz_genre_artist, by = "dz_artist_id") %>% 
                left_join(dz_genre_album, by = "dz_artist_id") %>% 
                
                left_join(mbz_genre_artist, by = "mbz_artist_id") %>% 
@@ -366,7 +359,6 @@ list(
                  )
   )
   
-
 )
 
 

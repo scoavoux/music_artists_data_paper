@@ -9,20 +9,17 @@ tar_load(df)
 
 
 # -------------------------------------------
-# -------------------------------------------
 
-
-######## 1. SELECT ARTISTS TO INCLUDE
+# 1. SELECT ARTISTS TO INCLUDE
 artist_sample <- df %>% 
   slice_head(n = 1000) %>% 
   mutate(dz_artist_id = as.integer(dz_artist_id)) %>% 
-  select(dz_artist_id, dz_name)
-
+  select(dz_artist_id, dz_name, mbz_artist_id)
 
 # -------------------------------------------
-# -------------------------------------------
 
-######## 2. dz_songs
+
+# ----------------------- dz_songs
 
 # for old and new, subset to relevant songs
 tar_load(dz_songs_new)
@@ -44,8 +41,7 @@ write_s3(dz_songs_old_sample, "replication_data/songs_old.parquet")
 write_s3(dz_songs_new_sample, "replication_data/songs_new.parquet")
 
 
-# -------------------------------------------
-# -------------------------------------------
+# ---------------------- dz_users
 
 # dz_users: create fake hashes with 
 
@@ -64,10 +60,9 @@ write_s3(users, "replication_data/hashed_user_group.parquet")
 
 
 
-# -------------------------------------------
-# -------------------------------------------
+# ---------------- dz_stream_data + respondent_streams
 
-# streams: create fake streams dataset from scratch with
+# create fake streams dataset from scratch with
 # fake user hashes and relevant real right song_ids
 # same for respondents. use dz_users
 
@@ -109,7 +104,7 @@ write_dataset(
 
 
 
-# ----------------------------------------------
+# ------------------ survey_raw
 
 # survey: sample random users, replace user hashes with
 # the ones from fake streams and apply some shuffling
@@ -130,7 +125,7 @@ survey_raw <- survey_raw %>%
 write_s3(survey_raw, "replication_data/survey_raw_sim.csv")
 
 
-# ----------------------------------------------
+# --------------------------- senscritique
 
 sc <- load_s3("senscritique/contacts.csv")
 
@@ -141,6 +136,7 @@ sc <- sc %>%
 
 write_s3(sc, "replication_data/contacts_sim.csv")
 
+# --------------------------- sc_ratings
 
 ratings <- load_s3("senscritique/ratings.csv")
 ratings <- ratings %>% 
@@ -163,7 +159,7 @@ co_tracks_link <- co_tracks_link %>%
 write_s3(co_tracks_link, "replication_data/contact_tracks_link_sim.csv")
 
 
-# ----------------------------------
+# ---------------------------------- radio
 
 radio <- load_s3("records_w3/radio/radio_plays_with_artist_id.csv")
 
@@ -174,7 +170,7 @@ radio <- radio %>%
 
 write_s3(radio, "replication_data/radio_sim.csv")
 
-# -----------------------------------
+# ----------------------------------- mbz_deezer
 
 mbz_deezer <- load_s3("musicbrainz/musicbrainz_urls.csv")
 
@@ -184,18 +180,31 @@ mbz_deezer <- mbz_deezer %>%
 write_s3(mbz_deezer, "replication_data/musicbrainz_urls_sim.csv")
 
 
+# ---------------------------------- dz_names
+
+artists_data <- load_s3("records_w3/items/artists_data.snappy.parquet")
+artists_data <- artists_data %>% 
+  inner_join(artist_sample, by = c(name = "dz_name")) %>% 
+  select(artist_id, name, main_genre, dz_artist_id)
+write_s3(artists_data, "replication_data/artists_data_sim.parquet")
+
+new_artists_names <- load_s3("interim/new_artists_names_from_api.csv")
+new_artists_names <- new_artists_names %>% 
+  inner_join(artist_sample, by = c(name = "dz_name"))
+write_s3(new_artists_names, "replication_data/new_artists_names_from_api_sim.csv")
+
+# ---------------------------------- mbz_releases
+
+mbz_releases <- load_s3("musicbrainz/musicbrainz_releases.csv")
+mbz_releases <- mbz_releases %>% 
+  inner_join(artist_sample, by = c(mbid = "mbz_artist_id")) %>% 
+  slice_sample(n = 5000)
+write_s3(mbz_releases, "replication_data/musicbrainz_releases_sim.csv")
 
 
+# ------------------------------- dz genres from albums
 
-
-
-
-
-
-
-
-
-
+"records_w3/genres_from_albums.parquet"
 
 
 
