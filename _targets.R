@@ -216,7 +216,7 @@ list(
   # compute mbz release variables
   tar_target(mbz_releases,
              load_mbz_releases(release_file="musicbrainz/musicbrainz_releases.csv",
-                               dates_active_file="/musicbrainz/mbid_artist_end_date.csv",
+                               dates_active_file="musicbrainz/musicbrainz_artist_end_date.csv",
                                genre=dz_genre_album)), # PLACEHOLDER!
   
   # compute 2 radio variables
@@ -246,7 +246,7 @@ list(
   # gender
   tar_target(mbz_gpt_gender,
              make_artist_gender(artists,
-                                mbz_gender_file="musicbrainz/mbid_gender.csv",
+                                mbz_gender_file="musicbrainz/mbz_gender.csv",
                                 gpt_gender_file="gpt_music_data/gpt_gender.csv")
              ),
   

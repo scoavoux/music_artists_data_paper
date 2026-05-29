@@ -277,13 +277,67 @@ press_ents <- press_ents %>%
 write_s3(press_ents, "replication_data/extracted_ents_2105_sim.csv")
 
 
-# ----------------------------------
+# ---------------------------------- 
 
 wiki <- load_s3("interim/wiki_labels.csv")
 wiki <- wiki %>% 
   inner_join(artist_sample, by = c(label = "dz_name")) %>% 
   distinct(dz_artist_id, .keep_all = T)
 write_s3(wiki, "replication_data/wiki_labels_sim.csv")
+
+
+# --------------- EXPORT TO LOCAL 2905
+
+wiki_ids <- load_s3("interim/wiki_ids.csv")
+wiki_ids <- wiki_ids %>% 
+  inner_join(artist_sample, by = c(musicBrainzID = "mbz_artist_id")) %>% 
+  select(-c(dz_artist_id, dz_name, sc_artist_id))
+write_s3(wiki_ids, "replication_data/wiki_ids_sim.csv")
+
+
+# ------------------
+
+mbz_end_date <- load_s3("musicbrainz/musicbrainz_artist_end_date.csv")
+mbz_end_date <- mbz_end_date %>% 
+  slice_sample(n = 5000)
+write_s3(mbz_end_date, "replication_data/mbz_end_date_sim.csv")
+
+
+# -------------------
+
+mbz_gender <- load_s3("musicbrainz/mbz_gender.csv")
+mbz_gender <- mbz_gender %>% 
+  inner_join(artist_sample, by = c(gid = "mbz_artist_id")) %>% 
+  select(gid, gender)
+write_s3(mbz_gender, "replication_data/mbz_gender_sim.csv")
+
+
+# --------------------
+
+gpt_gender <- load_s3("gpt_music_data/gpt_gender.csv")
+gpt_gender <- gpt_gender %>% 
+  inner_join(artist_sample, by = c(artist_id = "dz_artist_id")) %>% 
+  select(artist_id, name, gender)
+write_s3(gpt_gender, "replication_data/gpt_gender_sim.csv")
+
+
+# ---------------------
+
+artists_songs_languages <- load_s3("records_w3/artists_songs_languages.csv")
+artists_songs_languages <- artists_songs_languages %>% 
+  inner_join(artist_sample, by = c(art_id = "dz_artist_id"))
+write_s3(artists_songs_languages, "replication_data/artists_songs_languages_sim.csv")
+
+
+
+# -------------- PRESS
+
+
+
+
+
+
+
 
 
 
