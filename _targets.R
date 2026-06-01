@@ -1,21 +1,21 @@
 library(targets)
 library(tarchetypes)
 
-# Preparation ------
+SIMULATION <- TRUE
+
+LOCAL_DATA_DIR <- "data/"
+
 tar_option_set(
-  packages = c("paws", "tidyverse", "arrow"),
-  repository = "aws", 
-  repository_meta = "aws",
-  resources = tar_resources(
-    aws = tar_resources_aws(
-      endpoint = Sys.getenv("S3_ENDPOINT"),
-      bucket = "scoavoux",
-      prefix = "music_artist"
-    )
+  packages = c(
+    "paws",
+    "tidyverse",
+    "arrow",
+    "data.table"
   )
 )
 
 tar_source("R")
+
 
 
 
