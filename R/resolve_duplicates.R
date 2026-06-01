@@ -1,4 +1,4 @@
-deduplicate_ids <- function(artists_to_patch){
+deduplicate_ids <- function(artists_to_patch, simulation = SIMULATION){
   
   require(dplyr)
   

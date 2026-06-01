@@ -18,6 +18,7 @@ load_mbz_releases <- function(release_file, dates_active_file, genre){
     rename(mbz_artist_id = "mbid") %>% 
     as_tibble()
   
+  names(dates_active)
   # changed genre 2805
   genre <- genre %>% 
     select(mbz_artist_id, genre_mbz_album_1)

@@ -162,7 +162,39 @@ load_s3_info <- function(file,
 
 
 
-
+### export data
+write_s3 <- function(x, file, FUN = write_function){
+  
+  require(arrow)
+  
+  write_function <- readr::write_csv
+  
+  if(grepl("\\.csv", file)) {
+    
+    aws.s3::s3write_using(
+      x,
+      FUN = write_function,
+      object = file,
+      bucket = "scoavoux",
+      opts = list("region" = "")
+    )
+    
+  }
+  
+  if(grepl("\\.parquet", file)) {
+    
+    write_function <- arrow::write_parquet
+    
+    aws.s3::s3write_using(
+      x,
+      FUN = write_function,
+      object = file,
+      bucket = "scoavoux",
+      opts = list("region" = "")
+    )
+  }
+  
+}
 
 
 

@@ -1,21 +1,21 @@
 library(targets)
 library(tarchetypes)
 
-SIMULATION <- TRUE
+SIMULATION <- FALSE
 
-LOCAL_DATA_DIR <- "data/"
+LOCAL_DATA_DIR <- "./"
 
 tar_option_set(
   packages = c(
     "paws",
     "tidyverse",
     "arrow",
-    "data.table"
+    "data.table",
+    "sjmisc"
   )
 )
 
 tar_source("R")
-
 
 
 
@@ -217,7 +217,7 @@ list(
   tar_target(mbz_releases,
              load_mbz_releases(release_file="musicbrainz/musicbrainz_releases.csv",
                                dates_active_file="musicbrainz/musicbrainz_artist_end_date.csv",
-                               genre=dz_genre_album)), # PLACEHOLDER!
+                               genre=mbz_genre_album)), # PLACEHOLDER!
   
   # compute 2 radio variables
   # integrate later
@@ -359,8 +359,6 @@ list(
   )
   
 )
-
-
 
 
 

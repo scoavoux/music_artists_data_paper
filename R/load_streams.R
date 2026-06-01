@@ -140,9 +140,11 @@ make_stream_popularity <- function(dz_songs, dz_users){
   plays <- streams %>%
     group_by(song_id, dz_artist_id, 
              is_respondent, w_feat) %>%
-    summarise(n_plays = sum(w_feat),
+    summarise(n_plays_raw = sum(w_feat / w_feat), # cancel weights
+              n_plays = sum(w_feat),
               .groups = "drop") %>% 
-    select(song_id, dz_artist_id, is_respondent, n_plays)
+    select(song_id, dz_artist_id, is_respondent, 
+           n_plays_raw, n_plays)
   
   
   # make n_users at group-artist levels
@@ -162,6 +164,7 @@ make_stream_popularity <- function(dz_songs, dz_users){
     # aggregate dz_stream_count to group
     group_by(dz_artist_id, is_respondent) %>%
     summarise(
+      n_plays_raw = sum(n_plays_raw),
       n_plays = sum(n_plays, na.rm = TRUE),
       .groups = "drop"
     ) %>%
@@ -180,10 +183,11 @@ make_stream_popularity <- function(dz_songs, dz_users){
     select(-is_respondent) %>%
     pivot_wider(
       names_from = group,
-      values_from = c(n_plays, n_users),
+      values_from = c(n_plays_raw, n_plays, n_users),
       names_glue = "{.value}_{group}"
     ) %>% 
-    rename(n_plays = "n_plays_control",
+    rename(n_plays_raw = "n_plays_raw_control",
+           n_plays = "n_plays_control",
            n_users = "n_users_control",
            dz_artist_id = "dz_artist_id") %>% 
     
@@ -207,11 +211,13 @@ make_respondent_plays <- function(dz_songs, dz_users){
     mutate(hashed_id = as.character(hashed_id)) %>% 
     filter(is_respondent == 1) %>% 
     group_by(hashed_id, song_id, dz_artist_id, w_feat) %>%
-    summarise(n_plays = sum(w_feat),
+    summarise(n_plays_raw = sum(w_feat / w_feat),
+              n_plays = sum(w_feat),
               .groups = "drop") %>% 
     
     group_by(hashed_id, dz_artist_id) %>%
     summarise(
+      n_plays_raw = sum(w_feat / w_feat),
       n_plays = sum(n_plays, na.rm = TRUE),
       .groups = "drop"
     ) %>%
