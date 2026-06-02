@@ -9,7 +9,6 @@ clean_telerama <- function(telerama_file){
                        into = c("source_name", "issue"), 
                        sep = ", ")
   
-  
   telerama <- telerama %>% 
     
     # mutate existing and new vars
@@ -123,14 +122,13 @@ clean_lemonde <- function(lemonde_filepath){
 clean_lefigaro <- function(lefigaro_file) {
   
   s3 <- initialize_s3()
-  s3$download_file("scoavoux",
-                   paste0("french_media/", lefigaro_file), 
-                   paste0("data/temp/", lefigaro_file)
-                   )
   
-  lefigaro <- read_csv(paste0("data/temp/", lefigaro_file))
+  obj <- s3$get_object(
+    Bucket = "scoavoux",
+    Key = paste0("french_media/", lefigaro_file)
+  )
   
-  file.remove(paste0("data/temp/", lefigaro_file))
+  lefigaro <- readr::read_csv(rawToChar(obj$Body))
   
   lefigaro <- lefigaro %>% 
     
@@ -157,15 +155,13 @@ clean_lefigaro <- function(lefigaro_file) {
 clean_liberation <- function(liberation_file){
   
   s3 <- initialize_s3()
-  s3$download_file("scoavoux",
-                   paste0("french_media/",liberation_file), 
-                   paste0("data/temp/",liberation_file)
-                   )
   
-
-  liberation <- read_csv(paste0("data/temp/",liberation_file))
+  obj <- s3$get_object(
+    Bucket = "scoavoux",
+    Key = paste0("french_media/", liberation_file)
+  )
   
-  file.remove(paste0("data/temp/",liberation_file))
+  liberation <- readr::read_csv(rawToChar(obj$Body))
   
   liberation <- liberation %>% 
 
@@ -217,7 +213,7 @@ bind_press_corpora <- function(telerama_file, lefigaro_file,
     select(-prediction)
   
   # export to csv for NER processing
-  write.csv2(press_corpus, "data/press_corpus.csv", 
+  write.csv2(press_corpus, "data/press_files/press_corpus.csv", 
              fileEncoding = "UTF-8")
   
   return(press_corpus)

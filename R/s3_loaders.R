@@ -197,7 +197,54 @@ write_s3 <- function(x, file, FUN = write_function){
 }
 
 
-
+download_s3_folder <- function(
+    prefix,
+    local_dir,
+    bucket = "scoavoux"
+) {
+  
+  s3 <- initialize_s3()
+  
+  # Create local directory if needed
+  dir.create(local_dir, recursive = TRUE, showWarnings = FALSE)
+  
+  # List all objects under the prefix
+  res <- s3$list_objects_v2(
+    Bucket = bucket,
+    Prefix = prefix
+  )
+  
+  if (is.null(res$Contents) || length(res$Contents) == 0) {
+    stop("No files found under prefix: ", prefix)
+  }
+  
+  for (obj in res$Contents) {
+    
+    key <- obj$Key
+    
+    # Skip folder placeholders
+    if (grepl("/$", key)) next
+    
+    local_file <- file.path(
+      local_dir,
+      basename(key)
+    )
+    
+    message("Downloading: ", key)
+    
+    file_obj <- s3$get_object(
+      Bucket = bucket,
+      Key = key
+    )
+    
+    writeBin(
+      object = file_obj$Body,
+      con = local_file
+    )
+  }
+  
+  message("Done.")
+}
 
 
 

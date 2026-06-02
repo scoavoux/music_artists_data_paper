@@ -50,15 +50,15 @@ list(
     
     # bind old and new songs and names, join to streams
     tar_target(dz_names,
-               bind_dz_names(file_1 = "records_w3/items/artists_data.snappy.parquet",
-                            file_2 = "interim/new_artists_names_from_api.csv")),
+               bind_dz_names(file_1 = "interim/prod/artists_data.snappy.parquet",
+                            file_2 = "interim/prod/new_artists_names_from_api.csv")),
     
     tar_target(dz_songs_old,
-               make_dz_songs(to_remove_file = "data/artists_to_remove.csv",
+               make_dz_songs(to_remove_file = "interim/dict/artists_to_remove.csv",
                              file = "records_w3/items/songs.snappy.parquet")),
     
     tar_target(dz_songs_new,
-               make_dz_songs(to_remove_file = "data/artists_to_remove.csv",
+               make_dz_songs(to_remove_file = "interim/dict/artists_to_remove.csv",
                               file = "records_w3/items/song.snappy.parquet")),
     
     tar_target(dz_songs,
@@ -67,8 +67,8 @@ list(
     
     
     tar_target(classical_albums,
-               filter_classical_albums(album_file="records_w3/genres_from_albums.parquet",
-                                       genre_mapping_file="records_w3/deezer_genre_mapping.csv")),
+               filter_classical_albums(album_file="interim/prod/genres_from_albums.parquet",
+                                       genre_mapping_file="interim/dict/deezer_genre_mapping.csv")),
     
     # -------- load and process raw ID data
     
@@ -78,7 +78,7 @@ list(
     
     # manual searches sc_artist_id to dz_artist_id
     tar_target(manual_search,
-               load_manual_search(file="data/manual_search.csv")),
+               load_manual_search(file="interim/dict/manual_search.csv")),
 
     # mbz_artist_id to dz_artist_id
     tar_target(mbz_deezer,
@@ -86,7 +86,7 @@ list(
     
     # wikidata artist names
     tar_target(wiki_labels,
-               load_s3("interim/wiki_labels.csv")),
+               load_s3("interim/prod/wiki_labels.csv")),
 
     # wikidata itemId to mbz_artist_id and dz_artist_id
     tar_target(wiki,
@@ -183,21 +183,21 @@ list(
                                 lefigaro_file = "lefigaro-complet-v0.csv",
                                 liberation_file = "liberation-complet-v2.csv",
                                 lemonde_filepath = "lemonde/lemonde-20",
-                                bert_reviews_file = "press_files/bert_review_classif.csv")),
+                                bert_reviews_file = "interim/press_files/bert_review_classif.csv")),
 
   # load entities file separately
   tar_target(press_named_entities,
-             clean_press_ents("press_files/extracted_ents_2105.csv")), # CHANGED FROM 1203 TO NEW ENT FILE
+             clean_press_ents("interim/press_files/extracted_ents_2105.csv")), # CHANGED FROM 1203 TO NEW ENT FILE
   
   # names to drop
   tar_target(entities_to_drop,
-             list_entities_to_drop(file="press_files/press_outliers_checked_1003.csv")),
+             list_entities_to_drop(file="interim/press_files/press_outliers_checked_1003.csv")),
   
   # aliases to update
   # attention: hand-coded csv files which we might update!
   tar_target(aliases_to_add,
-             list_aliases(file1 = "press_files/ents_without_match_checked_1003.csv",
-                          file2 = "press_files/press_outliers_checked_1003.csv",
+             list_aliases(file1 = "interim/press_files/ents_without_match_checked_1003.csv",
+                          file2 = "interim/press_files/press_outliers_checked_1003.csv",
                           artists)),
 
   # output: all press counts linked to valid dz_artist_id
@@ -226,12 +226,12 @@ list(
   
   tar_target(mbz_artist_country,
              make_artist_country(mbz_area_file="musicbrainz/musicbrainz_area.csv",
-                                 area_to_country_file="data/area_country.csv",
-                                 country_rank_file="data/country_rank.csv")),
+                                 area_to_country_file="interim/dict/area_country.csv",
+                                 country_rank_file="interim/dict/country_rank.csv")),
   
   # language
   tar_target(artist_language,
-             load_s3("records_w3/artists_songs_languages.csv") %>% 
+             load_s3("interim/prod/artists_songs_languages.csv") %>% 
                as_tibble() %>% 
                mutate(dz_artist_id = as.character(art_id),
                       lang_main = lang,
@@ -246,8 +246,8 @@ list(
   # gender
   tar_target(mbz_gpt_gender,
              make_artist_gender(artists,
-                                mbz_gender_file="musicbrainz/mbz_gender.csv",
-                                gpt_gender_file="gpt_music_data/gpt_gender.csv")
+                                mbz_gender_file="musicbrainz/musicbrainz_gender.csv",
+                                gpt_gender_file="interim/prod/gpt_gender.csv")
              ),
   
   # ratings
@@ -274,9 +274,9 @@ list(
   # TEMP: delete target once isei is stable
   tar_target(raw_isei,
              make_raw_isei(survey_raw, 
-                           isco_isei_file = "PCS2020/isco_isei.csv", 
-                           isco_file = "PCS2020/L72_Matrice_codification_ISCO_collecte_2023.csv", 
-                           openrefine_file = "records_w3/survey/pcs_openrefine1.csv")),
+                           isco_isei_file = "interim/prod/isco_isei.csv", 
+                           isco_file = "interim/prod/L72_Matrice_codification_ISCO_collecte_2023.csv", 
+                           openrefine_file = "interim/prod/pcs_openrefine1.csv")),
 
   tar_target(respondent_isei,
              make_respondent_isei(respondent_streams, 
@@ -296,8 +296,8 @@ list(
   # -------------- GENRE 
 
   tar_target(dz_genre_album,
-             load_dz_genre_album(album_file="records_w3/genres_from_albums.parquet",
-                                     genre_mapping_file="records_w3/deezer_genre_mapping.csv")),
+             load_dz_genre_album(album_file="interim/prod/genres_from_albums.parquet",
+                                     genre_mapping_file="interim/dict/deezer_genre_mapping.csv")),
   
   tar_target(mbz_genre_album,
              load_mbz_genre_album(file="musicbrainz/musicbrainz_artist_releasegroup_genre.csv")),
@@ -362,17 +362,8 @@ list(
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+download_s3_folder(
+  prefix = "gpt_music_data/",
+  local_dir = "data/gpt_music_data"
+)
 
