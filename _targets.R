@@ -1,9 +1,9 @@
 library(targets)
 library(tarchetypes)
 
-options(warn=-1)
+options(warn=0)
 
-# run real code with SIMULATION=FALSE LOCAL_DATA_DIR="" Rscript -e "targets::tar_make()"
+# SIMULATION=FALSE LOCAL_DATA_DIR="" Rscript -e "targets::tar_make()"
 
 SIMULATION <- as.logical(
   Sys.getenv("SIMULATION", unset = "TRUE")
