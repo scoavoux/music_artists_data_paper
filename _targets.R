@@ -1,9 +1,16 @@
 library(targets)
 library(tarchetypes)
 
-SIMULATION <- TRUE
+# run with SIMULATION=TRUE LOCAL_DATA_DIR=data/ Rscript -e "targets::tar_make()"
 
-LOCAL_DATA_DIR <- "./data/"
+SIMULATION <- as.logical(
+  Sys.getenv("SIMULATION", unset = "FALSE")
+)
+
+LOCAL_DATA_DIR <- Sys.getenv(
+  "LOCAL_DATA_DIR",
+  unset = ""
+)
 
 tar_option_set(
   packages = c(
