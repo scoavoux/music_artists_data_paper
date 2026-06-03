@@ -84,4 +84,3 @@ make_sc_ratings <- function(sc_albums_ratings_file,
 
 
 
-

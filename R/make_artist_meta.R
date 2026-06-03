@@ -2,11 +2,11 @@
 # recode areas (eg cities or regions) to countries
 # and rank countries by defined dict
 make_artist_country <- function(mbz_area_file,
-                                area_to_country_file,
+                                area_country_file,
                                 country_rank_file){
   
   # AREAS TO COUNTRIES MAPPING
-  area_to_country <- read.csv(area_to_country_file) %>% 
+  area_country <- load_s3(area_country_file) %>% 
     filter(!is.na(country)) %>% 
     rename(area_name = "name") %>% 
     mutate(country = ifelse(type_name == "Country", area_name, country)) %>% 
@@ -14,7 +14,7 @@ make_artist_country <- function(mbz_area_file,
     select(-n)
   
   # COUNTRY RANK FILE
-  country_rank <- read.csv(country_rank_file) %>% 
+  country_rank <- load_s3(country_rank_file) %>% 
     rename(country = "Country", rank = "Rank") %>% 
     as_tibble()
   
@@ -30,7 +30,7 @@ make_artist_country <- function(mbz_area_file,
       area_type_id = as.integer(gsub("[()]", "", area_type_id)),
       area_type = gsub("[()]", "", area_type)
       ) %>% 
-    left_join(area_to_country, by = "area_name") %>% 
+    left_join(area_country, by = "area_name") %>% 
     distinct(mbz_artist_id, country) %>% 
     
     left_join(country_rank, by = "country") %>% 
@@ -50,11 +50,13 @@ make_artist_country <- function(mbz_area_file,
 # LOAD GENDER FROM MBZ AND GPT, COALESCE BOTH
 make_artist_gender <- function(artists, mbz_gender_file, gpt_gender_file){
   
+  require(stringr)
+  
   mbz_gender <- load_s3(mbz_gender_file)
   
   mbz_gender <- mbz_gender %>% 
-    rename(mbz_artist_id = "gid") %>% 
-    mutate(gender = ifelse(gender == 1, "male", "female")) %>% 
+    rename(mbz_artist_id = "artist_mbid") %>% 
+    mutate(gender = str_to_lower(gender)) %>% 
     as_tibble()
   
   gpt_gender <- load_s3(gpt_gender_file)
@@ -82,15 +84,14 @@ make_artist_gender <- function(artists, mbz_gender_file, gpt_gender_file){
       gender = coalesce(gender_mbz, gender_gpt)
     ) %>%
     
+    filter(!gender %in% c("non-binary", "nonbinary", "not applicable", "other")) %>% 
+    
     select(dz_artist_id, gender) %>% 
     
     distinct(dz_artist_id, .keep_all = TRUE) # TEMP: TO RESOLVE DUPLICATE 2244301
   
   return(mbz_gpt_gender)
 }
-
-
-
 
 
 

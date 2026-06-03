@@ -17,15 +17,18 @@ make_raw_isei <- function(survey_raw, isco_isei_file, isco_file, openrefine_file
            E_encadre) %>% 
     pivot_longer(cols = c(E_FR_prof_femme:E_FR_prof_retr_homme), 
                  values_to = "survey_prof") %>% 
-    mutate(survey_prof = normalize_job(survey_prof)) %>% 
+    mutate(survey_prof = normalize_job(survey_prof),
+           hashed_id = as.character(hashed_id)) %>% 
     filter(survey_prof != "") %>% 
     select(hashed_id, survey_prof, starts_with("E_"))
   
+
   # convert E_ variables to isco conditions
   survey <- survey %>% 
     assign_condition_isco() %>% 
     select(hashed_id, survey_prof, condition_isco)
   
+
   
   ## 2. ----------------------- prepare isco and isei
 
@@ -47,13 +50,12 @@ make_raw_isei <- function(survey_raw, isco_isei_file, isco_file, openrefine_file
     select(-isco) %>% 
     as_tibble()
 
-  
   ## put ISEI into isco_cod directly
   isei_cod <- isco %>% 
     inner_join(isco_isei, by = "isco4") %>% 
     select(-isco4)
   
-  
+
   # 3. ------------------------- prepare openrefine recodes
   openrefine <- openrefine %>% 
     as_tibble() %>% 
@@ -82,14 +84,6 @@ make_raw_isei <- function(survey_raw, isco_isei_file, isco_file, openrefine_file
 
 
 
-# t <- isei_cod %>% 
-#   distinct(profession)
-# 
-# write.csv2(t, "data/isei_jobs.csv")
-# 
-# write.csv2(survey_missing, "data/missing_jobs_in_survey.csv")
-# 
-# 
 
 
 

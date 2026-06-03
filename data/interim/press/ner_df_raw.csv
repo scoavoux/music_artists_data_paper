@@ -1,0 +1,93 @@
+﻿;article_id;ent_name;ner_type
+0;1;Stromae;PER
+1;1;Sufjan Stevens;PER
+2;1;James Blake;PER
+3;1;David Bowie;PER
+4;1;Angèle;PER
+5;1;Clara Luciani;PER
+6;1;Françoise Hardy;PER
+7;1;Dua Lipa;PER
+8;1;Kendrick Lamar;PER
+9;1;Rosalía;PER
+10;2;Sofiane Pamart;PER
+11;2;Ryuichi Sakamoto;PER
+12;2;Erik Satie;PER
+13;2;Damso;MISC
+14;2;Laylow;PER
+15;2;Nekfeu;PER
+16;2;Radiohead;ORG
+17;2;Bon Iver;PER
+18;3;Madonna;PER
+19;3;Elton John;PER
+20;3;Kylie Minogue;PER
+21;3;Lady Gaga;PER
+22;3;Rihanna;PER
+23;3;Coldplay;ORG
+24;4;Kendrick Lamar;PER
+25;4;D’Angelo;MISC
+26;4;OutKast;ORG
+27;4;Orelsan;ORG
+28;4;Dinos;ORG
+29;4;Damso;MISC
+30;5;Céline Dion;PER
+31;5;Jacques Brel;PER
+32;5;Barbra Streisand;PER
+33;5;Garou;ORG
+34;5;Vianney;PER
+35;6;Beatles;ORG
+36;6;Take That;ORG
+37;6;BLACKPINK;ORG
+38;7;Lady Gaga;PER
+39;7;Bradley Cooper;PER
+40;7;Elton John;PER
+41;8;Sofiane Pamart;PER
+42;8;SCH;ORG
+43;8;Josman;ORG
+44;8;Tiakola;ORG
+45;8;Nils Frahm;PER
+46;8;Ludovico Einaudi;PER
+47;9;Kanye West;PER
+48;9;Daft Punk;PER
+49;9;Kendrick Lamar;PER
+50;9;Damso;PER
+51;9;Hamza;PER
+52;10;Angèle;PER
+53;10;Christine and the Queens;MISC
+54;10;Jane Birkin;PER
+55;10;Clara Luciani;PER
+56;10;Dua Lipa;PER
+57;11;David Guetta;PER
+58;11;Sia;ORG
+59;11;Bebe Rexha;PER
+60;11;OneRepublic;MISC
+61;11;Rone;ORG
+62;11;Aphex Twin;MISC
+63;12;Orelsan;ORG
+64;12;Nekfeu;PER
+65;12;Dinos;PER
+66;13;Clara Luciani;PER
+67;13;Nico;PER
+68;13;Étienne Daho;PER
+69;13;Fleetwood Mac;ORG
+70;13;Lana Del Rey;PER
+71;13;Angèle;PER
+72;13;David Guetta;PER
+73;13;Calvin Harris;PER
+74;14;The Weeknd;ORG
+75;14;Michael Jackson;PER
+76;14;Prince;PER
+77;14;Doja Cat;MISC
+78;14;Ariana Grande;PER
+79;14;Beyoncé;PER
+80;14;Frank Ocean;PER
+81;15;Sting;PER
+82;15;Elton John;PER
+83;15;festival de Montreux;MISC
+84;15;Peter Gabriel;PER
+85;15;Leonard Cohen;PER
+86;15;Martin Solveig;PER
+87;16;Damso;MISC
+88;16;Kendrick Lamar;PER
+89;16;Tyler;PER
+90;16;The Creator;MISC
+91;16;Hamza;ORG

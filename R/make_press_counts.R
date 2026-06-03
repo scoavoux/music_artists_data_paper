@@ -112,7 +112,10 @@ list_entities_to_drop <- function(file){
 
 ## join press press_n_mentionss to all_final and export the 
 ## 2 csv files to be hand-coded
-count_names_press <- function(artists, press_named_entities, min_n_mentions){
+count_names_press <- function(artists, 
+                              press_named_entities, 
+                              min_n_mentions, 
+                              simulation = SIMULATION){
   
   # prepare all_final
   artists <- artists %>% 
@@ -128,7 +131,7 @@ count_names_press <- function(artists, press_named_entities, min_n_mentions){
     filter(n == 1) %>% # remove 15 (insignificant) duplicates tied on popularity
     select(dz_name, n_plays, dz_artist_id)
   
-    # ------------- 1. match on name in dz_names
+  # ------------- 1. match on name in dz_names
   press_name_counts <- artists %>% 
     left_join(press_named_entities, by = c(dz_name = "ent_name")) %>% 
     mutate(corr_pop = abs(log(n_plays / press_n_mentions))) %>% # MIX WITH ARTICLE_COUNT?
@@ -140,20 +143,31 @@ count_names_press <- function(artists, press_named_entities, min_n_mentions){
     anti_join(press_name_counts, by = c(ent_name = "dz_name")) %>% 
     filter(press_n_mentions >= min_n_mentions)
   
-  write_s3(ents_without_match, file = "press_files/ents_without_match.csv")
+  if (!simulation) {
+    
+    write_s3(ents_without_match, 
+             file = "interim/press/ents_without_match.csv")
+    
+  }
   
   # 2. outliers
   press_counts_outliers <- press_name_counts %>% 
     filter(press_n_mentions >= min_n_mentions) %>% 
     arrange(desc(corr_pop))
   
-  write_s3(press_counts_outliers, file = "press_files/press_counts_outliers.csv")
+  if (!simulation) {
+    
+    write_s3(press_counts_outliers, 
+             file = "interim/press/press_counts_outliers.csv")
+    
+  }
   
   press_name_counts <- press_name_counts %>% 
     select(-c(article_id, corr_pop))
   
   return(press_name_counts)
 }
+
 
 
 ## update press_name_counts with hand-coded aliases and cases to drop??

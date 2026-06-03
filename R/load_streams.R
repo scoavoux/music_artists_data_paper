@@ -1,67 +1,127 @@
 
 # queries for long and short streams 
 # no collect() yet
-query_raw_streams <- function(path_long = "records_w3/streams/streams_long", 
-                              path_short = "records_w3/streams/streams_short", 
-                              dz_songs=dz_songs, dz_users=dz_users){
+query_raw_streams <- function(
+    path_long = "records_w3/streams/streams_long",
+    path_short = "records_w3/streams/streams_short",
+    dz_songs = dz_songs,
+    dz_users = dz_users,
+    simulation = SIMULATION,
+    local_dir = LOCAL_DATA_DIR
+) {
   
-  song_artist_weights <- dz_songs %>% 
+  song_artist_weights <- dz_songs %>%
     select(song_id, dz_artist_id, w_feat)
   
-  # ---------------------------------------------------------------
-  # LOAD STREAMS
-  path_long <- arrow::open_dataset(
-    source = arrow::s3_bucket("scoavoux",
-                              endpoint_override = "minio.lab.sspcloud.fr")
-    $path(path_long)
-  )
+  # ------------------------------------------------------------------
+  # LOAD LONG STREAMS
+  # ------------------------------------------------------------------
+  
+  if (simulation) {
+    
+    path_long <- arrow::open_dataset(
+      file.path(local_dir, path_long)
+    )
+    
+  } else {
+    
+    path_long <- arrow::open_dataset(
+      source = arrow::s3_bucket(
+        "scoavoux",
+        endpoint_override = "minio.lab.sspcloud.fr"
+      )$path(path_long)
+    )
+    
+  }
+  
+  # ------------------------------------------------------------------
+  # LOAD SHORT STREAMS
+  # ------------------------------------------------------------------
+  
+  if (simulation) {
+    
+    path_short <- arrow::open_dataset(
+      file.path(local_dir, path_short)
+    )
+    
+  } else {
+    
+    path_short <- arrow::open_dataset(
+      source = arrow::s3_bucket(
+        "scoavoux",
+        endpoint_override = "minio.lab.sspcloud.fr"
+      )$path(path_short)
+    )
+    
+  }
+  
+  # ------------------------------------------------------------------
+  # QUERY LONG
+  # ------------------------------------------------------------------
   
   streams_long <- path_long %>%
-    select(hashed_id,
-           is_listened,
-           ts_listen,
-           listening_time,
-           song_id
+    select(
+      hashed_id,
+      is_listened,
+      ts_listen,
+      listening_time,
+      song_id
     ) %>%
-    mutate(year = year(as_datetime(ts_listen)),
-           lt = ifelse(listening_time < 0, 0, listening_time)) %>%
-    filter(is_listened == 1,
-           year %in% c(2023, 2024),
-           song_id > 0) %>%
-    inner_join(song_artist_weights, by = "song_id") %>% 
+    mutate(
+      year = year(as_datetime(ts_listen)),
+      lt = ifelse(listening_time < 0, 0, listening_time)
+    ) %>%
+    filter(
+      is_listened == 1,
+      year %in% c(2023, 2024),
+      song_id > 0
+    ) %>%
+    inner_join(song_artist_weights, by = "song_id") %>%
     inner_join(dz_users, by = c("hashed_id")) %>%
-    select(hashed_id, song_id, dz_artist_id, is_respondent, w_feat)
+    select(
+      hashed_id,
+      song_id,
+      dz_artist_id,
+      is_respondent,
+      w_feat
+    )
   
+  # ------------------------------------------------------------------
+  # QUERY SHORT
+  # ------------------------------------------------------------------
   
-  path_short <- arrow::open_dataset(
-    source = arrow::s3_bucket("scoavoux",
-                              endpoint_override = "minio.lab.sspcloud.fr")
-    $path(path_short)
-  )
-  
-  streams_short <- path_short %>% 
-    select(hashed_id, 
-           is_listened, 
-           ts_listen, 
-           listening_time, 
-           media_type, 
-           song_id = "media_id"
-    ) %>% 
-    mutate(year = year(as_datetime(ts_listen)),
-           lt = ifelse(listening_time < 0, 0, listening_time)) %>% 
-    filter(media_type == "song", 
-           is_listened == 1, 
-           year == 2022,
-           song_id > 0) %>% 
-    inner_join(song_artist_weights, by = "song_id") %>% 
+  streams_short <- path_short %>%
+    select(
+      hashed_id,
+      is_listened,
+      ts_listen,
+      listening_time,
+      media_type,
+      song_id = "media_id"
+    ) %>%
+    mutate(
+      year = year(as_datetime(ts_listen)),
+      lt = ifelse(listening_time < 0, 0, listening_time)
+    ) %>%
+    filter(
+      media_type == "song",
+      is_listened == 1,
+      year == 2022,
+      song_id > 0
+    ) %>%
+    inner_join(song_artist_weights, by = "song_id") %>%
     inner_join(dz_users, by = c("hashed_id")) %>%
-    select(hashed_id, song_id, dz_artist_id, is_respondent, w_feat)
-  
+    select(
+      hashed_id,
+      song_id,
+      dz_artist_id,
+      is_respondent,
+      w_feat
+    )
   
   streams_query <- union_all(streams_short, streams_long)
   
   return(streams_query)
-  
 }
 
 
@@ -80,9 +140,11 @@ make_stream_popularity <- function(dz_songs, dz_users){
   plays <- streams %>%
     group_by(song_id, dz_artist_id, 
              is_respondent, w_feat) %>%
-    summarise(n_plays = sum(w_feat),
+    summarise(n_plays_raw = sum(w_feat / w_feat), # cancel weights
+              n_plays = sum(w_feat),
               .groups = "drop") %>% 
-    select(song_id, dz_artist_id, is_respondent, n_plays)
+    select(song_id, dz_artist_id, is_respondent, 
+           n_plays_raw, n_plays)
   
   
   # make n_users at group-artist levels
@@ -102,6 +164,7 @@ make_stream_popularity <- function(dz_songs, dz_users){
     # aggregate dz_stream_count to group
     group_by(dz_artist_id, is_respondent) %>%
     summarise(
+      n_plays_raw = sum(n_plays_raw),
       n_plays = sum(n_plays, na.rm = TRUE),
       .groups = "drop"
     ) %>%
@@ -120,10 +183,11 @@ make_stream_popularity <- function(dz_songs, dz_users){
     select(-is_respondent) %>%
     pivot_wider(
       names_from = group,
-      values_from = c(n_plays, n_users),
+      values_from = c(n_plays_raw, n_plays, n_users),
       names_glue = "{.value}_{group}"
     ) %>% 
-    rename(n_plays = "n_plays_control",
+    rename(n_plays_raw = "n_plays_raw_control",
+           n_plays = "n_plays_control",
            n_users = "n_users_control",
            dz_artist_id = "dz_artist_id") %>% 
     
@@ -144,13 +208,16 @@ make_respondent_plays <- function(dz_songs, dz_users){
                                dz_songs=dz_songs, dz_users=dz_users)
   
   respondent_plays <- streams %>%
+    mutate(hashed_id = as.character(hashed_id)) %>% 
     filter(is_respondent == 1) %>% 
     group_by(hashed_id, song_id, dz_artist_id, w_feat) %>%
-    summarise(n_plays = sum(w_feat),
+    summarise(n_plays_raw = sum(w_feat / w_feat),
+              n_plays = sum(w_feat),
               .groups = "drop") %>% 
-
+    
     group_by(hashed_id, dz_artist_id) %>%
     summarise(
+      n_plays_raw = sum(w_feat / w_feat),
       n_plays = sum(n_plays, na.rm = TRUE),
       .groups = "drop"
     ) %>%
@@ -159,9 +226,6 @@ make_respondent_plays <- function(dz_songs, dz_users){
   
   return(respondent_plays)
 }
-
-
-
 
 
 

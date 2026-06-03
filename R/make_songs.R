@@ -1,7 +1,7 @@
 ### load items_old or items_new
 make_dz_songs <- function(to_remove_file, file) {
   
-  to_remove <- read.csv(to_remove_file)
+  to_remove <- load_s3(to_remove_file)
   
   df <- load_s3(file,
                 col_select = c("song_id",
@@ -81,8 +81,8 @@ bind_dz_songs <- function(dz_songs_old, dz_songs_new, classical_albums, dz_names
 
 bind_dz_names <- function(file_1, file_2){
   
-  names <- load_s3(file = file_1)
-  scraped_names <- load_s3(file = file_2)
+  names <- load_s3(file_1)
+  scraped_names <- load_s3(file_2)
   
   names <- names %>% 
     mutate(dz_artist_id = as.character(artist_id), # CHANGED TO DEEZER_FEAT_ID
@@ -104,8 +104,6 @@ bind_dz_names <- function(file_1, file_2){
 
 
 
-  
-  
   
   
   

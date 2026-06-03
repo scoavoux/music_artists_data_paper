@@ -9,7 +9,6 @@ clean_telerama <- function(telerama_file){
                        into = c("source_name", "issue"), 
                        sep = ", ")
   
-  
   telerama <- telerama %>% 
     
     # mutate existing and new vars
@@ -64,19 +63,20 @@ clean_telerama <- function(telerama_file){
     
     as_tibble()
   
-  head(telerama)
+  print("telerama completed")
   
   return(telerama)
   
 }
 
 
-clean_lemonde <- function(lemonde_filepath){
+clean_lemonde <- function(lemonde_filepath, simulation = SIMULATION){
   
   require(stringr)
   require(dplyr)
   
-  # Le Monde
+  if (!simulation) {
+  
   lemonde <- vector("list", length = 12L)
   
   # there are some small errors (bad dates in parsed data); we correct them below
@@ -97,6 +97,20 @@ clean_lemonde <- function(lemonde_filepath){
 
   lemonde <- bind_rows(lemonde)
   
+  }
+  
+  else {
+    
+    lemonde <- load_s3("french_media/lemonde_raw.csv")
+    
+    lemonde <- lemonde %>% 
+      mutate(is_article = as.logical(is_article),
+             annee = as.numeric(annee),
+             date = ymd(publidate)) %>%
+      fill(publidate)
+    
+  }
+  
   lemonde <- lemonde %>% 
     
     filter(str_detect(rubrique, "[Mm]usique")) %>% 
@@ -115,22 +129,37 @@ clean_lemonde <- function(lemonde_filepath){
     
     as_tibble()
   
+  print("le monde completed")
+  
+  return(lemonde)
 
 }
 
 ## Le Figaro
 
-clean_lefigaro <- function(lefigaro_file) {
+clean_lefigaro <- function(lefigaro_file, simulation = SIMULATION) {
   
+  if (!simulation) {
+    
   s3 <- initialize_s3()
-  s3$download_file("scoavoux",
-                   paste0("french_media/", lefigaro_file), 
-                   paste0("data/temp/", lefigaro_file)
-                   )
   
-  lefigaro <- read_csv(paste0("data/temp/", lefigaro_file))
+  tmp <- tempfile(fileext = ".csv")
   
-  file.remove(paste0("data/temp/", lefigaro_file))
+  s3$download_file(
+    Bucket = "scoavoux",
+    Key = paste0("french_media/", lefigaro_file),
+    Filename = tmp
+  )
+  
+  lefigaro <- readr::read_csv(tmp)
+  
+  }
+  
+  else {
+    
+    lefigaro <- load_s3(paste0("french_media/",lefigaro_file))
+    
+  }
   
   lefigaro <- lefigaro %>% 
     
@@ -148,24 +177,38 @@ clean_lefigaro <- function(lefigaro_file) {
            article_author = "auteur",
            article_text = "texte")
   
+  print("le figaro completed")
+  
   return(lefigaro)
   
 }
 
 
 
-clean_liberation <- function(liberation_file){
+clean_liberation <- function(liberation_file, simulation = SIMULATION){
   
+  if (!simulation) {
+    
   s3 <- initialize_s3()
-  s3$download_file("scoavoux",
-                   paste0("french_media/",liberation_file), 
-                   paste0("data/temp/",liberation_file)
-                   )
   
-
-  liberation <- read_csv(paste0("data/temp/",liberation_file))
+  tmp <- tempfile(fileext = ".csv")
   
-  file.remove(paste0("data/temp/",liberation_file))
+  s3$download_file(
+    Bucket = "scoavoux",
+    Key = paste0("french_media/", liberation_file),
+    Filename = tmp
+  )
+  
+  liberation <- readr::read_csv(tmp)
+  
+  }
+  
+  else {
+    
+    liberation <- load_s3(paste0("french_media/",liberation_file))
+    
+    
+  }
   
   liberation <- liberation %>% 
 
@@ -184,6 +227,8 @@ clean_liberation <- function(liberation_file){
     filter(date > "2009-12-31") %>% 
     
     select(-publiheure)
+  
+  print("liberation completed")
   
   return(liberation)
   
@@ -217,8 +262,7 @@ bind_press_corpora <- function(telerama_file, lefigaro_file,
     select(-prediction)
   
   # export to csv for NER processing
-  write.csv2(press_corpus, "data/press_corpus.csv", 
-             fileEncoding = "UTF-8")
+  write_s3(press_corpus, "interim/press/press_corpus.csv")
   
   return(press_corpus)
   
@@ -226,19 +270,23 @@ bind_press_corpora <- function(telerama_file, lefigaro_file,
 
 
 # # load entities file separately
-# extracted_ents <- load_s3("press_files/extracted_ents_1203.csv")
+# extracted_ents <- load_s3("press/extracted_ents_1203.csv")
 # 
 # # names to drop
-# press_outliers_checked <- load_s3("press_files/press_outliers_checked_1003.csv")
+# press_outliers_checked <- load_s3("press/press_outliers_checked_1003.csv")
 # 
 # # aliases to update
-# ents_without_match_checked <- load_s3("press_files/ents_without_match_checked_1003.csv")
+# ents_without_match_checked <- load_s3("press/ents_without_match_checked_1003.csv")
 # 
 # 
 # extracted_ents %>% as_tibble()
 # press_outliers_checked
 # ents_without_match_checked
 # 
+
+
+
+
 
 
 
