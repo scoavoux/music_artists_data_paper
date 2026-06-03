@@ -49,12 +49,17 @@ po/*~
 rsconnect/
 
 # large files
-data/
-data/temp/
-*.parquet
-*.snappy.parquet
-*.csv
-*.feather
+#data/
+#data/temp/
+#*.parquet
+#*.snappy.parquet
+#*.csv
+#*.feather
 
 # python
 sql/.ipynb_checkpoints/
+.positai
+
+# targets
+_targets/
+

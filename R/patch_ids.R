@@ -1,0 +1,204 @@
+# find unique name matches between all and refs
+# ref_clean <=> reference (senscritique/mbz/...), which is anti-joined with all 
+# by dz_artist_id to select missings only
+# miss is a subset of all missing ref_id
+# matches makes name-based matches between all and ref and retains
+# unique matches only, excluding one-to-many and many-to-many matches
+# the needed cols are then recoded (ref_id.y to ref_id) and selected
+patch_names <- function(all,
+                        ref,
+                        ref_id,
+                        ref_name,
+                        all_name) {
+
+
+  ref_id   <- rlang::sym(ref_id)
+  ref_name <- rlang::sym(ref_name)
+  all_name <- rlang::sym(all_name)
+
+  ## prepare reference table
+  ref_clean <- ref %>%
+    as_tibble() %>%
+    mutate(across(where(is.integer), as.character)) %>%
+    select(!!ref_id, !!ref_name) %>%
+    filter(!is.na(!!ref_name)) %>%
+    
+    ## SHIT: FORGOT THIS??? ofc we want unique names in ref too
+    add_count(!!ref_name) %>% 
+    filter(n == 1) %>% 
+    
+    anti_join(all, by = setNames(rlang::as_string(ref_id),
+                                 rlang::as_string(ref_id)))
+
+  ## rows in all missing IDs
+  miss <- all %>%
+    filter(is.na(!!ref_id))
+
+  ## unique name-based matches
+  matches <- miss %>%
+    inner_join(ref_clean,
+               by = setNames(rlang::as_string(ref_name),
+                             rlang::as_string(all_name))) %>%
+    add_count(!!all_name, name = "n_all") %>% 
+    filter(n_all == 1) # CRUCIAL: keep only unique names
+  
+  # subset wanted cols
+  id_y <- paste0(rlang::as_string(ref_id), ".y")
+  
+  matches <- matches %>%
+    select(
+      !!all_name,
+      !!ref_name, 
+      !!rlang::as_string(ref_id) := !!rlang::sym(id_y),
+      dz_artist_id
+    ) %>%
+    # paste name to contact/mbz_name to update those too in all
+    mutate(!!ref_name := !!all_name) # works because we have unique name matches here
+  
+  
+  
+  return(matches)
+  
+  }
+
+  
+# --------------------------------------------------------------
+
+# extra function to get some mbz_ids from wikidata
+# take missing mbz_artist_ids in all, 
+
+patch_mbz_from_wiki <- function(all, wiki){
+  
+  mbz_missing <- all %>% 
+    filter(is.na(mbz_artist_id)) 
+  
+  # inner_join of the missing mbz cases with wikidata's mbz
+  mbz_from_wiki <- mbz_missing %>% 
+    
+    inner_join(wiki, by = "dz_artist_id") %>% 
+    filter(!is.na(mbz_artist_id.y)) %>% 
+    
+    # keep unique matches only
+    # REVIEW THIS!
+    add_count(dz_artist_id, name = "n_deezer") %>%
+    add_count(mbz_artist_id.y, name = "n_mbz") %>%
+    filter(n_deezer == 1, n_mbz == 1) %>% 
+    
+    mutate(mbz_artist_id = mbz_artist_id.y) %>% 
+    select(dz_artist_id, dz_name, mbz_artist_id)
+  
+  return(mbz_from_wiki)
+}
+
+
+# --------------------------------------------------
+
+# among the duplicate deezer names for which there is one single contact_name 
+# and sc_artist_id, find the cases where one duplicate is much more dz_stream_shareular than the others
+# try different thresholds
+
+patch_deezer_dups <- function(ref, 
+                              ref_id, 
+                              ref_name,
+                              all, 
+                              all_name = "dz_name"){
+  
+  require(dplyr)
+
+  ref_id   <- rlang::sym(ref_id)
+  ref_name <- rlang::sym(ref_name)
+  all_name <- rlang::sym(all_name)
+  
+  # for each name in all, compute fraction of streams held by one homonym
+  # and filter the clear cases missing sc_artist_ids
+  all_stream_share <- all %>% 
+    group_by(!!all_name) %>%
+    mutate(n_plays_byname = n_plays / sum(n_plays)) %>% 
+    filter(n_plays_byname > 0.90) %>% 
+    filter(is.na(!!ref_id))
+  
+  ## subset unique ref names
+  unique_ref <- ref %>% 
+    add_count(!!ref_name) %>% 
+    filter(n == 1) %>% # unique names only
+    select(!!ref_id, !!ref_name)
+  
+  matches <- patch_names(all = all_stream_share,
+                         ref = unique_ref,
+                         ref_id = ref_id,
+                         ref_name = ref_name,
+                         all_name = all_name)
+  
+  return(matches)
+  
+}
+
+# --------------------------------------------------------------
+
+# resolve contact name duplicates by share of sc_collection_count they have
+# then patch them to unique* deezer names
+patch_sc_dups <- function(all, senscritique){
+  
+  # ----------- subset all to unique names missing sc_artist_ids
+  ## *added 0.9 filtering condition to include some deezer dups!
+  all_unique_sc <- all %>%
+    group_by(dz_name) %>% 
+    mutate(n_plays_byname = n_plays / sum(n_plays)) %>% 
+    filter(n_plays_byname > 0.9) %>% 
+    add_count(dz_name) %>%
+    filter(n == 1) %>%
+    filter(is.na(sc_artist_id)) %>% 
+    select(dz_name, sc_name, dz_artist_id, sc_artist_id)
+  
+  # ------------ prepare senscritique
+  sc_unique <- senscritique %>% 
+    mutate(sc_collection_count = as.integer(sc_collection_count)) %>% 
+    filter(sc_collection_count > 0) %>% # remove irrelevant artists 
+    group_by(sc_name) %>% 
+    mutate(colcount_share_byname = sc_collection_count / sum(sc_collection_count)) %>% 
+    filter(colcount_share_byname > 0.9) %>% 
+    select(sc_name, sc_artist_id)
+  
+  
+  # ------- patch to missing contact_data in all
+  matches <- patch_names(all = all_unique_sc,
+                         ref = sc_unique,
+                         ref_id = "sc_artist_id",
+                         ref_name = "sc_name",
+                         all_name = "dz_name")
+  
+  return(matches)
+}
+
+
+
+# ----------------------------------------------------------
+
+# wrapper for dplyr::rows_update: takes a list of patches,
+# passes them to all with rows_update sequentially, and returns
+# the enriched dataset with metrics on n_plays share
+update_rows <- function(all, ..., by = "dz_artist_id"){
+  
+  require(dplyr)
+  require(stringr)
+  
+  patches <- list(...)
+  patch_names <- names(patches)
+  
+  for(i in seq_along(patches)){
+    
+    all <- all %>% 
+      rows_update(patches[[i]], by = by)
+    
+    print_stream_share(all)
+
+  }
+  
+  return(all)
+  
+}
+
+
+
+
+
