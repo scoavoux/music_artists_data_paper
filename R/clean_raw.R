@@ -65,7 +65,6 @@ load_senscritique <- function(sc_file){
   
 }
 
-
 # ----------------- MBZ-DEEZER ---------------------------
 
 # transform the raw musicbrainz keys file from SQL to mbz_deezer

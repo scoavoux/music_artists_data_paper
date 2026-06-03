@@ -31,7 +31,6 @@ join_artist_ids <- function(dz_songs,
   # group dz_songs by artist -----------------
   artists <- group_songs_by_artist(dz_songs, dz_stream_data)
   
-  
   # PROCESS RAW -------------------------------------------
   
   # musicbrainz keys
@@ -43,10 +42,12 @@ join_artist_ids <- function(dz_songs,
   mbz_deezer_senscritique <- mbz_deezer %>% 
     left_join(senscritique, by = "mbz_artist_id")
 
+
   # wiki names
   wiki <- wiki %>% 
     filter(!is.na(dz_artist_id)) %>%
     select(dz_artist_id, wiki_name)
+
 
   # JOIN ALL IDs TO ARTISTS ---------------------------------------------
   artists <- artists %>% 

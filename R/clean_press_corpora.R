@@ -70,12 +70,13 @@ clean_telerama <- function(telerama_file){
 }
 
 
-clean_lemonde <- function(lemonde_filepath){
+clean_lemonde <- function(lemonde_filepath, simulation = SIMULATION){
   
   require(stringr)
   require(dplyr)
   
-  # Le Monde
+  if (!simulation) {
+  
   lemonde <- vector("list", length = 12L)
   
   # there are some small errors (bad dates in parsed data); we correct them below
@@ -95,6 +96,20 @@ clean_lemonde <- function(lemonde_filepath){
   )
 
   lemonde <- bind_rows(lemonde)
+  
+  }
+  
+  else {
+    
+    lemonde <- load_s3("french_media/lemonde_raw.csv")
+    
+    lemonde <- lemonde %>% 
+      mutate(is_article = as.logical(is_article),
+             annee = as.numeric(annee),
+             date = ymd(publidate)) %>%
+      fill(publidate)
+    
+  }
   
   lemonde <- lemonde %>% 
     
@@ -122,8 +137,10 @@ clean_lemonde <- function(lemonde_filepath){
 
 ## Le Figaro
 
-clean_lefigaro <- function(lefigaro_file) {
+clean_lefigaro <- function(lefigaro_file, simulation = SIMULATION) {
   
+  if (!simulation) {
+    
   s3 <- initialize_s3()
   
   tmp <- tempfile(fileext = ".csv")
@@ -135,6 +152,14 @@ clean_lefigaro <- function(lefigaro_file) {
   )
   
   lefigaro <- readr::read_csv(tmp)
+  
+  }
+  
+  else {
+    
+    lefigaro <- load_s3(paste0("french_media/",lefigaro_file))
+    
+  }
   
   lefigaro <- lefigaro %>% 
     
@@ -160,8 +185,10 @@ clean_lefigaro <- function(lefigaro_file) {
 
 
 
-clean_liberation <- function(liberation_file){
+clean_liberation <- function(liberation_file, simulation = SIMULATION){
   
+  if (!simulation) {
+    
   s3 <- initialize_s3()
   
   tmp <- tempfile(fileext = ".csv")
@@ -173,6 +200,15 @@ clean_liberation <- function(liberation_file){
   )
   
   liberation <- readr::read_csv(tmp)
+  
+  }
+  
+  else {
+    
+    liberation <- load_s3(paste0("french_media/",liberation_file))
+    
+    
+  }
   
   liberation <- liberation %>% 
 

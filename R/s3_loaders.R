@@ -97,14 +97,51 @@ load_s3 <- function(file,
 
 
 ### export data
-### export data
-write_s3 <- function(x, file) {
+write_s3 <- function(x,
+                     file,
+                     simulation = SIMULATION,
+                     local_data_dir = LOCAL_DATA_DIR) {
   
   require(arrow)
   
+  # -----------------------------
+  # LOCAL SIMULATION MODE
+  # -----------------------------
+  if (simulation) {
+    
+    local_file <- file.path(local_data_dir, file)
+    
+    dir.create(
+      dirname(local_file),
+      recursive = TRUE,
+      showWarnings = FALSE
+    )
+    
+    if (grepl("\\.csv$", file)) {
+      
+      readr::write_csv(x, local_file)
+      
+      return(invisible(local_file))
+    }
+    
+    if (grepl("\\.parquet$", file)) {
+      
+      arrow::write_parquet(x, local_file)
+      
+      return(invisible(local_file))
+    }
+    
+    stop("Unsupported file type: ", file)
+  }
+  
+  # -----------------------------
+  # S3 PRODUCTION MODE
+  # -----------------------------
   s3 <- initialize_s3()
   
-  tmp <- tempfile(fileext = tools::file_ext(file))
+  tmp <- tempfile(
+    fileext = paste0(".", tools::file_ext(file))
+  )
   
   if (grepl("\\.csv$", file)) {
     

@@ -78,7 +78,9 @@ list(
     
     # manual searches sc_artist_id to dz_artist_id
     tar_target(manual_search,
-               load_s3("interim/dict/manual_search_ids.csv")),
+               load_s3("interim/dict/manual_search_ids.csv") %>% 
+                 mutate(dz_artist_id = as.character(dz_artist_id),
+                        sc_artist_id = as.character(sc_artist_id))),
 
     # mbz_artist_id to dz_artist_id
     tar_target(mbz_deezer,
@@ -366,6 +368,15 @@ list(
 #   prefix = "interim/prod/",
 #   local_dir = "data/re"
 # )
+
+
+
+
+
+
+
+
+
 
 
 
