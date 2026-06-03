@@ -1,9 +1,9 @@
 library(targets)
 library(tarchetypes)
 
-SIMULATION <- FALSE
+SIMULATION <- TRUE
 
-LOCAL_DATA_DIR <- "./"
+LOCAL_DATA_DIR <- "./data/"
 
 tar_option_set(
   packages = c(
@@ -363,11 +363,9 @@ list(
 
 
 # download_s3_folder(
-#   prefix = "interim/",
-#   local_dir = "data/interim"
+#   prefix = "interim/prod/",
+#   local_dir = "data/re"
 # )
-
-
 
 
 

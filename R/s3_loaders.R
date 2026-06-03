@@ -21,6 +21,7 @@ initialize_s3 <- function(){
 load_s3 <- function(file,
                     bucket = "scoavoux",
                     simulation = SIMULATION,
+                    path = LOCAL_DATA_DIR,
                     ...) {
   
   # -----------------------------
@@ -31,7 +32,7 @@ load_s3 <- function(file,
     if (grepl("\\.csv$", file)) {
       
       dat <- data.table::fread(
-        file,
+        paste0(path,file),
         ...
       )
       
@@ -41,7 +42,7 @@ load_s3 <- function(file,
     if (grepl("\\.parquet$", file)) {
       
       dat <- arrow::read_parquet(
-        file,
+        paste0(path,file),
         as_data_frame = TRUE
       )
       
