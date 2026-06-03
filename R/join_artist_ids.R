@@ -71,8 +71,6 @@ join_artist_ids <- function(dz_songs,
     distinct(dz_artist_id, sc_artist_id, mbz_artist_id, .keep_all = TRUE) %>%  # !!!
     as_tibble()
 
-  print_stream_share(artists)
-  
   return(artists)
 }
 

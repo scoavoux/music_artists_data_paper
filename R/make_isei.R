@@ -6,7 +6,6 @@ make_raw_isei <- function(survey_raw, isco_isei_file, isco_file, openrefine_file
   isco <- load_s3(isco_file)
   openrefine <- load_s3(openrefine_file)
 
-  print("allgood")
   # 1. ----------------------- prepare survey
   survey <- survey_raw %>% 
     select(hashed_id,
@@ -23,17 +22,13 @@ make_raw_isei <- function(survey_raw, isco_isei_file, isco_file, openrefine_file
     filter(survey_prof != "") %>% 
     select(hashed_id, survey_prof, starts_with("E_"))
   
-  print("allgood")
-  
-  print(class(survey$hashed_id))
-  
+
   # convert E_ variables to isco conditions
   survey <- survey %>% 
     assign_condition_isco() %>% 
     select(hashed_id, survey_prof, condition_isco)
   
-  print("allgood")
-  
+
   
   ## 2. ----------------------- prepare isco and isei
 
@@ -49,23 +44,18 @@ make_raw_isei <- function(survey_raw, isco_isei_file, isco_file, openrefine_file
                  values_to = "isco4") %>% 
     distinct()
   
-  print("allgood")
-  
   # isco to isei 
   isco_isei <- isco_isei %>% 
     mutate(isco4 = as.character(isco)) %>% 
     select(-isco) %>% 
     as_tibble()
 
-  print("allgood")
-  
   ## put ISEI into isco_cod directly
   isei_cod <- isco %>% 
     inner_join(isco_isei, by = "isco4") %>% 
     select(-isco4)
   
-  print("allgood")
-  
+
   # 3. ------------------------- prepare openrefine recodes
   openrefine <- openrefine %>% 
     as_tibble() %>% 

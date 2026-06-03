@@ -38,22 +38,16 @@ make_respondent_educ <- function(survey_raw, respondent_streams){
 make_respondent_demo <- function(respondent_streams, survey_raw, 
                                  respondent_educ, respondent_isei){
   
-  print("allgood")
-  
   age <- survey_raw %>% 
     mutate(age = 2023 - E_birth_year,
            hashed_id = as.character(hashed_id)) %>% 
     filter(!is.na(age), age < 100) %>% 
     select(hashed_id, age) 
   
-  print("allgood")
-  
   gender <- survey_raw %>% 
     filter(E_gender %in% c("Un homme", "Une femme")) %>% 
     mutate(hashed_id = as.character(hashed_id)) %>% 
     select(hashed_id, E_gender)
-  
-  print("allgood")
   
   # mean age of artist's respondents
   respondent_age <- respondent_streams %>% 
@@ -62,8 +56,6 @@ make_respondent_demo <- function(respondent_streams, survey_raw,
     mutate(f = n_plays / sum(n_plays)) %>% 
     summarise(respondent_mean_age = sum(f * age, na.rm = T))
   
-  print("allgood")
-  
   # share of females within artist's respondents
   respondent_share_female <- respondent_streams %>% 
     inner_join(gender, by = "hashed_id") %>% 
@@ -71,8 +63,6 @@ make_respondent_demo <- function(respondent_streams, survey_raw,
     mutate(f = n_plays / sum(n_plays)) %>% 
     filter(E_gender == "Une femme") %>% 
     summarise(respondent_female_share = sum(f, na.rm = T))
-  
-  print("allgood")
   
   respondent_demographics <- respondent_age %>% 
     
