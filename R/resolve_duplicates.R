@@ -89,7 +89,7 @@ deduplicate_ids <- function(artists_to_patch, simulation = SIMULATION){
 
   if (!simulation) {
     
-    write_s3(removed_duplicates, "interim/removed_duplicates.csv")
+    write_s3(removed_duplicates, "interim/output/removed_duplicates.csv")
     
   }
   

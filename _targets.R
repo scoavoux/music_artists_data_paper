@@ -26,7 +26,7 @@ list(
 
     # maybe put in clean_raw
     tar_target(dz_users,
-               load_s3("records_w3/RECORDS_hashed_user_group.parquet") %>% 
+               load_s3("records_w3/survey/RECORDS_hashed_user_group.parquet") %>% 
                  mutate(
                    is_respondent = ifelse(is_respondent == TRUE, 1, 0),
                    is_control = ifelse(is_in_control_group == TRUE, 1, 0)) %>% 
@@ -50,7 +50,7 @@ list(
     
     # bind old and new songs and names, join to streams
     tar_target(dz_names,
-               bind_dz_names(file_1 = "interim/prod/artists_data.snappy.parquet",
+               bind_dz_names(file_1 = "records_w3/items/artists_data.snappy.parquet",
                             file_2 = "interim/prod/new_artists_names_from_api.csv")),
     
     tar_target(dz_songs_old,
@@ -78,7 +78,7 @@ list(
     
     # manual searches sc_artist_id to dz_artist_id
     tar_target(manual_search,
-               load_manual_search(file="interim/dict/manual_search.csv")),
+               load_s3("interim/dict/manual_search_ids.csv")),
 
     # mbz_artist_id to dz_artist_id
     tar_target(mbz_deezer,
@@ -183,21 +183,21 @@ list(
                                 lefigaro_file = "lefigaro-complet-v0.csv",
                                 liberation_file = "liberation-complet-v2.csv",
                                 lemonde_filepath = "lemonde/lemonde-20",
-                                bert_reviews_file = "interim/press_files/bert_review_classif.csv")),
+                                bert_reviews_file = "interim/press/bert_review_classif.csv")),
 
   # load entities file separately
   tar_target(press_named_entities,
-             clean_press_ents("interim/press_files/extracted_ents_2105.csv")), # CHANGED FROM 1203 TO NEW ENT FILE
+             clean_press_ents("interim/press/extracted_ents_2105.csv")), # CHANGED FROM 1203 TO NEW ENT FILE
   
   # names to drop
   tar_target(entities_to_drop,
-             list_entities_to_drop(file="interim/press_files/press_outliers_checked_1003.csv")),
+             list_entities_to_drop(file="interim/press/press_outliers_checked_1003.csv")),
   
   # aliases to update
   # attention: hand-coded csv files which we might update!
   tar_target(aliases_to_add,
-             list_aliases(file1 = "interim/press_files/ents_without_match_checked_1003.csv",
-                          file2 = "interim/press_files/press_outliers_checked_1003.csv",
+             list_aliases(file1 = "interim/press/ents_without_match_checked_1003.csv",
+                          file2 = "interim/press/press_outliers_checked_1003.csv",
                           artists)),
 
   # output: all press counts linked to valid dz_artist_id
@@ -226,7 +226,7 @@ list(
   
   tar_target(mbz_artist_country,
              make_artist_country(mbz_area_file="musicbrainz/musicbrainz_area.csv",
-                                 area_to_country_file="interim/dict/area_country.csv",
+                                 area_country_file="interim/prod/area_country.csv",
                                  country_rank_file="interim/dict/country_rank.csv")),
   
   # language
@@ -246,7 +246,7 @@ list(
   # gender
   tar_target(mbz_gpt_gender,
              make_artist_gender(artists,
-                                mbz_gender_file="musicbrainz/musicbrainz_gender.csv",
+                                mbz_gender_file="musicbrainz/musicbrainz_artist_gender.csv",
                                 gpt_gender_file="interim/prod/gpt_gender.csv")
              ),
   
@@ -362,8 +362,14 @@ list(
 
 
 
-download_s3_folder(
-  prefix = "gpt_music_data/",
-  local_dir = "data/gpt_music_data"
-)
+# download_s3_folder(
+#   prefix = "interim/",
+#   local_dir = "data/interim"
+# )
+
+
+
+
+
+
 

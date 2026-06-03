@@ -145,7 +145,8 @@ count_names_press <- function(artists,
   
   if (!simulation) {
     
-    write_s3(ents_without_match, file = "press_files/ents_without_match.csv")
+    write_s3(ents_without_match, 
+             file = "interim/press/ents_without_match.csv")
     
   }
   
@@ -156,7 +157,8 @@ count_names_press <- function(artists,
   
   if (!simulation) {
     
-    write_s3(press_counts_outliers, file = "press_files/press_counts_outliers.csv")
+    write_s3(press_counts_outliers, 
+             file = "interim/press/press_counts_outliers.csv")
     
   }
   

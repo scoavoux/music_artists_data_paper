@@ -63,7 +63,7 @@ clean_telerama <- function(telerama_file){
     
     as_tibble()
   
-  head(telerama)
+  print("telerama completed")
   
   return(telerama)
   
@@ -114,6 +114,9 @@ clean_lemonde <- function(lemonde_filepath){
     
     as_tibble()
   
+  print("le monde completed")
+  
+  return(lemonde)
 
 }
 
@@ -123,12 +126,15 @@ clean_lefigaro <- function(lefigaro_file) {
   
   s3 <- initialize_s3()
   
-  obj <- s3$get_object(
+  tmp <- tempfile(fileext = ".csv")
+  
+  s3$download_file(
     Bucket = "scoavoux",
-    Key = paste0("french_media/", lefigaro_file)
+    Key = paste0("french_media/", lefigaro_file),
+    Filename = tmp
   )
   
-  lefigaro <- readr::read_csv(rawToChar(obj$Body))
+  lefigaro <- readr::read_csv(tmp)
   
   lefigaro <- lefigaro %>% 
     
@@ -146,6 +152,8 @@ clean_lefigaro <- function(lefigaro_file) {
            article_author = "auteur",
            article_text = "texte")
   
+  print("le figaro completed")
+  
   return(lefigaro)
   
 }
@@ -156,12 +164,15 @@ clean_liberation <- function(liberation_file){
   
   s3 <- initialize_s3()
   
-  obj <- s3$get_object(
+  tmp <- tempfile(fileext = ".csv")
+  
+  s3$download_file(
     Bucket = "scoavoux",
-    Key = paste0("french_media/", liberation_file)
+    Key = paste0("french_media/", liberation_file),
+    Filename = tmp
   )
   
-  liberation <- readr::read_csv(rawToChar(obj$Body))
+  liberation <- readr::read_csv(tmp)
   
   liberation <- liberation %>% 
 
@@ -180,6 +191,8 @@ clean_liberation <- function(liberation_file){
     filter(date > "2009-12-31") %>% 
     
     select(-publiheure)
+  
+  print("liberation completed")
   
   return(liberation)
   
@@ -213,8 +226,7 @@ bind_press_corpora <- function(telerama_file, lefigaro_file,
     select(-prediction)
   
   # export to csv for NER processing
-  write.csv2(press_corpus, "data/press_files/press_corpus.csv", 
-             fileEncoding = "UTF-8")
+  write_s3(press_corpus, "interim/press/press_corpus.csv")
   
   return(press_corpus)
   
@@ -222,13 +234,13 @@ bind_press_corpora <- function(telerama_file, lefigaro_file,
 
 
 # # load entities file separately
-# extracted_ents <- load_s3("press_files/extracted_ents_1203.csv")
+# extracted_ents <- load_s3("press/extracted_ents_1203.csv")
 # 
 # # names to drop
-# press_outliers_checked <- load_s3("press_files/press_outliers_checked_1003.csv")
+# press_outliers_checked <- load_s3("press/press_outliers_checked_1003.csv")
 # 
 # # aliases to update
-# ents_without_match_checked <- load_s3("press_files/ents_without_match_checked_1003.csv")
+# ents_without_match_checked <- load_s3("press/ents_without_match_checked_1003.csv")
 # 
 # 
 # extracted_ents %>% as_tibble()

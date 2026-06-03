@@ -82,14 +82,6 @@ make_raw_isei <- function(survey_raw, isco_isei_file, isco_file, openrefine_file
 
 
 
-# t <- isei_cod %>% 
-#   distinct(profession)
-# 
-# write.csv2(t, "data/isei_jobs.csv")
-# 
-# write.csv2(survey_missing, "data/missing_jobs_in_survey.csv")
-# 
-# 
 
 
 
