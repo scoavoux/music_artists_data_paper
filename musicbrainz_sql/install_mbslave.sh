@@ -1,7 +1,7 @@
 # install dependencies
 sudo apt install python3 python3-dev pipx postgresql
 # install mbslaves and make sure executable is in path
-pipx install git+https://github.com/acoustid/mbslave.git
+pipx install "git+https://github.com/acoustid/mbslave.git@f652ea4e8c7ec474559c7f79a2031a59c69401e2"
 pipx ensurepath
 # restart terminal so that $PATH updates and mbslave can be found.
 # RESTART TERMINAL
