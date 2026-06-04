@@ -50,7 +50,7 @@ rsconnect/
 
 # large files
 #data/
-#data/temp/
+data/ignoredata/
 #*.parquet
 #*.snappy.parquet
 #*.csv

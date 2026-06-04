@@ -6,12 +6,12 @@ options(warn=0)
 # SIMULATION=FALSE LOCAL_DATA_DIR="" Rscript -e "targets::tar_make()"
 
 SIMULATION <- as.logical(
-  Sys.getenv("SIMULATION", unset = "TRUE")
+  Sys.getenv("SIMULATION", unset = "FALSE")
 )
 
 LOCAL_DATA_DIR <- Sys.getenv(
   "LOCAL_DATA_DIR",
-  unset = "data/"
+  unset = ""
 )
 
 tar_option_set(
@@ -70,14 +70,14 @@ list(
                make_dz_songs(to_remove_file = "interim/dict/artists_to_remove.csv",
                               file = "records_w3/items/song.snappy.parquet")),
     
+    tar_target(classical_albums,
+               filter_classical_albums(album_file="interim/prod/genres_from_albums.parquet",
+                                       genre_mapping_file="interim/dict/deezer_genre_mapping.csv")),
+    
     tar_target(dz_songs,
                bind_dz_songs(dz_songs_old, dz_songs_new, 
                              classical_albums, dz_names)),
     
-    
-    tar_target(classical_albums,
-               filter_classical_albums(album_file="interim/prod/genres_from_albums.parquet",
-                                       genre_mapping_file="interim/dict/deezer_genre_mapping.csv")),
     
     # -------- load and process raw ID data
     
@@ -373,13 +373,10 @@ list(
 
 
 
-<<<<<<< HEAD
-=======
 # download_s3_folder(
 #   prefix = "interim/prod/",
 #   local_dir = "data/re"
 # )
->>>>>>> simulation
 
 
 

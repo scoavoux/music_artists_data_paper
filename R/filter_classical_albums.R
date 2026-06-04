@@ -17,15 +17,33 @@ filter_classical_albums <- function(album_file, genre_mapping_file){
     filter(genre == "Classique") %>% 
     as_tibble()
 
-  # ---------------- make dictionary of composer aliases
+  # --------------
+  comp <- read.csv("data/base_compositeurs.csv",
+                   sep = ";")
   
-  composer_dict <- tibble(dz_artist_id = c(1900, 5695, 6144, 5176),
-                          
-                          composer_alias = c("Bach", 
-                                             "Mozart", 
-                                             "Beethoven", 
-                                             "Debussy")
-  )
+  aliases_to_add <- read.csv("data/aliases_to_add.csv",
+                             sep = ";")
+  
+  aliases_to_add <- aliases_to_add %>% 
+    mutate(dz_name = str_to_title(dz_name))
+  
+  comp <- comp %>% 
+    mutate(dz_artist_id = as.character(dz_artist_id)) %>% 
+    filter(compositeur == 1) %>% 
+    as_tibble() %>%
+    distinct(dz_name, .keep_all = T) %>% 
+    select(dz_artist_id, dz_name) 
+  
+  aliases <- comp %>% 
+    inner_join(aliases_to_add, by = "dz_name") %>% 
+    distinct(dz_artist_id, .keep_all = T) %>% 
+    select(dz_artist_id, dz_name = "ent_name") %>% 
+    mutate(dz_name = str_to_title(dz_name))
+  
+  composer_dict <- comp %>% 
+    bind_rows(aliases) %>% 
+    distinct(dz_name, .keep_all = T)
+  
   
   ## ------------ make classical composers
   
@@ -37,8 +55,8 @@ filter_classical_albums <- function(album_file, genre_mapping_file){
     
     filter(
       str_detect(
-        str_to_lower(album_title),
-        fixed(str_to_lower(composer_alias))
+        album_title,
+        fixed(dz_name)
       )
     ) %>%
     
@@ -59,14 +77,42 @@ filter_classical_albums <- function(album_file, genre_mapping_file){
 
 
 
+comp <- read.csv("data/base_compositeurs.csv",
+                 sep = ";")
 
+aliases_to_add <- read.csv("data/aliases_to_add.csv",
+                           sep = ";")
 
+dat <- df %>% 
+  filter(genre_dz_album_1 == "Classique") %>% 
+  select(dz_artist_id, dz_name, n_plays)
 
+aliases_to_add <- aliases_to_add %>% 
+  mutate(dz_name = str_to_title(dz_name)) %>% 
+  as_tibble() %>% 
+  left_join(dat, by = "dz_name") %>% 
+  group_by(dz_name) %>% 
+  filter(n_plays == max(n_plays)) %>% 
+  ungroup() 
 
+# ADD beethoven, ??
 
+comp <- comp %>% 
+  mutate(dz_artist_id = as.character(dz_artist_id)) %>% 
+  filter(compositeur == 1) %>% 
+  as_tibble() %>%
+  distinct(dz_name, .keep_all = T) %>% 
+  select(dz_artist_id, dz_name) 
 
+aliases <- comp %>% 
+  inner_join(aliases_to_add, by = "dz_name") %>% 
+  distinct(dz_artist_id, .keep_all = T) %>% 
+  select(dz_artist_id, dz_name = "ent_name") %>% 
+  mutate(dz_name = str_to_title(dz_name))
 
-
+composer_dict <- comp %>% 
+  bind_rows(aliases) %>% 
+  distinct(dz_name, .keep_all = T)
 
 
 

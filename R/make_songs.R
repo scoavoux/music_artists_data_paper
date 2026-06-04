@@ -33,27 +33,27 @@ bind_dz_songs <- function(dz_songs_old, dz_songs_new, classical_albums, dz_names
   
   # remove 3 NAs
   songs <-  songs %>% 
-    filter(!is.na(songs$dz_artist_id))
+    filter(!is.na(dz_artist_id))
   
   # --------------------------------------------------
   # ADD CLASSICAL COMPOSERS AS EXTRA FEATURED ARTISTS
   # --------------------------------------------------
 
-  songs <- songs %>% 
-    
-    left_join(classical_albums, by = "album_id") %>% 
-    
+  songs <- songs %>%
+
+    left_join(classical_albums, by = "album_id") %>%
+
     mutate(
       dz_artist_feat_id = map2(
         dz_artist_feat_id,
         composer_dz_artist_id,
         ~ unique(c(.x, .y))
       )
-    ) %>% 
-    
+    ) %>%
+
     select(-composer_dz_artist_id)
-  
-  
+
+
   # separate rows of featurings
   songs <- songs %>% 
     mutate(dz_artist_id = map_chr(dz_artist_feat_id, # CONVERT FEAT TO ID
