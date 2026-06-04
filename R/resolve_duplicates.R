@@ -1,4 +1,4 @@
-deduplicate_ids <- function(artists_to_patch){
+deduplicate_ids <- function(artists_to_patch, simulation = SIMULATION){
   
   require(dplyr)
   
@@ -87,7 +87,11 @@ deduplicate_ids <- function(artists_to_patch){
   removed_duplicates <- all %>% 
     anti_join(all_dedup, by = c("dz_artist_id", "sc_artist_id", "mbz_artist_id"))
 
-  write_s3(removed_duplicates, "interim/removed_duplicates.csv")
+  if (!simulation) {
+    
+    write_s3(removed_duplicates, "interim/output/removed_duplicates.csv")
+    
+  }
   
   return(all_dedup)
 }

@@ -10,7 +10,10 @@ filter_classical_albums <- function(album_file, genre_mapping_file){
   genre_classical <- albums %>%
     left_join(deezer_genre_mapping, by = "genre_id") %>%
     filter(!is.na(genre)) %>%
-    select(album_id, dz_artist_id = "artist_id", album_title, genre) %>%
+    select(album_id, 
+           dz_artist_id = "artist_id", 
+           album_title, 
+           genre) %>%
     filter(genre == "Classique") %>% 
     as_tibble()
 

@@ -17,140 +17,205 @@ initialize_s3 <- function(){
 }
 
 
-##### load csv and parquet files
-load_s3 <- function(file, bucket = "scoavoux", col_select = NULL, ...) {
+# load files either from s3 or locally
+load_s3 <- function(file,
+                    bucket = "scoavoux",
+                    simulation = SIMULATION,
+                    path = LOCAL_DATA_DIR,
+                    ...) {
   
+  # -----------------------------
+  # LOCAL SIMULATION MODE
+  # -----------------------------
+  if (simulation) {
+    
+    if (grepl("\\.csv$", file)) {
+      
+      dat <- data.table::fread(
+        paste0(path,file),
+        ...
+      )
+      
+      return(dat)
+    }
+    
+    if (grepl("\\.parquet$", file)) {
+      
+      dat <- arrow::read_parquet(
+        paste0(path,file),
+        as_data_frame = TRUE
+      )
+      
+      return(dat)
+    }
+    
+    stop("Unsupported file type: ", file)
+  }
+  
+  # -----------------------------
+  # S3 PRODUCTION MODE
+  # -----------------------------
   s3 <- initialize_s3()
   
-  if(grepl("\\.csv", file)) {
-    obj <- s3$get_object(Bucket = bucket, Key = file) # load object from s3 bucket
-    txt <- rawToChar(obj$Body) # raw bytes to UTF-8 text
-    dat <- data.table::fread(input = txt, ...) # fread reads strings directly if they contain CSV content
+  if (grepl("\\.csv$", file)) {
+    
+    obj <- s3$get_object(
+      Bucket = bucket,
+      Key = file
+    )
+    
+    txt <- rawToChar(obj$Body)
+    
+    dat <- data.table::fread(
+      input = txt,
+      ...
+    )
+    
     return(dat)
   }
   
-  # --- Parquet ---
   if (grepl("\\.parquet$", file)) {
-    obj <- s3$get_object(Bucket = bucket, Key = file)
+    
+    obj <- s3$get_object(
+      Bucket = bucket,
+      Key = file
+    )
+    
     buf <- arrow::BufferReader$create(obj$Body)
-    dat <- arrow::read_parquet(buf, as_data_frame = TRUE, col_select = NULL)
+    
+    dat <- arrow::read_parquet(
+      buf,
+      as_data_frame = TRUE
+    )
+    
     return(dat)
   }
   
-  #message(cat(file, "loaded"))
-  #message(cat("N rows:", nrow(dat)))
-  #print(head(dat))
-  
   stop("Unsupported file type: ", file)
-  
 }
 
-##### load partitioned dataset
-##### for streams
-load_partitioned_s3 <- function(
-    bucket = "scoavoux",
-    prefix = NULL,
-    endpoint = "minio.lab.sspcloud.fr",
-    region = Sys.getenv("AWS_DEFAULT_REGION"),
-    partition_cols = list(
-      REGION = arrow::utf8()
-    ),
-    cols = NULL
-) {
-  # ---- Build s3_bucket() source ----
-  s3_src <- arrow::s3_bucket(
-    bucket,
-    endpoint_override = endpoint,
-    region = region
-  )
-  
-  # point to the folder inside the bucket
-  dat_path <- s3_src$path(prefix)
-  
-  # ---- Partitioning (optional) ----
-  if (is.null(partition_cols)) {
-    dat <- arrow::open_dataset(dat_path)
-  } else {
-    schema <- arrow::schema(!!!partition_cols)
-    dat <- arrow::open_dataset(dat_path, partitioning = schema)
-  }
-  
-  dat <- dat %>% 
-  select(all_of(cols)) %>% 
-  ungroup() %>% 
-  collect()
-  
-  return(dat)
-}
-
-
-
-##### TEMP --- return variable list of a file
-load_s3_info <- function(file, bucket = "scoavoux", ...) {
-  
-  s3 <- initialize_s3()
-  
-  if(grepl("\\.csv", file)) {
-    obj <- s3$get_object(Bucket = bucket, Key = file) # load object from s3 bucket
-    txt <- rawToChar(obj$Body) # raw bytes to UTF-8 text
-    dat <- data.table::fread(input = txt, nrows = 0, ...) 
-    return(names(dat))
-  }
-  
-  
-  if(grepl("\\.parquet", file)) {
-    obj <- s3$get_object(Bucket = bucket, Key = file)
-    dat <- arrow::read_parquet(obj$Body, as_data_frame = F)$schema # arrow reads parquet directly from raw vector
-    return(names(dat))
-  }
-  
-  stop("Unsupported file type: ", file)
-  
-}
 
 
 ### export data
-write_s3 <- function(x, file, FUN = write_function){
+write_s3 <- function(x,
+                     file,
+                     simulation = SIMULATION,
+                     local_data_dir = LOCAL_DATA_DIR) {
   
   require(arrow)
   
-  write_function <- readr::write_csv
-  
-  if(grepl("\\.csv", file)) {
+  # -----------------------------
+  # LOCAL SIMULATION MODE
+  # -----------------------------
+  if (simulation) {
     
-  aws.s3::s3write_using(
-    x,
-    FUN = write_function,
-    object = file,
-    bucket = "scoavoux",
-    opts = list("region" = "")
+    local_file <- file.path(local_data_dir, file)
+    
+    dir.create(
+      dirname(local_file),
+      recursive = TRUE,
+      showWarnings = FALSE
+    )
+    
+    if (grepl("\\.csv$", file)) {
+      
+      readr::write_csv(x, local_file)
+      
+      return(invisible(local_file))
+    }
+    
+    if (grepl("\\.parquet$", file)) {
+      
+      arrow::write_parquet(x, local_file)
+      
+      return(invisible(local_file))
+    }
+    
+    stop("Unsupported file type: ", file)
+  }
+  
+  # -----------------------------
+  # S3 PRODUCTION MODE
+  # -----------------------------
+  s3 <- initialize_s3()
+  
+  tmp <- tempfile(
+    fileext = paste0(".", tools::file_ext(file))
   )
+  
+  if (grepl("\\.csv$", file)) {
+    
+    readr::write_csv(x, tmp)
+    
+  } else if (grepl("\\.parquet$", file)) {
+    
+    arrow::write_parquet(x, tmp)
+    
+  } else {
+    
+    stop("Unsupported file type: ", file)
     
   }
   
-  if(grepl("\\.parquet", file)) {
+  s3$put_object(
+    Body = tmp,
+    Bucket = "scoavoux",
+    Key = file
+  )
+  
+  invisible(file)
+}
+
+# download entire folder from s3
+# delete later, only used to reorganize stuff
+download_s3_folder <- function(
+    prefix,
+    local_dir,
+    bucket = "scoavoux"
+) {
+  
+  s3 <- initialize_s3()
+  
+  # Create local directory if needed
+  dir.create(local_dir, recursive = TRUE, showWarnings = FALSE)
+  
+  # List all objects under the prefix
+  res <- s3$list_objects_v2(
+    Bucket = bucket,
+    Prefix = prefix
+  )
+  
+  if (is.null(res$Contents) || length(res$Contents) == 0) {
+    stop("No files found under prefix: ", prefix)
+  }
+  
+  for (obj in res$Contents) {
     
-    write_function <- arrow::write_parquet
+    key <- obj$Key
     
-    aws.s3::s3write_using(
-      x,
-      FUN = write_function,
-      object = file,
-      bucket = "scoavoux",
-      opts = list("region" = "")
+    # Skip folder placeholders
+    if (grepl("/$", key)) next
+    
+    local_file <- file.path(
+      local_dir,
+      basename(key)
+    )
+    
+    message("Downloading: ", key)
+    
+    file_obj <- s3$get_object(
+      Bucket = bucket,
+      Key = key
+    )
+    
+    writeBin(
+      object = file_obj$Body,
+      con = local_file
     )
   }
   
+  message("Done.")
 }
-
-
-
-
-
-
-
-
-
 
 
 

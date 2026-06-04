@@ -4,59 +4,6 @@
 ## remove unused cases, recode ids to str, recode wrong ids (https...), etc.
 
 
-## ADD DUPLICATE SOLVING HERE!
-
-
-# ---------------- MANUAL SEARCH
-
-load_manual_search <- function(file){
-  
-  manual_search <- read.csv(file)
-  
-  manual_search <- manual_search %>% 
-    rename(dz_artist_id = "artist_id",
-           sc_artist_id = "contact_id") %>% 
-    mutate_if(is.integer, as.character) %>% 
-    distinct(dz_artist_id, sc_artist_id) %>% 
-    as_tibble()
-  
-  ## manual searches by paul
-  ## INTEGRATE TO MANUAL_SEARCH!
-  manual_sc_1 <- load_s3("interim/missings_to_handcode/06.02-handcoded_contacts.csv")
-  
-  manual_sc_2 <- load_s3("interim/missings_to_handcode/handcoded_09.02.csv")
-  
-  manual_sc_1 <- manual_sc_1 %>% 
-    as_tibble() %>% 
-    filter(!is.na(sc_artist_id)) %>% 
-    mutate_if(is.integer, as.character) %>% 
-    select(dz_artist_id, sc_artist_id) 
-  
-  manual_sc_2 <- manual_sc_2 %>% 
-    as_tibble() %>% 
-    filter(!is.na(contact_id)) %>% 
-    mutate_if(is.integer, as.character) %>% 
-    select(dz_artist_id = "deezer_id", 
-           sc_artist_id = "contact_id") 
-  
-  # manual mbz
-  
-  mbz_manual_1 <- load_s3("interim/missings_to_handcode/missing_mbz_1202.csv")
-  mbz_manual_1 <- mbz_manual_1 %>% 
-    filter(!is.na(mbz_artist_id)) %>% 
-    mutate_if(is.integer, as.character)
-  
-  manual_search <- manual_search %>% 
-    bind_rows(manual_sc_1) %>% 
-    bind_rows(manual_sc_2) %>% 
-    full_join(mbz_manual_1, by = "dz_artist_id") %>% 
-    distinct(dz_artist_id, sc_artist_id, mbz_artist_id)
-  
-  return(manual_search)
-}
-
-
-
 # ----------------- RATINGS ---------------------------
 
 load_sc_ratings <- function(sc_ratings_file, sc_albums_file){
@@ -117,7 +64,6 @@ load_senscritique <- function(sc_file){
   return(clean_senscritique)
   
 }
-
 
 # ----------------- MBZ-DEEZER ---------------------------
 
@@ -349,7 +295,7 @@ load_wiki <- function(mbz_deezer) {
   
   ## TEMP -- TEMP -- TEMP -- TEMP -- TEMP -- TEMP -- TEMP -- TEMP -- TEMP
   
-  wiki <- load_s3("interim/wiki_ids.csv")
+  wiki <- load_s3("interim/prod/wiki_ids.csv")
   
   ## TEMP -- TEMP -- TEMP -- TEMP -- TEMP -- TEMP -- TEMP -- TEMP -- TEMP
   
