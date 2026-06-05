@@ -67,7 +67,7 @@ list(
                              file = "records_w3/items/songs.snappy.parquet")),
     
     tar_target(dz_songs_new,
-               make_dz_songs(to_remove_file = "interim/dict/artists_to_remove.csv",
+               make_dz_songs(to_remove_file = "interim/dict/artists_to_remove.cs",
                               file = "records_w3/items/song.snappy.parquet")),
     
     tar_target(classical_albums,
@@ -379,12 +379,7 @@ list(
 # )
 
 
-
-
-
-
-
-
+# make sample of gpt gender anti-joined with musicbrainz
 
 
 
