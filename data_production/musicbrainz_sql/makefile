@@ -1,4 +1,4 @@
-BASE_DIR := $(HOME)/work/music_artists_data_paper/musicbrainz_sql
+BASE_DIR := $(HOME)/work/music_artists_data_paper/data_production/musicbrainz_sql
 OUT_DIR := $(BASE_DIR)/output
 
 SQL_FILES := $(wildcard $(BASE_DIR)/*.sql)

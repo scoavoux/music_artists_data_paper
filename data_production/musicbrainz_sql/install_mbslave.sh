@@ -7,7 +7,7 @@ pipx ensurepath
 # RESTART TERMINAL
 # declare the path to mbslave.conf
 # failing to do that generates cryptic errors.
-export MBSLAVE_CONFIG="/home/onyxia/work/music_artists_data_paper/musicbrainz_sql/mbslave.conf"
+export MBSLAVE_CONFIG="/home/onyxia/work/music_artists_data_paper/data_production/musicbrainz_sql/mbslave.conf"
 # Start postgresql
 sudo service postgresql start
 # setup passwords
@@ -22,7 +22,7 @@ sudo -u postgres psql -d postgres
 # \q
 # Generates the postgresql dataset
 mbslave init --create-user --create-database
-mkdir /home/onyxia/work/music_artists_data_paper/musicbrainz_sql/output
+mkdir /home/onyxia/work/music_artists_data_paper/data_production/musicbrainz_sql/output
 # Updates the dataset (later)
 mbslave sync
 
