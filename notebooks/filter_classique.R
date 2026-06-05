@@ -1,38 +1,9 @@
 
 library(stringi)
 
-pop <- df %>% 
-  select(dz_artist_id, n_plays_share)
-
-# very famous composers
-tar_load(aliases_to_add)
-
-
-comp <- read.csv("data/base_compositeurs.csv",
-                 sep = ";")
-
-comp <- comp %>% 
-  mutate(dz_artist_id = as.character(dz_artist_id),
-         dz_name = str_normalize(dz_name)) %>% 
-  filter(compositeur == 1) %>% 
-  as_tibble() %>%
-  left_join(pop, by = "dz_artist_id") %>% 
-  arrange(desc(n_plays_share)) %>% 
-  distinct(dz_name, .keep_all = T) %>% 
-  select(dz_artist_id, dz_name, n_plays_share) 
-
-aliases <- comp %>% 
-  inner_join(aliases_to_add, by = "dz_name") %>% 
-  distinct(dz_artist_id, .keep_all = T) %>% 
-  select(dz_artist_id, dz_name = "ent_name")
-
-comp <- comp %>% 
-  bind_rows(aliases) %>% 
-  distinct(dz_name, .keep_all = T)
-
 
 # old df without correction
-raw_df <- read.csv2("data/df.csv")
+raw_df <- read.csv2("data/ignoredata/df.csv")
 
 raw <- raw_df %>% 
   filter(genre_dz_album_1 == "Classique") %>% 
@@ -40,12 +11,11 @@ raw <- raw_df %>%
   select(dz_name, dz_artist_id, n_plays, n_plays_raw) %>% 
   as_tibble()
 
-tar_load(df)
 treated <- df %>% 
   filter(genre_dz_album_1 == "Classique") %>% 
   select(dz_name, dz_artist_id, n_plays, n_plays_raw)
 
-raw %>% 
+treated %>% 
   filter(str_detect(dz_name, "Mozart"))
 
 options(scipen = 99)
@@ -58,10 +28,15 @@ t <- raw %>%
   arrange(desc(factor)) %>% 
   select(dz_name.x, diff, factor)
 
-composer_dict %>% 
-  filter(str_detect(dz_name, "bach"))
+test <- t %>% 
+  filter(diff != 0 & abs(diff) > 5)
 
+library(ggplot2)
+ggplot2::ggplot(t, aes(x = factor)) +
+  geom_histogram() +
+  xlim(c(-0.5, 0.5))
 
+write.csv2(test, "data/composers_n_plays_diff.csv")  
 
 
 

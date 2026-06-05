@@ -1,0 +1,899 @@
+"";"dz_name.x";"diff";"factor"
+"1";"Jacques Offenbach";1455;9,35082820091048
+"2";"Henry Purcell";687;6,75294888597643
+"3";"Igor Stravinsky";347;5,91477272727272
+"4";"Richard Strauss";308;5,73556797020484
+"5";"Christoph Willibald Gluck";139;4,71186440677966
+"6";"Robert Schumann";792;4,18436147730704
+"7";"Joseph Haydn";408;4,00093392481907
+"8";"Giacomo Puccini";665;3,56237883065202
+"9";"Georges Bizet";1014;3,32056288271482
+"10";"Franz Schubert";2639;3,2887467287002
+"11";"Franz Liszt";1120;2,94866169372532
+"12";"Felix Mendelssohn";640;2,85843413531835
+"13";"Hector Berlioz";241;2,70302026864635
+"14";"Wolfgang Amadeus Mozart";10190;2,47485335341579
+"15";"Jean Sibelius";249;2,20289000294899
+"16";"Gustav Mahler";305;2,04158692835137
+"17";"Gioachino Rossini";330;1,82165119549594
+"18";"Antonio Vivaldi";10203;1,81072373567601
+"19";"Ludwig van Beethoven";5536;1,65762715093972
+"20";"Richard Wagner";510;1,53333784365111
+"21";"Johann Sebastian Bach";8897;1,46497449968542
+"22";"Maurice Ravel";871;1,45263220593053
+"23";"Johannes Brahms";995;1,37099552187392
+"24";"Giuseppe Verdi";845;1,28639209002711
+"25";"Carl Orff";238;1,24331193290063
+"26";"Domenico Scarlatti";49;1,20987654320988
+"27";"Pyotr Ilyich Tchaikovsky";2408;1,17988401353759
+"28";"Claude Debussy";1860;1,01360490817287
+"29";"Jean-Baptiste Lully";296;0,924807331805873
+"30";"Sergei Prokofiev";353;0,862026862026862
+"31";"George Gershwin";146;0,80551724137931
+"32";"Georg Friedrich Haendel";405;0,7298669777028
+"33";"Sergei Rachmaninov";297;0,488286066584464
+"34";"Francis Poulenc";26;0,476169711769067
+"35";"Meredith Monk";20;0,436363636363637
+"36";"Gustav Holst";12;0,374025974025974
+"37";"Antonio Salieri";15;0,350194552529183
+"38";"Erik Satie";1014;0,311413106069331
+"39";"Federico Mompou";11;0,268292682926829
+"40";"Dmitri Shostakovich";14;0,251346499102334
+"41";"Edvard Grieg";134;0,249530025183556
+"42";"Manuel De Falla";6;0,210526315789474
+"43";"Edward Elgar";9;0,1875
+"44";"Steve Reich";15;0,182555780933063
+"45";"Jean-Philippe Rameau";11;0,165995975855131
+"46";"Arvo Pärt";33;0,156805068446657
+"47";"John Williams";179;0,133953388924525
+"48";"Philip Glass";367;0,105533056960054
+"49";"Jacques Revaux";29;0,105266341994616
+"50";"Camille Saint-Saëns";34;0,0598922107970949
+"51";"Gabriel Fauré";19;0,0479189537531328
+"52";"Saint-Preux";18;0,00703308153164888
+"53";"Frédéric Chopin";41;0,00577489189684071
+"54";"Michael Nyman";6;0,00243872147768456
+"55";"Ludovico Einaudi";93;0,00218990735279054
+"56";"Alexis Ffrench";-6;-0,000701057428287667
+"57";"RIOPY";-17;-0,00100324579521983
+"58";"Olivia Belli";-7;-0,00288065843621399
+"59";"Joep Beving";-14;-0,00442711078317698
+"60";"Arthur Rubinstein";-74;-0,00537842814226183
+"61";"Nemanja Radulovic";-8;-0,0060388614458727
+"62";"Vanessa Wagner";-10;-0,00638841567291313
+"63";"Luciano Pavarotti";-33;-0,00823279194824972
+"64";"Inger Södergren";-11;-0,00825206301575394
+"65";"Rafael Kubelik";-6;-0,00851074368814654
+"66";"Patricia Petibon";-8;-0,00932491500728509
+"67";"Richard Bonynge";-7;-0,0100588534161611
+"68";"Lavinia Meijer";-12;-0,0102055279943303
+"69";"2CELLOS";-50;-0,010478885046631
+"70";"Tina Guo";-12;-0,0116959064327485
+"71";"I Virtuosi Italiani";-7;-0,0121615752135515
+"72";"Yuja Wang";-8;-0,01280463405804
+"73";"Hania Rani";-20;-0,0131093097948393
+"74";"Roger Eno";-7;-0,0136164694439942
+"75";"Wiener Staatsopernchor";-6;-0,0143933674519214
+"76";"Maurice Andre";-6;-0,0148053275678724
+"77";"Jean-Marc Luisada";-8;-0,0157946692991115
+"78";"Roberto Alagna";-16;-0,0177631875623218
+"79";"Plácido Domingo";-11;-0,0178087129764847
+"80";"Valentina Lisitsa";-27;-0,0179342411159083
+"81";"Andreas Scholl";-7;-0,0190697754869063
+"82";"Salvatore Accardo";-6;-0,019824880224682
+"83";"Gautier Capuçon";-80;-0,0211168915935574
+"84";"Paavo Järvi";-9;-0,0216441540743116
+"85";"Double Sens";-7;-0,0218818380743983
+"86";"Accentus";-10;-0,0219610905250095
+"87";"Nelson Freire";-14;-0,0223687973030636
+"88";"The Philadelphia Orchestra";-12;-0,0228096615209156
+"89";"José Carreras";-7;-0,0232569177464522
+"90";"Maurizio Pollini";-14;-0,0247169190520901
+"91";"Sofiane Pamart";-2566;-0,0249859214816282
+"92";"Thibault Cauvin";-93;-0,0252169197396963
+"93";"Raphaela Gromes";-12;-0,0253878702397743
+"94";"Leonard Bernstein";-35;-0,0264606016733735
+"95";"Orchester der Deutschen Oper Berlin";-6;-0,0291308252893116
+"96";"Jan Lisiecki";-32;-0,0297144625860867
+"97";"Mari Samuelsen";-14;-0,030002143010215
+"98";"Samson François";-20;-0,0307455803228286
+"99";"Julian Riem";-11;-0,0311909262759924
+"100";"Paul Ji";-9;-0,0314685314685315
+"101";"Amy Dickson";-12;-0,031496062992126
+"102";"Ben Kim";-30;-0,0316789862724393
+"103";"Sviatoslav Richter";-8;-0,0340208377631299
+"104";"JB Dunckel";-17;-0,034136546184739
+"105";"London Philharmonic Orchestra";-58;-0,0345726541178156
+"106";"Chicago Symphony Orchestra";-24;-0,0346998931913773
+"107";"Orchestra dell'Accademia Nazionale di Santa Cecilia";-7;-0,0355992541108663
+"108";"Orchestre de Paris";-9;-0,0357886763870478
+"109";"Milos Karadaglic";-20;-0,0360252176523566
+"110";"Montserrat Caballé";-26;-0,0364879156055451
+"111";"Yannick Nézet-Séguin";-17;-0,0369152789491256
+"112";"Grigory Sokolov";-8;-0,0375000000000001
+"113";"London Symphony Orchestra";-213;-0,0381169340093883
+"114";"Antonín DVOŘÁK";-9;-0,0381336696090794
+"115";"Kurt Redel";-14;-0,0385905269444572
+"116";"Edgar Moreau";-20;-0,0390648120745783
+"117";"Alain Boulfroy";-9;-0,0393013100436681
+"118";"Ochestre de chambre tchécoslovaque de Prague";-9;-0,0393013100436681
+"119";"Théotime Langlois de Swarte";-10;-0,0396039603960396
+"120";"Anna Netrebko";-9;-0,0396424488825654
+"121";"Sir Neville Marriner";-62;-0,0399737499568255
+"122";"Diego Fasolis";-14;-0,040085761714689
+"123";"Geza Anda";-8;-0,0428533166681547
+"124";"Wiener Symphoniker";-6;-0,0431365087474546
+"125";"Christian Ferras";-7;-0,0434108527131783
+"126";"Eric Le Sage";-49;-0,0436629340303563
+"127";"Erich Leinsdorf";-6;-0,0442940633651185
+"128";"San Francisco Symphony";-11;-0,0443101711983887
+"129";"Sandrine Piau";-14;-0,0451450404018287
+"130";"Fritz Reiner";-6;-0,0453172205438066
+"131";"Cheryl Studer";-6;-0,0454328479179458
+"132";"Herbert von Karajan";-226;-0,0456388617290174
+"133";"Stephen Cleobury";-11;-0,0461190610478611
+"134";"Martin Helmchen";-7;-0,0465528707603635
+"135";"Orchestre National De France";-12;-0,0465868650922032
+"136";"Renée Fleming";-16;-0,0468619246861925
+"137";"Orchestra del Maggio Musicale Fiorentino";-7;-0,0470010826653147
+"138";"Wiener Philharmoniker";-176;-0,048873386826657
+"139";"Krystian Zimerman";-12;-0,0491803278688525
+"140";"Trevor Pinnock";-28;-0,0492738806532979
+"141";"Kent Nagano";-13;-0,0502027418420545
+"142";"KHATIA BUNIATISHVILI";-171;-0,0502867225408028
+"143";"Vladimir Ashkenazy";-38;-0,0507795100222717
+"144";"Mozart";-25;-0,0511113887532228
+"145";"New York Philharmonic Orchestra";-9;-0,0512479832969535
+"146";"Bengt Forsberg";-6;-0,0527207682169082
+"147";"Myung-Whun Chung";-16;-0,0527323519256724
+"148";"Venice Baroque Orchestra";-13;-0,0529711375212223
+"149";"Reinbert de Leeuw";-9;-0,0533596837944663
+"150";"Orpheus Chamber Orchestra";-35;-0,0534242393405923
+"151";"Coro dell'Accademia Nazionale Di Santa Cecilia";-7;-0,0537177624907502
+"152";"Diana Damrau";-13;-0,0538258858955745
+"153";"Bernard Haitink";-14;-0,0544555566360229
+"154";"Vladimir Horowitz";-32;-0,0550143266475644
+"155";"Eugene Ormandy";-30;-0,0553607676693117
+"156";"Ray Chen";-15;-0,0553846153846155
+"157";"Daniil Trifonov";-21;-0,0554821664464993
+"158";"London Festival Orchestra";-13;-0,055706327667476
+"159";"Gundula Janowitz";-7;-0,0565067670377193
+"160";"The English Concert";-28;-0,0565178107999
+"161";"Boston Symphony Orchestra";-73;-0,0566711520546529
+"162";"Martha Argerich";-108;-0,0568460825893208
+"163";"Cincinnati Pops Orchestra";-7;-0,0573378839590445
+"164";"Sir Charles Mackerras";-6;-0,0581046806548304
+"165";"Avi Avital";-8;-0,0602204498610987
+"166";"BBC Symphony Orchestra";-6;-0,0606921798607933
+"167";"Claudio Arrau";-65;-0,0609422611141497
+"168";"Cecilia Bartoli";-21;-0,0611840648997577
+"169";"les Arts Florissants";-45;-0,0614148818982072
+"170";"English Chamber Orchestra";-36;-0,0620303875053077
+"171";"Daniel Harding";-20;-0,063391442155309
+"172";"Les Musiciens de Saint-Julien";-29;-0,063399526325378
+"173";"Victoria de los Angeles";-6;-0,0634920634920635
+"174";"Sir David Willcocks";-10;-0,0646638250902746
+"175";"Choir of King's College, Cambridge";-30;-0,064892823836188
+"176";"Anna Vinnitskaya";-6;-0,0655141037306643
+"177";"John Alldis Choir";-17;-0,0658719187887194
+"178";"Academy Of St Martin In The Fields";-70;-0,0661721301236331
+"179";"Esther Abrami";-73;-0,0664643399089532
+"180";"Christina Pluhar";-60;-0,0671015843429636
+"181";"Michael Tilson Thomas";-6;-0,0671015843429637
+"182";"René Jacobs";-10;-0,06750476149657
+"183";"Göran Söllscher";-16;-0,0679309368808379
+"184";"BBC National Orchestra Of Wales";-6;-0,06815834767642
+"185";"Isaac Stern";-23;-0,0682054070083526
+"186";"Berliner Philharmoniker";-365;-0,0683856188804689
+"187";"Christian-Pierre La Marca";-100;-0,068744271310724
+"188";"France Clidat";-6;-0,069364161849711
+"189";"Steven Isserlis";-9;-0,0697674418604651
+"190";"Elina Garanca";-6;-0,0699776460297405
+"191";"Mitsuko Uchida";-16;-0,0701497990500549
+"192";"Boris Berezovsky";-11;-0,0705203547387543
+"193";"Carlo Maria Giulini";-38;-0,0722616087565133
+"194";"NDR Elbphilharmonie Orchester";-21;-0,0723570599406869
+"195";"Michel Dalberto";-11;-0,0723684210526316
+"196";"Wilhelm Kempff";-71;-0,0723812760173307
+"197";"Carlos Cipa";-162;-0,0724184175234689
+"198";"David Parry";-8;-0,0724651888682807
+"199";"Anne Sofie von Otter";-19;-0,0741994794991325
+"200";"James Levine";-70;-0,0742400397284218
+"201";"Kiri Te Kanawa";-20;-0,0742511601743776
+"202";"Andrea Marcon";-14;-0,0745937305745495
+"203";"Nathalie Stutzmann";-31;-0,074745674476377
+"204";"Ivo Pogorelich";-25;-0,0749437921558832
+"205";"Les Talens Lyriques";-13;-0,0750350438391556
+"206";"Karl Böhm";-73;-0,0751076428876361
+"207";"Orchestra del Teatro Comunale di Bologna";-19;-0,0752599438851297
+"208";"The King's Singers";-18;-0,0756832515767345
+"209";"Alfred Brendel";-77;-0,0757004751761426
+"210";"Bruce Brubaker";-10;-0,0760456273764259
+"211";"Les Ombres";-11;-0,0765838941749828
+"212";"François Lazarevitch";-38;-0,0795117698343504
+"213";"Le Banquet Céleste";-6;-0,0798226164079822
+"214";"Shani Diluka";-61;-0,0800787659993436
+"215";"Thibaut Garcia";-53;-0,0801209372637944
+"216";"Carlo Bergonzi";-6;-0,0802032664795964
+"217";"Giuseppe Sinopoli";-15;-0,0808305759635374
+"218";"Pierre Hantaï";-9;-0,0812379110251453
+"219";"Barbara Hendricks";-35;-0,0813209499514061
+"220";"Thomas Enhco";-106;-0,0815071126489812
+"221";"Emmanuelle Haïm";-21;-0,082063305978898
+"222";"Musica Antiqua Köln";-34;-0,0832449196115238
+"223";"Mischa Maisky";-16;-0,0839903761027382
+"224";"Thomas Dunford";-24;-0,0841465552503943
+"225";"François Chaplin";-13;-0,084233261339093
+"226";"Leontyne Price";-7;-0,0849889624724061
+"227";"Igor Markevitch";-9;-0,085001124353497
+"228";"Monteverdi Choir";-44;-0,0852752512659073
+"229";"Philippe Jaroussky";-240;-0,0858913403278589
+"230";"Le Concert des Nations";-37;-0,0860065086006509
+"231";"Joshua Bell";-50;-0,0860215053763441
+"232";"Ludmila Berlinskaya";-14;-0,0861538461538462
+"233";"Pachelbel Orchestra";-23;-0,0869565217391304
+"234";"Emerson String Quartet";-6;-0,0871670702179177
+"235";"Jean-Philippe Collard";-8;-0,0877513711151736
+"236";"Irwin Gage";-9;-0,0879478827361566
+"237";"Abdel Rahman El Bacha";-30;-0,0881488736532812
+"238";"Quatuor Voce";-10;-0,0890207715133534
+"239";"Anthony Rolfe Johnson";-6;-0,0897143026671017
+"240";"Damien Guillon";-8;-0,0901852017536011
+"241";"Alessandra Celletti";-36;-0,091254752851711
+"242";"Jerusalem Quartet";-8;-0,0916905444126074
+"243";"Israel Philharmonic Orchestra";-19;-0,0917578879587893
+"244";"Les Musiciens du Louvre";-27;-0,0922568140077411
+"245";"Lucile Richardot";-7;-0,0926057169855894
+"246";"Accademia Bizantina";-16;-0,0927849997583722
+"247";"Metropolitan Opera Orchestra";-31;-0,0929570278821072
+"248";"Staatskapelle Dresden";-14;-0,0940103070257251
+"249";"Zubin Mehta";-71;-0,0940811731436426
+"250";"Philharmonia Orchestra";-89;-0,0942691502982609
+"251";"Noel Akchoté";-7;-0,0945945945945946
+"252";"Lucas Debargue";-89;-0,0951362907536077
+"253";"La Petite Bande";-7;-0,0959561343385881
+"254";"Simón Bolívar Youth Orchestra of Venezuela";-8;-0,096
+"255";"Arthur Ancelle";-15;-0,0970873786407767
+"256";"Jonathan Stockhammer";-13;-0,0973175296319403
+"257";"Sonia Wieder-Atherton";-30;-0,09765625
+"258";"Sir John Barbirolli";-27;-0,0981699187977216
+"259";"Timothy Ridout";-25;-0,0985167752175578
+"260";"Philip Langshaw";-9;-0,0985709815374986
+"261";"Ferenc Fricsay";-24;-0,0988104515578819
+"262";"Orchestre de la société des concerts du conservatoire";-6;-0,10016694490818
+"263";"Sir Georg Solti";-67;-0,100979745422393
+"264";"Barbara Schlick";-10;-0,10108546535416
+"265";"Stéphane Blet";-151;-0,101820633850303
+"266";"Konzerthausorchester Berlin";-13;-0,102161100196464
+"267";"Orchestre de l'Opéra National de Paris";-7;-0,102289332683877
+"268";"Mirella Freni";-9;-0,102561151079137
+"269";"Christophe Rousset";-22;-0,102619917593097
+"270";"Münchener Bach-Orchester";-54;-0,102786753742335
+"271";"Mark Ermler";-12;-0,103004291845494
+"272";"Chineke! Orchestra";-80;-0,103225806451613
+"273";"Jean-Claude Malgoire";-7;-0,103252089625623
+"274";"Daniel Hope";-192;-0,103418756833185
+"275";"Michaël Lévinas";-11;-0,10377358490566
+"276";"Pierre Fournier";-27;-0,10424039637089
+"277";"Symphonieorchester des Bayerischen Rundfunks";-13;-0,105332279713742
+"278";"Jacqueline du Pré";-26;-0,105762711864407
+"279";"Seiji Ozawa";-85;-0,107220193837292
+"280";"William Youn";-8;-0,10762331838565
+"281";"Kian Soltani";-7;-0,108247422680412
+"282";"Fritz Wunderlich";-6;-0,108715431164316
+"283";"Karl Richter";-72;-0,109404282106756
+"284";"Rudolf Buchbinder";-36;-0,11014788373279
+"285";"Magdalena Kozena";-10;-0,110451712439843
+"286";"Royal Concertgebouw Orchestra";-23;-0,111614364283403
+"287";"Emanuel Ax";-9;-0,11214953271028
+"288";"Jorge Bolet";-7;-0,112299465240642
+"289";"Ruggero Raimondi";-7;-0,113643684529255
+"290";"Aimi Kobayashi";-12;-0,114285714285714
+"291";"José Van Dam";-12;-0,115190548467818
+"292";"Tanguy de Williencourt";-6;-0,115384615384615
+"293";"Andrei Gavrilov";-15;-0,116489774786435
+"294";"Maria João Pires";-187;-0,116692667706708
+"295";"Vikingur Olafsson";-249;-0,116895659055446
+"296";"Orchestre Philharmonique de Radio France";-14;-0,117977528089887
+"297";"Maria Callas";-448;-0,118754262713871
+"298";"Jacques Fevrier";-7;-0,11965811965812
+"299";"Lorin Maazel";-157;-0,121289710240096
+"300";"Olivier Latry";-18;-0,121621621621622
+"301";"Royal Philharmonic Orchestra";-238;-0,122144045905437
+"302";"Christophe Coin";-14;-0,122377622377622
+"303";"Le Concert d'Astrée";-7;-0,122377622377622
+"304";"Vadim Chaimovich";-26;-0,122641509433962
+"305";"Mariam Batsashvili";-13;-0,123809523809524
+"306";"Cameron Carpenter";-17;-0,123861566484517
+"307";"Nikolai Lugansky";-54;-0,124042879019908
+"308";"Ernest Ansermet";-7;-0,125373134328358
+"309";"Jean-Joël Barbier";-16;-0,125490196078431
+"310";"Philippe Herreweghe";-38;-0,126113668240454
+"311";"English Baroque Soloists";-132;-0,126561617176219
+"312";"Chamber Orchestra of Europe";-40;-0,127097967567322
+"313";"Karl Munchinger";-8;-0,127386925147544
+"314";"Collegium Vocale Gent";-17;-0,128475419029596
+"315";"ENSEMBLE CONTRASTE";-14;-0,128715905608335
+"316";"Elisabeth Schwarzkopf";-10;-0,128901777317851
+"317";"Stuttgarter Kammerorchester";-8;-0,129798220425192
+"318";"Angèle Dubeau";-41;-0,130642591609135
+"319";"Lang Lang";-789;-0,130668801236578
+"320";"Janine Jansen";-19;-0,130789709797462
+"321";"Sara Mingardo";-13;-0,130908860447016
+"322";"Gustavo Dudamel";-22;-0,131330215898915
+"323";"London Symphony Chorus";-9;-0,131779370119283
+"324";"Akademie fur Alte Musik Berlin";-31;-0,131811616700188
+"325";"Wilhelm Furtwängler";-14;-0,131826741996234
+"326";"György Cziffra";-8;-0,131868131868132
+"327";"Camille Thomas";-7;-0,132492113564669
+"328";"Ivan Fischer";-13;-0,133401744484351
+"329";"Thomas Beecham";-8;-0,134131736526946
+"330";"Riccardo Chailly";-66;-0,134242587314695
+"331";"Giuseppe Di Stefano";-9;-0,134651349185146
+"332";"Los Angeles Philharmonic";-29;-0,135640785781104
+"333";"Iyad Sughayer";-73;-0,135645710746361
+"334";"Academy Of Ancient Music";-48;-0,136153659129589
+"335";"CLaire Désert";-29;-0,136281753387463
+"336";"Marie-Catherine Girod";-6;-0,136363636363636
+"337";"Orchestra Del Teatro Alla Scala Di Milano";-23;-0,137338707036873
+"338";"Sir Colin Davis";-45;-0,13764992492374
+"339";"La Pieta";-40;-0,137931034482759
+"340";"Claudio Abbado";-162;-0,140036527077375
+"341";"Lorenzo Ghielmi";-8;-0,140350877192982
+"342";"Christopher Hogwood";-44;-0,141117177656447
+"343";"Julien Chauvin";-9;-0,141676505312869
+"344";"Jupiter";-15;-0,14308426073132
+"345";"Sir Roger Norrington";-6;-0,143734643734644
+"346";"Reinhard Goebel";-69;-0,143799930531435
+"347";"Jean Nirouet";-6;-0,143835616438356
+"348";"Coro Del Teatro Alla Scala Di Milano";-7;-0,143988139010442
+"349";"YUNDI";-75;-0,144508670520231
+"350";"Alexander Stevenson";-8;-0,144628099173554
+"351";"Jean-François Paillard";-77;-0,145000313853493
+"352";"Angela Gheorghiu";-7;-0,145738041053604
+"353";"Gidon Kremer";-40;-0,146277541318326
+"354";"Giovanni Antonini";-38;-0,146341463414634
+"355";"Orchestre & Chorale Paul Kuentz";-7;-0,146443514644351
+"356";"Matthias Goerne";-10;-0,147252169339995
+"357";"Orchestre Révolutionnaire et Romantique";-16;-0,147595026316705
+"358";"Sylvia McNair";-10;-0,149414711527733
+"359";"Evgeny Kissin";-23;-0,150819672131148
+"360";"Solistengemeinschaft Der Bachwoche Ansbach";-8;-0,150943396226415
+"361";"Hugo Reyne";-17;-0,151066350710901
+"362";"La Simphonie Du Marais";-17;-0,151066350710901
+"363";"Julian Pregardien";-6;-0,151600224592925
+"364";"Münchener Bach-Chor";-10;-0,151761517615176
+"365";"Isabelle Faust";-11;-0,152284263959391
+"366";"Emmanuel Pahud";-43;-0,153431391983507
+"367";"Michele Pertusi";-11;-0,154041077620699
+"368";"Antal Dorati";-23;-0,154578549425931
+"369";"Herbert Lippert";-7;-0,154844146382142
+"370";"Le Concert de la Loge";-9;-0,15510555794916
+"371";"Monica Huggett";-7;-0,155143754232593
+"372";"Emil Gilels";-10;-0,155199172271081
+"373";"Bryn Terfel";-37;-0,155619586472413
+"374";"IGOR LEVIT";-180;-0,155844155844156
+"375";"Charles Dutoit";-67;-0,156301638834348
+"376";"Ann Murray";-8;-0,156378473137964
+"377";"Ensemble Baroque De Limoges";-6;-0,157068062827225
+"378";"Hillevi Martinpelto";-14;-0,157344296344108
+"379";"Budapest Festival Orchestra";-13;-0,15767131594906
+"380";"Johan Farjot";-14;-0,158700170035896
+"381";"LES SIECLES";-20;-0,159193420005307
+"382";"Natalie Dessay";-197;-0,159461856386039
+"383";"Royal Liverpool Philharmonic Orchestra";-30;-0,159763313609467
+"384";"Daniel Lozakovich";-7;-0,160427807486631
+"385";"François-Xavier Roth";-21;-0,162622612287042
+"386";"Jeremy Limb";-7;-0,162790697674419
+"387";"Sol Gabetta";-71;-0,163560372535899
+"388";"Lambert Orkis";-6;-0,163636363636363
+"389";"Renaud Capuçon";-541;-0,164736452126958
+"390";"Anna Stéphany";-6;-0,164917868283851
+"391";"John Eliot Gardiner";-447;-0,165108590006904
+"392";"Lucas Jussen";-6;-0,165137614678899
+"393";"Ensemble Pygmalion";-7;-0,16522423288749
+"394";"András Schiff";-57;-0,165521246733133
+"395";"Paul Kuentz";-26;-0,165890636749637
+"396";"Maxim Vengerov";-16;-0,166262556286803
+"397";"The English Concert Choir";-8;-0,166964818127609
+"398";"Ferruccio Furlanetto";-6;-0,167394505329711
+"399";"Diana Montague";-6;-0,167808096382086
+"400";"I Barocchisti";-14;-0,167913644411446
+"401";"James Bowman";-12;-0,168224534658614
+"402";"Chorus Of Les Musiciens Du Louvre";-6;-0,169765561843169
+"403";"Christoph Spering";-7;-0,169811320754717
+"404";"Ensemble les Surprises";-6;-0,169811320754717
+"405";"Florian Christl";-216;-0,169989506820566
+"406";"Zhu Xiao-Mei";-89;-0,170334928229665
+"407";"Andreas Ottensamer";-6;-0,170454545454545
+"408";"Jordi Savall";-637;-0,17072971100954
+"409";"Louis Langree";-16;-0,170970614425646
+"410";"Jean Rondeau";-89;-0,170989433237272
+"411";"Monica Groop";-7;-0,171185684063428
+"412";"Ruth Slenczynska";-16;-0,172043010752688
+"413";"Anne Queffélec";-237;-0,172530939092453
+"414";"Stéphane Degout";-11;-0,172704900158874
+"415";"Concerto Italiano";-46;-0,172715122853912
+"416";"Ottavio Dantone";-18;-0,172979899095059
+"417";"Pamela Helen Stephen";-10;-0,173519388851192
+"418";"Gewandhausorchester";-48;-0,173843058350101
+"419";"Raphael Alpermann";-77;-0,174345261841353
+"420";"Chorus";-107;-0,174819598156108
+"421";"Elena Urioste";-67;-0,174934725848564
+"422";"Orchestre Paul Kuentz";-34;-0,175018231065736
+"423";"William Christie";-282;-0,175376250466426
+"424";"Alexander Lazarev";-10;-0,175438596491228
+"425";"Antoinette Dennefeld";-11;-0,175516354933073
+"426";"Orfeo 55";-9;-0,175895765472313
+"427";"Alison Hagley";-23;-0,175898224243475
+"428";"Seong-Jin Cho";-14;-0,177589852008457
+"429";"Franz Welser-Möst";-11;-0,178378378378378
+"430";"Benjamin Grosvenor";-38;-0,178683385579937
+"431";"Pablo Heras-Casado";-6;-0,178748758689176
+"432";"Christopher Warren-Green";-11;-0,178861788617886
+"433";"Jonas Kaufmann";-70;-0,179594629265372
+"434";"Beatrice Rana";-38;-0,180379746835443
+"435";"Orquesta Lírica de Barcelona";-12;-0,180451127819549
+"436";"Andreas Schmidt";-6;-0,181532218366931
+"437";"Konzerthaus Kammerorchester Berlin";-187;-0,18160335367334
+"438";"Orchestre National Bordeaux Aquitaine";-11;-0,181818181818182
+"439";"Paul Agnew";-41;-0,181979582778518
+"440";"André de Ridder";-187;-0,183955535881167
+"441";"Frank Braley";-50;-0,184295766782084
+"442";"Jean-Pierre Wallez";-28;-0,185123966942149
+"443";"Hilary Hahn";-54;-0,185215431352693
+"444";"Arnaud Thorette";-14;-0,185922974767596
+"445";"Les Accents";-8;-0,186770428015564
+"446";"Thibault Noally";-8;-0,186770428015564
+"447";"Orchestre de l'Opéra de Rouen Normandie";-17;-0,1876215335564
+"448";"Orchestre Philharmonique De Monte-Carlo";-29;-0,187629977663098
+"449";"Radu Lupu";-16;-0,187866927592955
+"450";"Andre Cluytens";-23;-0,18793408688547
+"451";"Christian Zacharias";-17;-0,188018433179723
+"452";"Filomena Moretti";-7;-0,189189189189189
+"453";"The Orchestra of the Royal Opera House, Covent Garden";-53;-0,189285714285714
+"454";"Sabine Devieilhe";-94;-0,189430197994861
+"455";"Pinchas Zukerman";-7;-0,190045248868778
+"456";"Pulcinella Orchestra";-15;-0,190274841437632
+"457";"Choir of Clare College, Cambridge";-12;-0,19047619047619
+"458";"Nathanaël Gouin";-6;-0,191489361702128
+"459";"Hélène Grimaud";-233;-0,192734541945267
+"460";"Ben Glassberg";-17;-0,194310388620777
+"461";"Georges Cziffra";-44;-0,196136701337296
+"462";"Bernhard Forck";-12;-0,196560196560197
+"463";"Alessandro De Marchi";-13;-0,197668525088697
+"464";"Arthur Jussen";-6;-0,197802197802198
+"465";"Orchestre National Du Capitole De Toulouse";-7;-0,19811320754717
+"466";"Andreas Staier";-10;-0,198807157057654
+"467";"Itzhak Perlman";-223;-0,1999103541013
+"468";"Marie-Nicole Lemieux";-12;-0,200095283468318
+"469";"Jessye Norman";-19;-0,200504191827402
+"470";"Ophélie Gaillard";-38;-0,201075932621925
+"471";"Rinaldo Alessandrini";-61;-0,201153373558773
+"472";"Emmanuelle Bertrand";-8;-0,202598812143869
+"473";"Hopkinson Smith";-28;-0,202857717850674
+"474";"Ofra Harnoy";-11;-0,203703703703704
+"475";"Alain Lombard";-36;-0,203955000404672
+"476";"Raphaël Oleg";-9;-0,205401293267402
+"477";"Alessandro Tampieri";-11;-0,205607476635514
+"478";"Vassilena Serafimova";-106;-0,205758654157231
+"479";"Ingrid Haebler";-7;-0,205882352941176
+"480";"Belle Chen";-435;-0,206161137440758
+"481";"Yo-Yo Ma";-566;-0,206831027090236
+"482";"Cristina Ortiz";-30;-0,206896551724138
+"483";"Riccardo Minasi";-9;-0,209541200639123
+"484";"Freiburger Barockorchester";-28;-0,209642484691286
+"485";"Il Giardino Armonico";-110;-0,211558803731128
+"486";"Laurence Equilbey";-207;-0,212087576995792
+"487";"Emile Naoumoff";-17;-0,2125
+"488";"Olga Scheps";-525;-0,215782983970407
+"489";"Orchestre Du Capitole De Toulouse";-15;-0,216242191254205
+"490";"Academia Montis Regalis";-10;-0,216450216450216
+"491";"Bernarda Fink";-7;-0,216521418927212
+"492";"Jean Brégnac";-6;-0,216867469879518
+"493";"Ensemble Resonanz";-9;-0,216867469879518
+"494";"Giuliano Carmignola";-19;-0,217391304347826
+"495";"Yehudi Menuhin";-62;-0,217798594847775
+"496";"Frank Peter Zimmermann";-12;-0,218512898330804
+"497";"Frank Glazer";-9;-0,219512195121951
+"498";"Florian Sempey";-10;-0,221145745577085
+"499";"André Laplante";-46;-0,221153846153846
+"500";"Alexandre Tharaud";-1885;-0,221986692574928
+"501";"Teodor Currentzis";-147;-0,222054380664653
+"502";"Martin Fröst";-139;-0,22228144989339
+"503";"Louis-Noël Bestion de Camboulas";-10;-0,223048327137547
+"504";"Kammerorchester Basel";-14;-0,224059749266471
+"505";"Jean-christophe Spinosi";-66;-0,224499236063414
+"506";"Marie-Claire Alain";-7;-0,225806451612903
+"507";"Claudio Scimone";-26;-0,226119727496739
+"508";"Rikke Sandberg";-12;-0,226415094339623
+"509";"Luxembourg Philharmonia";-12;-0,226415094339623
+"510";"Bertrand Chamayou";-313;-0,227834699076882
+"511";"François-Frédéric Guy";-37;-0,228160328879753
+"512";"Chloe Flower";-392;-0,228438228438228
+"513";"Ensemble Matheus";-71;-0,228549867422093
+"514";"Wolfgang Sawallisch";-11;-0,229479697007326
+"515";"Sarah Willis";-6;-0,230031948881789
+"516";"Staatskapelle Berlin";-15;-0,23037542662116
+"517";"Pablo Marquez";-6;-0,230769230769231
+"518";"Pablo Valetti";-7;-0,231525017023898
+"519";"Gustav Leonhardt";-51;-0,231993934799091
+"520";"Amanda Favier";-13;-0,232142857142857
+"521";"Ton Koopman";-43;-0,232397537907221
+"522";"Tim Mead";-15;-0,232438016528926
+"523";"Gerald Moore";-47;-0,235039173195532
+"524";"Raphaël Sévère";-6;-0,235294117647059
+"525";"Jan Vogler";-66;-0,236842105263158
+"526";"Lisa Batiashvili";-35;-0,237167541927833
+"527";"Jean-Bernard Pommier";-31;-0,237851662404093
+"528";"Guillaume Coppola";-42;-0,237960339943343
+"529";"Hugues Navez";-15;-0,238095238095238
+"530";"Dietrich Fischer-Dieskau";-72;-0,238611571030472
+"531";"Cyprien Katsaris";-6;-0,24
+"532";"Axel Salles";-13;-0,240740740740741
+"533";"Monique Frasca-Colombier";-8;-0,240894751935761
+"534";"María Bayo";-44;-0,241404535479151
+"535";"Alfred Deller";-19;-0,242089615629645
+"536";"Gil Shaham";-7;-0,242214532871972
+"537";"Gli Incogniti";-13;-0,242612752721618
+"538";"Boris Begelman";-11;-0,24264705882353
+"539";"Capriccio Stravagante";-44;-0,243093922651934
+"540";"Wiener Kammerorchester";-17;-0,244897959183673
+"541";"Jean-Guihen Queyras";-53;-0,245146085481757
+"542";"Moscow Philharmonic Orchestra";-13;-0,2455919395466
+"543";"Patrick Messina";-28;-0,245757753071973
+"544";"Anne Gastinel";-74;-0,246707784630772
+"545";"Russian National Orchestra";-57;-0,247288503253796
+"546";"Aleksandra Kurzak";-14;-0,248520710059172
+"547";"Pablo Casals";-22;-0,24891570808976
+"548";"Paavo Berglund";-7;-0,249258160237389
+"549";"Toronto Symphony Orchestra";-11;-0,24929178470255
+"550";"William Fred Scott";-107;-0,249417249417249
+"551";"The Atlanta Opera Orchestra";-107;-0,249417249417249
+"552";"Dong Hyek Lim";-15;-0,254237288135593
+"553";"Sir Simon Rattle & Berliner Philharmoniker";-14;-0,254545454545455
+"554";"Otto Klemperer";-46;-0,255165719040355
+"555";"Pavel Haas Quartet";-6;-0,25531914893617
+"556";"Ramin Bahrami";-11;-0,255813953488372
+"557";"Peter Whelan";-11;-0,256809338521401
+"558";"Deutsche Kammerphilharmonie Bremen";-39;-0,258278145695364
+"559";"Alice Sara Ott";-266;-0,258629071463296
+"560";"Han de Vries";-30;-0,260303687635575
+"561";"Valer Sabadus";-6;-0,260869565217391
+"562";"Yuri Simonov";-8;-0,261437908496732
+"563";"James Baillieu";-7;-0,261682242990654
+"564";"Daniel Barenboim";-929;-0,262408287738509
+"565";"Amandine Beyer";-18;-0,262454434993925
+"566";"Simon Ghraichy";-132;-0,262948207171315
+"567";"Renata Scotto";-12;-0,263391690619284
+"568";"Günter Wand";-8;-0,263736263736264
+"569";"Les Argonautes";-11;-0,264847512038523
+"570";"Jonas Descotte";-11;-0,264847512038523
+"571";"Michael Riesman";-21;-0,265822784810127
+"572";"Maude Gratton";-9;-0,266009852216749
+"573";"Anne-Sophie Mutter";-156;-0,266704658783302
+"574";"Victor Julien-Laferrière";-15;-0,266903914590747
+"575";"Raphaël Pichon";-67;-0,267433296110623
+"576";"Marin Marais";-17;-0,267716535433071
+"577";"Pierre Dervaux";-6;-0,268857356235997
+"578";"Aurélien Pontier";-120;-0,269360269360269
+"579";"Skip Sempe";-70;-0,269368907131862
+"580";"Barbara Bonney";-45;-0,270427533052253
+"581";"Jean Martinon";-11;-0,271604938271605
+"582";"Walter Rinaldi";-26;-0,27177700348432
+"583";"Christian Gerhaher";-12;-0,272830617658204
+"584";"Francesco Molinari-Pradelli";-7;-0,273794002607562
+"585";"Mikhail Pletnev";-85;-0,275080906148867
+"586";"Riccardo Muti";-243;-0,27562850915926
+"587";"Fabio Biondi";-191;-0,276224450443502
+"588";"Jorg Demus";-8;-0,277456647398844
+"589";"Trio Di Trieste";-10;-0,277777777777778
+"590";"Helga Schauerte";-6;-0,27906976744186
+"591";"Dimitri Mitropoulos";-9;-0,279792746113989
+"592";"Célimène Daudet";-35;-0,28
+"593";"Bertrand Cuiller";-16;-0,280701754385965
+"594";"David Daniels";-20;-0,282021151586369
+"595";"Leif Ove Andsnes";-233;-0,283742642581693
+"596";"Michel Plasson";-348;-0,284771282834621
+"597";"Kirill Petrenko";-9;-0,285714285714286
+"598";"L'Orchestre National du Bolchoï";-330;-0,2864334693169
+"599";"Vadim Repin";-6;-0,286852589641434
+"600";"Michael Barenboim";-10;-0,287081339712919
+"601";"Hughes De Courson";-24;-0,287425149700599
+"602";"Walter Gieseking";-83;-0,288194444444444
+"603";"Pygmalion";-60;-0,288235529604191
+"604";"Gérard Poulet";-11;-0,290492957746479
+"605";"Juilliard String Quartet";-7;-0,291666666666667
+"606";"Hubert Giesen";-6;-0,292682926829268
+"607";"Thomas Søndergård";-6;-0,292682926829268
+"608";"Matthias Höfs";-30;-0,293446364525596
+"609";"Vadym Kholodenko";-20;-0,294117647058824
+"610";"Europa Galante";-169;-0,297116736990155
+"611";"Kathleen Ferrier";-13;-0,297709923664122
+"612";"Elisabeth Leonskaja";-169;-0,298059964726631
+"613";"André Previn";-222;-0,2981525351013
+"614";"Richard Hein";-17;-0,298245614035088
+"615";"Nikolaus Harnoncourt";-271;-0,298348623853211
+"616";"Kun-Woo Paik";-26;-0,298850574712644
+"617";"Ludwig Hoffmann";-6;-0,3
+"618";"Le Caravansérail";-11;-0,301369863013699
+"619";"Kurt Masur";-25;-0,303951367781155
+"620";"Itamar Golan";-11;-0,305555555555556
+"621";"Luka Sulic";-159;-0,30635838150289
+"622";"Joël Pontet";-23;-0,306666666666667
+"623";"Blandine Verlet";-19;-0,307277628032345
+"624";"James Judd";-28;-0,307410795974383
+"625";"Philharmonia Quartett Berlin";-18;-0,307692307692308
+"626";"Michèle Boegner";-6;-0,307692307692308
+"627";"Jean Mouillère";-6;-0,307692307692308
+"628";"Marie-Elisabeth Hecker";-7;-0,308370044052863
+"629";"Charles Neidich";-23;-0,309417040358745
+"630";"GEROLD HUBER";-11;-0,309859154929577
+"631";"Leonidas Kavakos";-51;-0,309967585089142
+"632";"Walter Susskind";-20;-0,310077519379845
+"633";"Sir Thomas Beecham";-240;-0,310337183813207
+"634";"Emmanuel Krivine";-12;-0,311015118790497
+"635";"Adrian Chandler";-8;-0,311688311688311
+"636";"La Serenissima";-8;-0,311688311688311
+"637";"Philippe Entremont";-44;-0,312426035502959
+"638";"Domenico Cimarosa";-26;-0,313253012048193
+"639";"Murray Perahia";-222;-0,314150943396226
+"640";"Le Cercle De L'Harmonie";-12;-0,315789473684211
+"641";"Concentus musicus Wien";-9;-0,315789473684211
+"642";"Orchestra of Life";-13;-0,317073170731707
+"643";"Belcea Quartet";-11;-0,317307692307692
+"644";"Guillaume Ferran";-358;-0,317375886524823
+"645";"Orchestre de Chambre National de Toulouse";-179;-0,317497856741656
+"646";"Dalton Baldwin";-7;-0,318181818181818
+"647";"Benjamin Appl";-7;-0,318181818181818
+"648";"Jeremie Rhorer";-15;-0,319148936170213
+"649";"Aaron Pilsan";-22;-0,319612590799032
+"650";"The City of Prague Philharmonic Chamber Group";-17;-0,320754716981132
+"651";"Alain Moglia";-175;-0,321425291578657
+"652";"Tullio Serafin";-82;-0,324047647424116
+"653";"Immortal Bach Ensemble";-6;-0,324324324324324
+"654";"Dubravka Tomsic";-27;-0,325301204819277
+"655";"Clara Schumann";-28;-0,325581395348837
+"656";"Baldassare Galuppi";-22;-0,325925925925926
+"657";"François-René Duchâble";-48;-0,326160815402038
+"658";"Alexis Descharmes";-23;-0,326241134751773
+"659";"Sébastien Vichard";-23;-0,326241134751773
+"660";"Beaux Arts Trio";-101;-0,327744726879394
+"661";"Ursula Oppens";-10;-0,327868852459016
+"662";"Fazıl Say";-543;-0,328361217496472
+"663";"Concerto Köln";-102;-0,328572122501259
+"664";"John Nelson";-74;-0,329010744720266
+"665";"Aleksandr Kopilov";-68;-0,329297820823245
+"666";"Jean-Pierre Rampal";-74;-0,329719293034309
+"667";"Brigitte Engerer";-191;-0,331634234971661
+"668";"Walter Klein";-12;-0,333333333333333
+"669";"Orchestre Symphonique Mav de Budapest";-9;-0,333333333333333
+"670";"Michel Beroff";-7;-0,333333333333333
+"671";"Quatuor Mosaïques";-18;-0,333951762523191
+"672";"Aldo Ciccolini";-106;-0,336686077289572
+"673";"Malcolm Martineau";-8;-0,336842105263158
+"674";"Quartetto Italiano";-12;-0,338028169014085
+"675";"Andrew Parrott";-52;-0,338303063160749
+"676";"Mao Fujita";-90;-0,340909090909091
+"677";"Elsa Dreisig";-164;-0,341015421937272
+"678";"Jean Guillou";-12;-0,342857142857143
+"679";"Philippe Cassard";-191;-0,343370786516854
+"680";"Christoph Eschenbach";-200;-0,345582306185923
+"681";"Ralph Kirshbaum";-9;-0,346153846153846
+"682";"Enguerrand-Friedrich Lühl-Dolgorukiy";-8;-0,347826086956522
+"683";"Quatuor Ébène";-99;-0,349411764705883
+"684";"Antonio Pappano";-150;-0,34966928585052
+"685";"Julia Gjertsen";-252;-0,352447552447552
+"686";"Concerto Brandenburg";-6;-0,352941176470588
+"687";"Georges Prêtre";-155;-0,35576297769787
+"688";"Trio Wanderer";-83;-0,3567335243553
+"689";"Juan Diego Flórez";-37;-0,357081308379003
+"690";"Vivaldi Philharmonic Orchestra";-11;-0,360655737704918
+"691";"Adam Laloum";-34;-0,361061946902655
+"692";"Julius Frederick Rinaldi";-10;-0,36144578313253
+"693";"Marcela Roggeri";-21;-0,362068965517241
+"694";"Daniel Behle";-15;-0,362736066328881
+"695";"Thomas Quasthoff";-18;-0,363636363636364
+"696";"Berlin Philharmonic Orchestra";-27;-0,364454443194601
+"697";"Truls Mørk";-22;-0,366158113730929
+"698";"Shida Shahabi";-87;-0,36864406779661
+"699";"Kristian Bezuidenhout";-16;-0,36923076923077
+"700";"Café Zimmermann";-42;-0,369501466275659
+"701";"Tugan Sokhiev";-9;-0,369863013698631
+"702";"Armonie Chamber Orchestra";-10;-0,37037037037037
+"703";"Rundfunkchor Berlin";-25;-0,371494921294539
+"704";"Rudolf Kempe";-16;-0,373613543490952
+"705";"Uri Caine Ensemble";-6;-0,375
+"706";"Glenn Gould";-1364;-0,375766202162584
+"707";"James Ehnes";-28;-0,375838926174497
+"708";"Ivan Moravec";-36;-0,37696335078534
+"709";"Simone Dinnerstein";-19;-0,38
+"710";"Studio46";-16;-0,380952380952381
+"711";"Tokaido Classical Music Conservatory";-8;-0,380952380952381
+"712";"Scott Ross";-155;-0,384615384615385
+"713";"Racha Arodaky";-10;-0,384615384615385
+"714";"Mstislav Rostropovich";-387;-0,385541368489217
+"715";"Ludovic Tézier";-51;-0,390975796736393
+"716";"Nigel Kennedy";-143;-0,391459074733096
+"717";"Paul Tortelier";-68;-0,391629871376465
+"718";"Quatuor de Budapest";-10;-0,392156862745098
+"719";"Bruno Fontaine";-97;-0,394041976980365
+"720";"Vanessa Benelli Mosell";-14;-0,394366197183099
+"721";"Arnold Schoenberg Chor";-21;-0,395046245493024
+"722";"Douglas Perry";-19;-0,395833333333333
+"723";"Mikko Franck";-8;-0,396694214876032
+"724";"Yann Beuron";-19;-0,398932871872521
+"725";"Friedrich Gulda";-13;-0,398976982097187
+"726";"Rudolf Firkusny";-8;-0,4
+"727";"Theodosia Ntokou";-7;-0,4
+"728";"Ensemble Modern";-6;-0,4
+"729";"Jakub Józef Orliński";-768;-0,400424060202644
+"730";"Berliner Barock Solisten";-23;-0,40174672489083
+"731";"Philippe Jordan";-38;-0,402116402116402
+"732";"Nicholas Angelich";-59;-0,406803033785338
+"733";"Quatuor Hanson";-39;-0,406815020862309
+"734";"Pawel Przytocki";-6;-0,409090909090908
+"735";"Alessandro De Lucci";-36;-0,409090909090909
+"736";"Sylvain Cambreling";-18;-0,411115340692806
+"737";"François Dumont";-7;-0,411764705882353
+"738";"Shlomo Mintz";-16;-0,41609907120743
+"739";"Evangelina Mascardi";-15;-0,416666666666667
+"740";"Sigiswald Kuijken";-55;-0,417774401823016
+"741";"Stephen Kovacevich";-81;-0,419507984462668
+"742";"Sergiu Celibidache";-25;-0,420168067226891
+"743";"David Grimal";-20;-0,421052631578947
+"744";"Piotr Anderszewski";-78;-0,423913043478261
+"745";"Arcadi Volodos";-66;-0,428571428571429
+"746";"Benjamin Alard";-30;-0,431654676258993
+"747";"Augustin Hadelich";-46;-0,432601880877744
+"748";"Erich Kunzel";-7;-0,435233160621763
+"749";"Handel And Haydn Society";-9;-0,435483870967741
+"750";"Bruno Philippe";-16;-0,436363636363636
+"751";"Alban Berg Quartett";-36;-0,436363636363636
+"752";"Marc Minkowski";-961;-0,437698616666713
+"753";"Quatuor Modigliani";-52;-0,439684329199548
+"754";"Joe Hisaishi Ensemble";-11;-0,44
+"755";"Yaara Tal";-21;-0,442105263157895
+"756";"David Fray";-839;-0,446692399840277
+"757";"Baiba Skride";-13;-0,448275862068966
+"758";"Michel Chapuis";-40;-0,451552210724365
+"759";"Amadeus Quartet";-9;-0,451882845188284
+"760";"Daniel Varsano";-168;-0,452830188679245
+"761";"Lionel Rogg";-29;-0,453125
+"762";"Sir Simon Rattle & Wiener Philharmoniker";-136;-0,453333333333333
+"763";"Marie-Josèphe Jude";-15;-0,454545454545455
+"764";"Laurent Naouri";-105;-0,457084814626713
+"765";"Fanny Vicens";-8;-0,457142857142857
+"766";"Gabriel Urgell Reyes";-11;-0,458333333333333
+"767";"Lucile Boulanger";-29;-0,458498023715415
+"768";"Borodin Quartet";-39;-0,461538461538462
+"769";"Los Angeles Chamber Orchestra, G. Schwarz, Vivaldi Baroque Group";-6;-0,461538461538462
+"770";"Tovijs Lifsics";-6;-0,461538461538462
+"771";"Dame Margaret Price/Wolfgang Sawallisch";-6;-0,461538461538462
+"772";"Emilia Gliozzi";-6;-0,461538461538462
+"773";"Pierre Bardon";-6;-0,461538461538462
+"774";"Jonathan Fournel";-8;-0,461538461538462
+"775";"Christoph Prégardien";-58;-0,462467251395374
+"776";"Gina Bachauer";-7;-0,466666666666667
+"777";"Chicago Symphony Orchestra, Fritz Reiner";-7;-0,466666666666667
+"778";"Richard Stamp";-7;-0,466666666666667
+"779";"Trio Metral";-7;-0,466666666666667
+"780";"New York Philharmonic;Pierre Boulez";-7;-0,466666666666667
+"781";"Midori Edamame";-102;-0,467889908256881
+"782";"Severin von Eckardstein";-30;-0,46875
+"783";"Klaus Tennstedt";-10;-0,468750000000001
+"784";"New London Singers";-8;-0,470588235294118
+"785";"Nicolas van Poucke";-8;-0,470588235294118
+"786";"Georg Hortnagel";-8;-0,470588235294118
+"787";"Kyung Wha Chung";-19;-0,473029045643153
+"788";"The Gryphon Trio";-9;-0,473684210526316
+"789";"David Kenedy";-9;-0,473684210526316
+"790";"HJ Lim";-9;-0,473684210526316
+"791";"London Baroque/Charles Medlam";-9;-0,473684210526316
+"792";"David Nebel";-9;-0,473684210526316
+"793";"Michel Corboz";-43;-0,474963181148748
+"794";"Doomin Kim";-19;-0,475
+"795";"Andreas Mühlen";-10;-0,476190476190476
+"796";"Hans-Peter Westermann";-10;-0,476190476190476
+"797";"Il delirio fantastico";-11;-0,478260869565217
+"798";"Música de Cámara JLC";-11;-0,478260869565217
+"799";"Evgeny Svetlanov";-12;-0,48
+"800";"Pamela Heuvelmans";-13;-0,481481481481481
+"801";"Finn X";-13;-0,481481481481481
+"802";"Samuele Telari";-71;-0,481900452488689
+"803";"Berlin Philharmonic Orchestra;Claudio Abbado";-14;-0,482758620689655
+"804";"Tatjana Grindenko";-34;-0,482954545454545
+"805";"The Vienna Symphony Orchestra";-15;-0,483870967741935
+"806";"Dimitri Malignan";-15;-0,483870967741935
+"807";"Guarneri Quartet";-23;-0,484210526315789
+"808";"Franz Vorraber";-32;-0,484848484848485
+"809";"Amadeus Mozart";-16;-0,484848484848485
+"810";"Thomas Hengelbrock";-16;-0,484848484848485
+"811";"Clair de lune (moonlight) Debussy";-16;-0,484848484848485
+"812";"Jan Willem de Vriend";-17;-0,485714285714286
+"813";"The London Fox Orchestra";-18;-0,486486486486487
+"814";"Shunske Sato";-19;-0,487179487179487
+"815";"Adolphe Arnaud";-39;-0,4875
+"816";"The Berlin Philharmonic Orchestra";-20;-0,48780487804878
+"817";"Regula Mühlemann";-61;-0,488260405549628
+"818";"SLIXS";-21;-0,488372093023256
+"819";"Arthur Friedheim";-23;-0,48936170212766
+"820";"Catherine Collard";-23;-0,48936170212766
+"821";"Rémi Geniet";-24;-0,489795918367347
+"822";"Warsaw Soloists, Fournier, Stefanowicz";-29;-0,491525423728814
+"823";"François Mardirossian";-31;-0,492063492063492
+"824";"Eric Heidsieck";-27;-0,492401215805471
+"825";"Julien Libeer";-57;-0,49279538904899
+"826";"Tana Quartet";-35;-0,492957746478873
+"827";"Vilde Frang";-12;-0,493150684931508
+"828";"Eivind Gullberg Jensen, Vilde Frang & Danish National Symphony Orchestra";-48;-0,494845360824742
+"829";"Choeurs et Orchestre de la Scala de Milan";-24;-0,494845360824742
+"830";"Gunther Hasselmann";-131;-0,496212121212121
+"831";"Hans Vonk, Sabine Meyer & Staatskapelle Dresden";-69;-0,496402877697842
+"832";"Nigel Kennedy & English Chamber Orchestra";-74;-0,496644295302013
+"833";"The Vivaldi Festival Ensemble";-3578;-0,499790473529823
+"834";"Passionata Symphony Orchestra";-68;-0,5
+"835";"Noelia Rodiles";-33;-0,5
+"836";"Marie-Andrée Joerger";-32;-0,5
+"837";"Sladjana Gajić";-30;-0,5
+"838";"Anton Kingsbury";-28;-0,5
+"839";"Carmen-Suite";-26;-0,5
+"840";"Frank Dupree";-25;-0,5
+"841";"The English Concert dir. Trevor Pinnock";-24;-0,5
+"842";"Duo Ykeda";-23;-0,5
+"843";"Llyr Williams";-21;-0,5
+"844";"Trio Talweg";-20;-0,5
+"845";"Bernhard Billeter";-16;-0,5
+"846";"Noa Wildschut";-16;-0,5
+"847";"Duo Monti-Bianco";-15;-0,5
+"848";"George Szell, Emil Gilels & The Cleveland Orchestra";-14;-0,5
+"849";"Praxedis Geneviève Hug";-14;-0,5
+"850";"Trio Arnold";-12;-0,5
+"851";"Želimir Panić";-12;-0,5
+"852";"Erling Blöndal Bengtsson";-11;-0,5
+"853";"Trio Sōra";-10;-0,5
+"854";"Iona Brown, Mstislav Rostropovich & Academy of St. Martin in the Fields";-10;-0,5
+"855";"Paolo Beschi";-10;-0,5
+"856";"Yuri Egorov";-10;-0,5
+"857";"Kirsty Chaplin";-9;-0,5
+"858";"Jonas Vitaud";-9;-0,5
+"859";"The Vivaldi Philharmonic Orchestra";-8;-0,5
+"860";"The Royal Classical Orchestra";-8;-0,5
+"861";"Royal Philharmonic Orchestra, Alfred Scholz";-8;-0,5
+"862";"Riccardo Muti & Wiener Philharmoniker";-8;-0,5
+"863";"Aquiles Delle Vigne";-7;-0,5
+"864";"George Pretre";-7;-0,5
+"865";"Classic Flames";-7;-0,5
+"866";"Elias String Quartet";-7;-0,5
+"867";"The Danish Wind Octet with Friends";-6;-0,5
+"868";"Jadran Duncumb";-6;-0,5
+"869";"Orquesta Joven De Andalucía";-6;-0,5
+"870";"Pierre Goy";-6;-0,5
+"871";"Elzbieta Sternlicht";-6;-0,5
+"872";"Simon Trpceski";-6;-0,5
+"873";"English Chamber Orchestra/Jeffrey Tate";-6;-0,5
+"874";"Youri Egorov";-6;-0,5
+"875";"Svjatoslav Richter";-6;-0,5
+"876";"Ensemble Amati; Raymond Dessaints (Mendelssohn)";-6;-0,5
+"877";"Hortense Cartier-Bresson";-6;-0,5
+"878";"Le Rappel des Oiseaux";-6;-0,5
+"879";"William Christie & Les Arts Florissants";-6;-0,5
+"880";"Vladimir Mishchuk";-6;-0,5
+"881";"Eric Lu";-107;-0,54040404040404
+"882";"John Newmark";-7;-0,56
+"883";"Valérie Duchateau";-221;-0,577023498694517
+"884";"J.S. Bach Orchestra";-46;-0,577405857740586
+"885";"Iddo Bar-Shaï";-6;-0,6
+"886";"Johanna Martzy";-17;-0,607142857142857
+"887";"Ferruccio Busoni";-27;-0,609022556390978
+"888";"Mieczyslaw Horszowski";-53;-0,616279069767442
+"889";"Andrew Von Oeyen";-22;-0,647058823529412
+"890";"Joseph Moog";-31;-0,659574468085106
+"891";"Kim Bernard";-104;-0,666666666666667
+"892";"The Vienna Synorchestra";-12;-0,666666666666667
+"893";"Mordecai Shehori";-6;-0,666666666666667
+"894";"Tianxu An";-12;-0,705882352941177
+"895";"Prague Philharmonia";-24;-0,729113924050632
+"896";"Baby Mozart Orchestra, Peaceful Music Baby Club";-9;-0,75
+"897";"Adalberto Maria Riva";-6;-0,75
+"898";"Sergey Tanin";-7;-0,777777777777778
