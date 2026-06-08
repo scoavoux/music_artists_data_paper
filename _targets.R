@@ -20,7 +20,8 @@ tar_option_set(
     "tidyverse",
     "arrow",
     "data.table",
-    "sjmisc"
+    "sjmisc",
+    "visNetwork"
   )
 )
 
@@ -67,7 +68,7 @@ list(
                              file = "records_w3/items/songs.snappy.parquet")),
     
     tar_target(dz_songs_new,
-               make_dz_songs(to_remove_file = "interim/dict/artists_to_remove.cs",
+               make_dz_songs(to_remove_file = "interim/dict/artists_to_remove.csv",
                               file = "records_w3/items/song.snappy.parquet")),
     
     tar_target(classical_albums,
@@ -286,8 +287,8 @@ list(
   tar_target(raw_isei,
              make_raw_isei(survey_raw, 
                            isco_isei_file = "interim/prod/isco_isei.csv", 
-                           isco_file = "interim/prod/L72_Matrice_codification_ISCO_collecte_2023.csv", 
-                           openrefine_file = "interim/prod/pcs_openrefine1.csv")),
+                           isco_file = "interim/prod/L72_Matrice_codification_ISCO_collecte_2026.csv", 
+                           recode_file = "interim/prod/professions_recodees.csv")),
 
   tar_target(respondent_isei,
              make_respondent_isei(respondent_streams, 
