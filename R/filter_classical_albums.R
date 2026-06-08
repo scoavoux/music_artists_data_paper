@@ -2,8 +2,6 @@
 
 filter_classical_albums <- function(album_file, genre_mapping_file){
   
-  require(stringr)
-  
   albums <- load_s3(album_file)
   deezer_genre_mapping <- load_s3(genre_mapping_file)
 

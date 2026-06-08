@@ -1,0 +1,41 @@
+;name;description
+1;dz_name;name on deezer
+2;dz_artist_id;unique identifier on deezer
+3;mbz_artist_id;unique identifier on musicbrainz
+4;sc_artist_id;unique identifier on senscritique
+5;n_plays_raw_respondent;number of plays among survey respondents
+6;n_plays_raw;number of plays among survey non-respondents
+7;n_plays_respondent;number of plays among survey respondents, song plays weighted by 1/n featured artists
+8;n_plays;number of plays among  non-respondents, song plays weighted by 1/n featured artists
+9;n_users_respondent;number of unique listeners among survey respondents
+10;n_users;number of unique listeners of artist among non-respondents
+11;n_plays_share;fraction of total plays among non-respondents, song plays weighted by 1/n featured artists
+12;n_plays_share_respondent;fraction of total plays among survey respondents, song plays weighted by 1/n featured artists
+13;genre_dz_album_1;primary genre of albums on deezer
+14;genre_dz_album_2;secondary genre of albums on deezer
+15;genre_mbz_artist_1;primary genre on musicbrainz artist profile
+16;genre_mbz_artist_2;secondary genre on musicbrainz artist profile
+17;genre_mbz_album_1;primary genre of albums on musicbrainz
+18;genre_mbz_album_2;secondary genre of albums on musicbrainz
+19;sc_collection_count;number of senscritique users who saved artist to their collection
+20;sc_avg_score;mean rating of all releases on senscritique
+21;sc_avg_score_wtd;mean rating of releases on senscritique, weighted by release popularity
+22;sc_avg_score_albums;mean rating of albums on senscritique
+23;sc_avg_score_albums_wtd;mean rating of albums on senscritique, weighted by release popularity
+24;press_n_mentions;number of mentions in written music reviews (total)
+25;press_n_mentions_lefigaro;number of mentions in music reviews of Le Figaro
+26;press_n_mentions_lemonde;number of mentions in music reviews of Le Monde
+27;press_n_mentions_liberation;number of mentions in music reviews of Libération
+28;press_n_mentions_telerama;number of mentions in music reviews of Télérama
+29;radio_n_plays;number of radio plays
+30;radio_n_plays_public_stations;number of radio plays on public stations FIP, France Inter, France Musique
+31;artist_country;country of birth/main country of residence
+32;gender;gender (male/female/non-binary/mixed)
+33;lang_main;main language of song lyrics
+34;lang_main_nb_songs;number of songs in main language
+35;respondent_mean_age;mean age of listeners
+36;respondent_female_share;female share among listeners
+37;respondent_higher_ed_share;share of listeners with at least a Bachelor's degree equivalent
+38;respondent_graduate_ed_share;share of listeners with at least a Master's degree equivalent
+39;respondent_mean_isei;mean occupational prestige of listeners (ISEI score 1-100)
+40;respondent_n_valid_isei;number of respondents with a valid ISEI

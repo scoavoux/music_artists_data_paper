@@ -1,6 +1,7 @@
-# install all depencies
+# install all depencies from renv.lock
 install.packages("renv")
 renv::restore()
+
 
 options(warn=0) # to suppress warnings, set to -1
 
@@ -17,7 +18,7 @@ LOCAL_DATA_DIR <- Sys.getenv(
 
 library(targets)
 
-tar_option_set(
+targets::tar_option_set(
   packages = c(
     "tarchetypes",
     "paws",
@@ -27,12 +28,11 @@ tar_option_set(
     "arrow",
     "data.table",
     "sjmisc",
-    "visNetwork"
+    "stringi"
   )
 )
 
-tar_source("R")
-
+targets::tar_source("R")
 
 
 # List of targets ------
@@ -40,7 +40,6 @@ list(
   
     ### CREATE (deezer) ARTISTS ----------------------------------------------
 
-    # maybe put in clean_raw
     tar_target(dz_users,
                load_s3("records_w3/survey/RECORDS_hashed_user_group.parquet") %>% 
                  mutate(

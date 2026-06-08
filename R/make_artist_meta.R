@@ -50,8 +50,6 @@ make_artist_country <- function(mbz_area_file,
 # LOAD GENDER FROM MBZ AND GPT, COALESCE BOTH
 make_artist_gender <- function(artists, mbz_gender_file, gpt_gender_file){
   
-  require(stringr)
-  
   mbz_gender <- load_s3(mbz_gender_file)
   
   mbz_gender <- mbz_gender %>% 

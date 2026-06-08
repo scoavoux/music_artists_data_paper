@@ -5,8 +5,6 @@
 # output is a tibble with N and stream_share covered by each id
 print_stream_share <- function(x){ 
   
-  require(dplyr)
-  
   x <- x %>% 
     mutate(dz_stream_share = (n_plays / sum(n_plays, na.rm = T)) * 100)
 
@@ -54,8 +52,6 @@ print_stream_share <- function(x){
 stream_share_patch <- function(x, 
                 deezer = artists){
   
-  require(stringr)
-  
   patch <- deezer %>% 
     inner_join(x, by = "deezer_id") %>% 
     distinct(deezer_id, .keep_all = T)
@@ -84,9 +80,6 @@ prop_na <- function(x) {
 # (maybe i'm just super lazy but that's alright)
 make <- function(){
   
-  require(targets)
-  require(tarchetypes)
-  
   tar_source("R")
   
   tar_make()
@@ -94,11 +87,7 @@ make <- function(){
 }
 
 str_normalize <- function(str){
-  
-  require(stringr)
-  require(stringi)
-  
-  
+  #stringi
   str <- str %>% 
     
     str_to_lower() %>%  
@@ -122,9 +111,7 @@ str_normalize <- function(str){
 
 # clean profession descriptions for isei
 normalize_job <- function(string) {
-  
-  require(stringi)
-  
+  #stringi
   string %>%
     str_to_lower() %>% # tolower
     stri_trans_general("Latin-ASCII") %>%  # rm accents

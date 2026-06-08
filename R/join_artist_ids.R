@@ -25,8 +25,6 @@ join_artist_ids <- function(dz_songs,
                             manual_search,
                             wiki) {
   
-  require(dplyr)
-  require(stringr)
   
   # group dz_songs by artist -----------------
   artists <- group_songs_by_artist(dz_songs, dz_stream_data)

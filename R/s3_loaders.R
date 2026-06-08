@@ -2,8 +2,8 @@
 
 ##### initialize s3
 initialize_s3 <- function(){
-  require("paws")
-  s3 <- paws::s3(config = list(
+  
+    s3 <- paws::s3(config = list(
     credentials = list(
       creds = list(
         access_key_id = Sys.getenv("AWS_ACCESS_KEY_ID"),
@@ -101,8 +101,6 @@ write_s3 <- function(x,
                      file,
                      simulation = SIMULATION,
                      local_data_dir = LOCAL_DATA_DIR) {
-  
-  require(arrow)
   
   # -----------------------------
   # LOCAL SIMULATION MODE

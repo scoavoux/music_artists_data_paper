@@ -1,9 +1,5 @@
 load_mbz_genre_album <- function(file){
   
-  require(dplyr)
-  require(tidyr)
-  require(sjmisc)
-  
   genres_raw <- load_s3(file)
   
   genres_raw <- genres_raw %>%
@@ -62,10 +58,6 @@ load_mbz_genre_album <- function(file){
 
 
 load_mbz_genre_artist <- function(file){
-  
-  require(dplyr)
-  require(tidyr)
-  require(sjmisc)
   
   genres_raw <- load_s3(file)
   

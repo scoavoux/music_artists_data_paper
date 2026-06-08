@@ -103,8 +103,6 @@ patch_deezer_dups <- function(ref,
                               all, 
                               all_name = "dz_name"){
   
-  require(dplyr)
-
   ref_id   <- rlang::sym(ref_id)
   ref_name <- rlang::sym(ref_name)
   all_name <- rlang::sym(all_name)
@@ -178,9 +176,6 @@ patch_sc_dups <- function(all, senscritique){
 # passes them to all with rows_update sequentially, and returns
 # the enriched dataset with metrics on n_plays share
 update_rows <- function(all, ..., by = "dz_artist_id"){
-  
-  require(dplyr)
-  require(stringr)
   
   patches <- list(...)
   patch_names <- names(patches)

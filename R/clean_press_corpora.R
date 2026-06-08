@@ -1,7 +1,5 @@
 clean_telerama <- function(telerama_file){
   
-  require(tidyverse)
-  
   telerama <- load_s3(paste0("french_media/", telerama_file))
   
   telerama <- separate(telerama,
@@ -71,10 +69,7 @@ clean_telerama <- function(telerama_file){
 
 
 clean_lemonde <- function(lemonde_filepath, simulation = SIMULATION){
-  
-  require(stringr)
-  require(dplyr)
-  
+
   if (!simulation) {
   
   lemonde <- vector("list", length = 12L)

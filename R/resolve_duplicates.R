@@ -1,7 +1,5 @@
 deduplicate_ids <- function(artists_to_patch, simulation = SIMULATION){
   
-  require(dplyr)
-  
   all <- artists_to_patch %>% 
     
     group_by(dz_artist_id) %>% 

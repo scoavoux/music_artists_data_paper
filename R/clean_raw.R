@@ -31,9 +31,6 @@ load_sc_ratings <- function(sc_ratings_file, sc_albums_file){
 
 load_senscritique <- function(sc_file){
   
-  require(dplyr)
-  require(stringr)
-  
   senscritique <- load_s3(sc_file)
 
   clean_senscritique <- senscritique %>% 
@@ -70,10 +67,6 @@ load_senscritique <- function(sc_file){
 # transform the raw musicbrainz keys file from SQL to mbz_deezer
 # uses data.table to collapse the urls columns into separate cols
 load_mbz_deezer <- function(file) {
-  
-  require(stringr)
-  require(data.table)
-  require(dplyr)
   
   musicbrainz_urls <- load_s3(file) # load musicbrainz urls
   
