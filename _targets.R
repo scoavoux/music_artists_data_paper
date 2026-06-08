@@ -1,22 +1,28 @@
-library(targets)
-library(tarchetypes)
+# install all depencies
+install.packages("renv")
+renv::restore()
 
-options(warn=0)
+options(warn=0) # to suppress warnings, set to -1
 
 # SIMULATION=FALSE LOCAL_DATA_DIR="" Rscript -e "targets::tar_make()"
 
 SIMULATION <- as.logical(
-  Sys.getenv("SIMULATION", unset = "FALSE")
+  Sys.getenv("SIMULATION", unset = "TRUE")
 )
 
 LOCAL_DATA_DIR <- Sys.getenv(
   "LOCAL_DATA_DIR",
-  unset = ""
+  unset = "./data/"
 )
+
+library(targets)
 
 tar_option_set(
   packages = c(
+    "tarchetypes",
     "paws",
+    "tidyr",
+    "stringr",
     "tidyverse",
     "arrow",
     "data.table",
