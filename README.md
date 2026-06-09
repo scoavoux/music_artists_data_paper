@@ -8,7 +8,7 @@ data production. Only the named entity recognition (NER) that is applied to the 
 corpus runs outside this script. It can be found in `./python_press/ner_on_press_new.ipynb`.
 The simulation data is located in the `data/` folder.
 
-To install all R dependencies, run
+To install all R dependencies using `renv`, run
 
 ```
 Rscript -e "source("renv/activate.R); renv::restore()"
@@ -20,5 +20,5 @@ To replicate the pipeline with the provided simulation data in the `data/` folde
 ```
 Rscript -e "targets::tar_make()"
 ```
-from the root project folder. Approximate runtime is 10 seconds.
+from the root project folder. Approximate runtime is ???.
 
