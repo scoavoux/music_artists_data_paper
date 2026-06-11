@@ -1,22 +1,28 @@
-# install all depencies from renv.lock
-install.packages("renv")
-renv::restore()
-
 
 options(warn=0) # to suppress warnings, set to -1
 
 # SIMULATION=FALSE LOCAL_DATA_DIR="" Rscript -e "targets::tar_make()"
 
 SIMULATION <- as.logical(
-  Sys.getenv("SIMULATION", unset = "TRUE")
+  Sys.getenv("SIMULATION", unset = "FALSE")
 )
 
 LOCAL_DATA_DIR <- Sys.getenv(
   "LOCAL_DATA_DIR",
-  unset = "./data/"
+  unset = ""
 )
 
 library(targets)
+library(tarchetypes)
+library(dplyr)
+library(paws)
+library(tidyr)
+library(stringr)
+library(arrow)
+library(data.table)
+library(sjmisc)
+library(stringi)
+
 
 targets::tar_option_set(
   packages = c(
@@ -322,6 +328,9 @@ list(
   tar_target(mbz_genre_artist,
              load_mbz_genre_artist(file="musicbrainz/musicbrainz_artist_genre.csv")),
   
+  tar_target(n_tracks_feats,
+             compute_n_tracks(dz_songs)),
+  
   
 
   # final dataframe with selected variables
@@ -350,6 +359,9 @@ list(
                left_join(mbz_genre_artist, by = "mbz_artist_id") %>% 
                left_join(mbz_genre_album, by = "mbz_artist_id") %>% 
                
+               left_join(n_tracks_feats, by = "dz_artist_id") %>% 
+               
+               
                
                # compute final stream share
                mutate(
@@ -368,7 +380,8 @@ list(
                  starts_with("press_n_"),
                  starts_with("radio_"),
                  starts_with("press_"),
-                 artist_country,
+                 starts_with("release_"),
+                 country_of_origin,
                  gender,
                  starts_with("lang_"),
                  starts_with("respondent_")
@@ -386,6 +399,10 @@ list(
 
 
 # make sample of gpt gender anti-joined with musicbrainz
+
+
+
+
 
 
 

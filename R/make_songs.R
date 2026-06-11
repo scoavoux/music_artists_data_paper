@@ -103,8 +103,27 @@ bind_dz_names <- function(file_1, file_2){
 }
 
 
-
+## make alternative
+compute_n_tracks <- function(dz_songs){
   
+  tracks_vars <- dz_songs %>%
+    group_by(song_id) %>%
+    mutate(is_feat_track = n_distinct(dz_artist_id) > 1) %>%
+    ungroup() %>%
+    group_by(dz_artist_id) %>%
+    summarise(
+      n_tracks = n(),
+      n_feat_tracks = sum(is_feat_track),
+      #feat_share = mean(is_feat_track),
+      #n_tracks_w = sum(w_feat),
+      #n_feat_tracks_w = sum(w_feat * is_feat_track),
+      #feat_share_w = n_feat_tracks_w / n_tracks_w,
+      .groups = "drop"
+    )
+  
+  return(tracks_vars)
+  
+}
   
   
   

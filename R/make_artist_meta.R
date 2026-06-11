@@ -34,12 +34,13 @@ make_artist_country <- function(mbz_area_file,
     distinct(mbz_artist_id, country) %>% 
     
     left_join(country_rank, by = "country") %>% 
+    mutate(country = ifelse(country == "", NA, country)) %>% 
     arrange(mbz_artist_id, rank) %>% 
     group_by(mbz_artist_id) %>% 
     slice(1) %>% 
     ungroup() %>% 
     select(mbz_artist_id,
-           artist_country = "country")
+           country_of_origin = "country")
   
   
   return(mbz_artist_area)
