@@ -121,47 +121,48 @@ press_corpus|stem|c85f5d571f8ebc5e|b0398cf17cc26fbb|aa452202362b3f5e|-296614722|
 wiki_labels|stem|6470af2438b1b688|ae952affb53cf853|77a82aab818704f7|-830746649||t20613.3822565115s|s4760069b|4760069|rds|local|vector|||0.718||
 survey_raw|stem|c687e8417baeb653|005c818370ca155d|77a82aab818704f7|1214847798||t20613.3823281314s|s2720315b|2720315|rds|local|vector|||4.775||
 press_named_entities|stem|e89fe4c880d898e9|8a93870750c2afa8|e7cbb95e0e295843|582344855||t20613.3824180845s|s2943146b|2943146|rds|local|vector|||7.141||
-dz_songs|stem|0d870089fa8ca129|c446fe17c36e0525|3d7683e4e49d30d5|249174356||t20613.391897846s|s651036145b|651036145|rds|local|vector|||682.683||
 wiki|stem|527f057191b786a9|4b275142a543357f|7186a31e74c54a13|-1746218686||t20613.392021364s|s17820555b|17820555|rds|local|vector|||3.31|Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 2 of `x` matches multiple rows in `y`. ℹ Row 728279 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.|
 mbz_releases|stem|1b3a9cbd15e20063|6d07abb349eaaa2a|654154f749e319c8|2049062744||t20613.3928606199s|s20576176b|20576176|rds|local|vector|||67.971||
 raw_isei|stem|8e08569c2a5f8ea7|1d67a56462d13914|08188a6f7daa9c92|254500139||t20613.3928775179s|s372376b|372376|rds|local|vector|||0.547||
-respondent_streams|stem|e7342f3acb1b6387|7c09dbbe80eb0270|a93986e2eb59626b|-1401090042||t20613.3955115802s|s356315506b|356315506|rds|local|vector|||122.79||
-dz_stream_data|stem|fe789ee7e5f53210|d4ebe1d2d7d06e3c|9cd6291625b3b63c|996397651||t20613.3974980055s|s4030529b|4030529|rds|local|vector|||128.54||
-respondent_educ|stem|38e9499be571f7c2|4c2131e588bef2a5|521a5064ea6c1311|-2039250833||t20613.3979034201s|s2693006b|2693006|rds|local|vector|||14.13||
-respondent_isei|stem|2f99bdc28c960137|cbf0a44f9357fb34|146639d2af5517a4|1351537299||t20613.3982331406s|s2482108b|2482108|rds|local|vector|||10.725||
-artists_to_patch|stem|9d41905618a5368b|0bbc09b81f1daf90|2df5218d96a0ee84|-1957689600||t20613.3990831825s|s9759192b|9759192|rds|local|vector|||27.333|Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 5314 of `x` matches multiple rows in `y`. ℹ Row 150473 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.. Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 74 of `x` matches multiple rows in `y`. ℹ Row 1281 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.. Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 3 of `x` matches multiple rows in `y`. ℹ Row 85902 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.|
-respondent_demographics|stem|360908e28cd8007b|e9cf384a117bab8b|2e9c7da17da9bebd|-199194786||t20613.3996674387s|s6295071b|6295071|rds|local|vector|||27.421||
-wiki_names_patch|stem|0e42b62f42b79e2d|2f0deba6822eaf11|3f7cacd5f68f6cda|-1562572403||t20613.3997459105s|s1031902b|1031902|rds|local|vector|||4.647||
-dup_dz_mbz_patch|stem|00207d00391643a3|b298ac14e48c066e|fffa024df9bea8ed|1571603818||t20613.4002222968s|s3210780b|3210780|rds|local|vector|||37.011||
-dup_dz_sc_patch|stem|2c269404b861c64c|0dce6eda298d9d15|dc839841349324bd|-1090140241||t20613.400553545s|s1824776b|1824776|rds|local|vector|||25.441||
-wiki_mbz_names_patch|stem|1d1da5808e7e039c|1aa33fe4b4668220|3f7cacd5f68f6cda|-292486489||t20613.4006209058s|s1026266b|1026266|rds|local|vector|||3.256||
-dup_sc_patch|stem|3195f01476264073|03540b7d7e24c3f6|7b0fa752495afce3|1805590592||t20613.4009489133s|s898930b|898930|rds|local|vector|||25.179||
-mbz_names_patch|stem|f43916b6fdac1253|29badad73dfa0a21|a5e39526da87436e|1575924386||t20613.4011976156s|s2588367b|2588367|rds|local|vector|||16.905||
-sc_names_patch|stem|89aed84af8eecfee|206661486f93397b|0c1d0d5a2675c1c6|1614796117||t20613.401339513s|s1296471b|1296471|rds|local|vector|||9.387||
-wiki_mbz_ids_patch|stem|be5d37b35217e26f|44761bf037e2d2c2|4194ded23fe0ad9a|-1891922533||t20613.4013713647s|s69211b|69211|rds|local|vector|||0.382|Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 37 of `x` matches multiple rows in `y`. ℹ Row 424181 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.|
-artists|stem|5f1b560bab19139f|934258d7034f7a19|55e5094355d20e57|1571941084||t20613.4016597427s|s12887031b|12887031|rds|local|vector|||20.179|There were 843 warnings in `mutate()`. The first warning was: ℹ In argument: `keep_dz = colcount_share_by_dzdup ==   max(colcount_share_by_dzdup, na.rm = TRUE)`. ℹ In group 4: `dz_artist_id = '10032898'`. Caused by warning in `max()`: ! no non-missing arguments to max; returning -Inf ℹ Run `dplyr::last_dplyr_warnings()` to see the 842 remaining warnings.|
-mbz_gpt_gender|stem|e015115fa3f433f8|50f709302116d9cf|e64824754ad7ffd9|1763035277||t20613.4017264553s|s1379607b|1379607|rds|local|vector|||4.039||
-aliases_to_add|stem|15822f6c7aef326b|780deb26917f4afb|a5c3db406e95e24d|1367877244||t20613.4017802513s|s2605b|2605|rds|local|vector|||3.303||
-press_name_counts|stem|4918d3dbac0b2bb1|6d91109e579d027a|53f9b21302d844e7|1845327189||t20613.4018564546s|s1412195b|1412195|rds|local|vector|||4.64||
-upd_press_name_counts|stem|566238aabdcf0003|ca645d5a63c9aa7b|0e676771e9ee10e2|1329869738||t20613.4019038155s|s1353602b|1353602|rds|local|vector|||3.549||
 mbz_artist_country|stem|e39f36b5018df628|54c61b7c52d2f30f|17668fec6a90cc9d|-2055708235||t20615.5592230681s|s31220548b|31220548|rds|local|vector|||66.033|Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 31 of `x` matches multiple rows in `y`. ℹ Row 1 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.|
 tracks_data|stem|9defda8bc909b69c|d1e95281ed41f20b|86672ebaa9f70f93|1156276512||t20615.56508298s|s11969726b|11969726|rds|local|vector|||453.051||
+dz_songs|stem|852a463b6c321299|c446fe17c36e0525|0dbfa471b7039774|249174356||t20616.3366059079s|s544754034b|544754034|rds|local|vector|||521.232||
+dz_stream_data|stem|9fe28b8a603e5db6|d4ebe1d2d7d06e3c|a18207f4fdc2006a|996397651||t20616.3385825606s|s4056721b|4056721|rds|local|vector|||137.59||
+respondent_streams|stem|7e7283f7ecbeeaef|7c09dbbe80eb0270|38fb3f2357ad461f|-1401090042||t20616.3406013426s|s356489880b|356489880|rds|local|vector|||94.129||
+artists_to_patch|stem|4b0cc3cc1392a23b|0bbc09b81f1daf90|f52c0d8ceccdd4ea|-1957689600||t20616.3428865581s|s9759173b|9759173|rds|local|vector|||15.116|Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 5314 of `x` matches multiple rows in `y`. ℹ Row 150473 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.. Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 74 of `x` matches multiple rows in `y`. ℹ Row 1281 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.. Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 3 of `x` matches multiple rows in `y`. ℹ Row 85902 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.|
+respondent_educ|stem|e38874a71e94b558|4c2131e588bef2a5|60ab4a5d60373c33|-2039250833||t20616.3432440556s|s2692937b|2692937|rds|local|vector|||14.89||
+respondent_isei|stem|db97f8102c809b9f|cbf0a44f9357fb34|f3ed7c894d40d617|1351537299||t20616.3435016464s|s2482160b|2482160|rds|local|vector|||7.262||
+mbz_names_patch|stem|6a8e55375cfe933c|29badad73dfa0a21|3d6416612f0902d7|1575924386||t20616.3436915524s|s2588313b|2588313|rds|local|vector|||13.076||
+dup_dz_mbz_patch|stem|fa151bab4f10c8c9|b298ac14e48c066e|2d5eb440956a068e|1571603818||t20616.3441202068s|s3210762b|3210762|rds|local|vector|||33.63||
+dup_dz_sc_patch|stem|b4f8bdc0fd51dc72|0dce6eda298d9d15|f5b263f0a273027a|-1090140241||t20616.3443928438s|s1824754b|1824754|rds|local|vector|||21.089||
+dup_sc_patch|stem|1a40722852e6fed3|03540b7d7e24c3f6|54071bdf2769b902|1805590592||t20616.3446302496s|s898926b|898926|rds|local|vector|||18.431||
+sc_names_patch|stem|70204a28facab4ff|206661486f93397b|19ac8d120be82b82|1614796117||t20616.3447434432s|s1296417b|1296417|rds|local|vector|||7.744||
+wiki_mbz_ids_patch|stem|ae45970cbc53318e|44761bf037e2d2c2|28cb20ddd0ec6893|-1891922533||t20616.3447691838s|s69212b|69212|rds|local|vector|||0.18|Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 37 of `x` matches multiple rows in `y`. ℹ Row 424181 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.|
+wiki_mbz_names_patch|stem|2ee78de7180e6ba7|1aa33fe4b4668220|bbbb340e5eae83ba|-292486489||t20616.3448309426s|s1026363b|1026363|rds|local|vector|||3.396||
+wiki_names_patch|stem|3f223cb8776f0a3f|2f0deba6822eaf11|bbbb340e5eae83ba|-1562572403||t20616.3448980255s|s1031861b|1031861|rds|local|vector|||3.82||
+respondent_demographics|stem|718a5e00211c0e7c|e9cf384a117bab8b|cecbd1a218865681|-199194786||t20616.3453409853s|s6295200b|6295200|rds|local|vector|||20.652||
+artists|stem|ad245e4293f6eb60|934258d7034f7a19|0a4bf5413e62fbc0|1571941084||t20616.3455522339s|s12887049b|12887049|rds|local|vector|||14.98|There were 843 warnings in `mutate()`. The first warning was: ℹ In argument: `keep_dz = colcount_share_by_dzdup ==   max(colcount_share_by_dzdup, na.rm = TRUE)`. ℹ In group 4: `dz_artist_id = '10032898'`. Caused by warning in `max()`: ! no non-missing arguments to max; returning -Inf ℹ Run `dplyr::last_dplyr_warnings()` to see the 842 remaining warnings.|
+press_name_counts|stem|d4ccabfba9e3b0a2|6d91109e579d027a|46389b1c3c89875f|1845327189||t20616.3456121409s|s1412014b|1412014|rds|local|vector|||4.018||
+aliases_to_add|stem|15822f6c7aef326b|780deb26917f4afb|a893816a22f815ac|1367877244||t20616.3456582516s|s2605b|2605|rds|local|vector|||2.974||
+mbz_gpt_gender|stem|d8d251ce74213396|50f709302116d9cf|558f79651d681752|1763035277||t20616.3457198253s|s1379983b|1379983|rds|local|vector|||3.872||
+upd_press_name_counts|stem|4de4ed9d98c45ede|ca645d5a63c9aa7b|22d17f79c3ebb426|1329869738||t20616.3457519084s|s1353411b|1353411|rds|local|vector|||2.411||
+tracks_vars|function|47c675797d5e8e2b
+n_tracks_feats|stem|d8f9f70e2dc42442|8797372ec54e1bd4|fc19af5d9fa454db|-464068994||t20616.446251501s|s5901873b|5901873|rds|local|vector|||126.519||
 normalize_job|function|512fa0036113e3a9
 str_normalize|function|4440ee7cad8bef31
 group_songs_by_artist|function|5c0eee2150ca3f30
 initialize_s3|function|ca707a4418dd5551
-compute_n_tracks|function|fd3a3305ba9b4e28
+compute_n_tracks|function|fce362597898c1d8
 make_wiki_keys|function|f12d8209a06c8dec
 print_stream_share|function|30d907d08967e161
-tracks_vars|function|47c675797d5e8e2b
 make|function|b1f4f4c89e56ab50
 SIMULATION|object|cc6a331fb3c0077c
-.Random.seed|object|79e4928e167180dd
+.Random.seed|object|e9335449ed8b3ee4
 patch_names|function|04bb03cb24de6935
 patch_mbz_from_wiki|function|09d134ac8e582641
 make_press_counts|function|014c268d8bb87006
 make_respondent_demo|function|ffe835f5c3bff068
-bind_dz_songs|function|a3f11f7f8f9f9d43
+bind_dz_songs|function|751e722334ed8d2a
 stream_share_patch|function|30a1fb52ed164609
 update_press_names|function|1faf2fafe6d768c1
 make_respondent_educ|function|460b51f75db29c45
@@ -189,6 +190,7 @@ make_sc_ratings|function|0ce4198f19274cac
 list_aliases|function|f0c86c77f645f06b
 list_entities_to_drop|function|f286a0507f0ea5a1
 load_wiki|function|cdd995fce075862b
+make_n_favorites|function|30427aa0a9c7268e
 bind_dz_names|function|9514a03e990df0b1
 filter_classical_albums|function|ceb7cb640b05a608
 load_mbz_releases|function|808cf8090bd20da8
@@ -204,5 +206,5 @@ deduplicate_ids|function|c25d3ddcc8f077de
 make_stream_popularity|function|92540c14e3c9f7af
 make_respondent_plays|function|e35f8c1f4859a4b2
 bind_press_corpora|function|8f1a73ec57a786d6
-n_tracks_feats|stem|7b1d41c0cd91066d|8797372ec54e1bd4|d7d9fcb758743c87|-464068994||t20615.5875713994s|s5710117b|5710117|rds|local|vector|||218.527||
-df|stem|324774edd894ffdd|81eae9c5f3e10c72|2e66b6a63f3a0f74|1719518045||t20615.5877261206s|s19499332b|19499332|rds|local|vector|||4.343||
+dz_favorites|stem|88fcc7abb61882d5|78c609309fbfff61|79c4301bd50f910c|731933823||t20616.5308393862s|s1522917b|1522917|rds|local|vector|||41.023|Detected an unexpected many-to-many relationship between `x` and `y`. ℹ Row 15 of `x` matches multiple rows in `y`. ℹ Row 5490142 of `y` matches multiple rows in `x`. ℹ If a many-to-many relationship is expected, set `relationship =   'many-to-many'` to silence this warning.|
+df|stem|111df603f852e9f9|3671658ac52d5e41|07fac71f5f3efd6a|1719518045||t20616.5309680426s|s17263663b|17263663|rds|local|vector|||2.73||

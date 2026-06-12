@@ -69,7 +69,8 @@ bind_dz_songs <- function(dz_songs_old, dz_songs_new, classical_albums, dz_names
   ## new col to weight by n featured artists
   songs <- songs %>%
     group_by(song_id) %>%
-    mutate(w_feat = 1 / n_distinct(dz_artist_id))
+    mutate(w_feat = 1 / n_distinct(dz_artist_id)) %>% 
+    ungroup()
   
   ## add deezer names to debug joins with other ids
   songs <- songs %>% 
@@ -104,29 +105,77 @@ bind_dz_names <- function(file_1, file_2){
 
 
 ## make alternative
-compute_n_tracks <- function(dz_songs){
+compute_n_tracks <- function(dz_songs) {
   
-  tracks_vars <- dz_songs %>%
-    group_by(song_id) %>%
-    mutate(is_feat_track = n_distinct(dz_artist_id) > 1) %>%
-    ungroup() %>%
+  song_artist <- dz_songs %>%
+    mutate(song_title = str_to_lower(song_title)) %>% 
+    distinct(song_title, dz_artist_id)
+  
+  feat_info <- song_artist %>%
+    mutate(song_title = str_to_lower(song_title)) %>% 
+    group_by(song_title) %>%
+    summarise(
+      is_feat_track = n_distinct(dz_artist_id) > 1,
+      .groups = "drop"
+    )
+  
+  song_artist <- song_artist %>%
+    left_join(feat_info, by = "song_title") %>%
     group_by(dz_artist_id) %>%
     summarise(
       n_tracks = n(),
       n_feat_tracks = sum(is_feat_track),
-      #feat_share = mean(is_feat_track),
-      #n_tracks_w = sum(w_feat),
-      #n_feat_tracks_w = sum(w_feat * is_feat_track),
-      #feat_share_w = n_feat_tracks_w / n_tracks_w,
       .groups = "drop"
     )
   
-  return(tracks_vars)
+  return(song_artist)
+}
+
+
+make_n_favorites <- function(favorites_file, dz_songs){
+  
+  fav <- load_s3(favorites_file)
+  
+  fav_song <- fav %>% 
+    filter(item_type == "song") %>% 
+    inner_join(dz_songs, by = c(item_id = "song_id")) %>% 
+    count(dz_artist_id, name = "n_favorite_song") %>% 
+    select(dz_artist_id, n_favorite_song)
+  
+  fav_art <- fav %>% 
+    filter(item_type == "artist") %>% 
+    mutate(dz_artist_id = as.character(item_id)) %>% 
+    count(dz_artist_id, name = "n_favorite_artist") %>% 
+    select(dz_artist_id, n_favorite_artist)
+  
+  favorites <- fav_song %>% 
+    full_join(fav_art, by = "dz_artist_id")
+  
+  return(favorites)
   
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   
-  
-  
-  
-  
+
+
+
+
+
   

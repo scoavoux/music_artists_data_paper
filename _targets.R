@@ -328,9 +328,16 @@ list(
   tar_target(mbz_genre_artist,
              load_mbz_genre_artist(file="musicbrainz/musicbrainz_artist_genre.csv")),
   
+  
+  # ------------------- NEW VARIABLES, TEMP LOCATION
+  
   tar_target(n_tracks_feats,
              compute_n_tracks(dz_songs)),
   
+  tar_target(dz_favorites,
+             make_n_favorites(favorites_file="records_w3/favorites/RECORDS_hashed_user_favorites.parquet",
+                              dz_songs)
+  ),
   
 
   # final dataframe with selected variables
@@ -361,7 +368,10 @@ list(
                
                left_join(n_tracks_feats, by = "dz_artist_id") %>% 
                
+               left_join(dz_favorites, by = "dz_artist_id") %>% 
                
+               # rm, among others, our dear friend michel onfray
+               filter(genre_dz_album_1 != "Livres audio") %>%
                
                # compute final stream share
                mutate(
@@ -391,14 +401,6 @@ list(
 )
 
 
-
-# download_s3_folder(
-#   prefix = "interim/prod/",
-#   local_dir = "data/re"
-# )
-
-
-# make sample of gpt gender anti-joined with musicbrainz
 
 
 
