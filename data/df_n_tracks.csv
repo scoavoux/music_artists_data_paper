@@ -1,0 +1,501 @@
+"";"dz_artist_id";"dz_name";"n_tracks";"n_feat_tracks"
+"1";"1900";"Johann Sebastian Bach";31983;30867
+"2";"5695";"Wolfgang Amadeus Mozart";23510;22883
+"3";"4081";"Antonio Vivaldi";14030;13726
+"4";"6144";"Ludwig van Beethoven";13153;12902
+"5";"68382";"London Symphony Orchestra";9711;9156
+"6";"298705";"Wiener Philharmoniker";8613;8495
+"7";"70476";"Herbert von Karajan";8609;8238
+"8";"7228";"Franz Schubert";8327;8109
+"9";"168632";"Berliner Philharmoniker";8205;8055
+"10";"4976";"Giuseppe Verdi";7831;7318
+"11";"14981";"Robert Schumann";7800;7633
+"12";"7128";"Johannes Brahms";7340;7110
+"13";"10880";"Joseph Haydn";7108;6917
+"14";"64579";"Bibi Blocksberg";6543;30
+"15";"309998";"Pyotr Ilyich Tchaikovsky";6504;6325
+"16";"190393";"Philharmonia Orchestra";5999;5749
+"17";"5176";"Claude Debussy";5769;5478
+"18";"10523";"Richard Wagner";5127;4794
+"19";"96756";"Jordi Savall";4983;2865
+"20";"6250";"Maria Callas";4972;3452
+"21";"64578";"Bibi und Tina";4833;151
+"22";"1536";"Ennio Morricone";4806;1114
+"23";"7203";"Maurice Ravel";4508;4359
+"24";"11451130";"Michel Onfray";4196;150
+"25";"94226";"Royal Philharmonic Orchestra";3922;3560
+"26";"10964";"Felix Mendelssohn";3892;3788
+"27";"2681";"Leonard Bernstein";3875;3432
+"28";"10881";"Richard Strauss";3852;3790
+"29";"65637";"John Eliot Gardiner";3848;3433
+"30";"11472";"Franz Liszt";3818;3696
+"31";"65655";"Daniel Barenboim";3806;3525
+"32";"437167";"Gioachino Rossini";3699;3477
+"33";"7572750";"Iny Lorentz";3694;142
+"34";"64645";"Nikolaus Harnoncourt";3608;3105
+"35";"8244";"Giacomo Puccini";3543;3448
+"36";"77655";"Claudio Abbado";3436;3336
+"37";"14605457";"Arcade Player";3358;381
+"38";"8658";"London Philharmonic Orchestra";3344;3068
+"39";"84873";"The City Of Prague Philharmonic Orchestra";3340;1620
+"40";"215666";"Sir Neville Marriner";3244;3162
+"41";"73571";"Igor Stravinsky";3188;2987
+"42";"303712";"Sergei Prokofiev";3177;3045
+"43";"4151514";"Academy Of St Martin In The Fields";3165;3143
+"44";"65822";"Dietrich Fischer-Dieskau";2980;2954
+"45";"1635";"Erik Satie";2947;2803
+"46";"3280";"Ella Fitzgerald";2899;2103
+"47";"191347";"Sergei Rachmaninov";2878;2654
+"48";"617";"Frank Sinatra";2819;1830
+"49";"54256202";"Sleepy John";2770;179
+"50";"6914";"Gustav Mahler";2749;2682
+"51";"58962";"Glenn Gould";2735;1599
+"52";"289768";"Georg Friedrich Haendel";2734;2351
+"53";"10954";"Henry Purcell";2732;2639
+"54";"8473";"Frédéric Chopin";2713;2367
+"55";"15002";"Above & Beyond";2713;327
+"56";"11232664";"Starmyname";2694;125
+"57";"77160";"Sir Georg Solti";2659;2622
+"58";"2337";"Louis Armstrong";2625;1824
+"59";"54996";"Sviatoslav Richter";2511;1179
+"60";"1198498";"Workout Remix Factory";2506;543
+"61";"75255";"Conni";2505;212
+"62";"8762";"Georges Bizet";2484;2331
+"63";"144129";"René Jacobs";2473;2423
+"64";"14090027";"Cafe Music BGM channel";2443;1066
+"65";"95415";"Academy Of Ancient Music";2426;2425
+"66";"58676";"Karl Böhm";2378;2355
+"67";"3627051";"Cornelia Funke";2345;1886
+"68";"101181";"Vladimir Ashkenazy";2337;2069
+"69";"12737215";"Mona Kasten";2330;0
+"70";"196092";"William Christie";2326;1557
+"71";"1125";"Elvis Presley";2261;1073
+"72";"364343";"Hector Berlioz";2256;2149
+"73";"70232";"Sir Colin Davis";2197;2106
+"74";"441866";"English Baroque Soloists";2190;2162
+"75";"10620";"Armin van Buuren";2156;970
+"76";"76863";"English Chamber Orchestra";2152;2130
+"77";"2079761";"Maurice Leblanc";2142;94
+"78";"153065";"Rinaldo Alessandrini";2133;1977
+"79";"7162100";"daigoro789";2127;148
+"80";"72943";"Christopher Hogwood";2125;2105
+"81";"1060";"Johnny Hallyday";2074;801
+"82";"65366";"Ton Koopman";2055;1443
+"83";"215638";"Philippe Herreweghe";2022;2019
+"84";"423442";"Akademie fur Alte Musik Berlin";2017;1843
+"85";"17238";"Vladimir Cosma";2015;621
+"86";"70643";"James Levine";2009;1941
+"87";"205660";"Jacques Offenbach";2007;1912
+"88";"72019";"Martha Argerich";1996;1662
+"89";"68286";"Marc Minkowski";1973;1924
+"90";"5421799";"Arno Strobel";1967;597
+"91";"865012";"Trevor Pinnock";1964;1913
+"92";"57504";"Duke Ellington";1960;1189
+"93";"13896";"Luciano Pavarotti";1936;1706
+"94";"6139";"Edvard Grieg";1923;1746
+"95";"891594";"L'orchestra Cinematique";1918;802
+"96";"1935";"Hans Zimmer";1913;1355
+"97";"2908";"Édith Piaf";1902;593
+"98";"1910";"Miles Davis";1898;1059
+"99";"73627";"Riccardo Muti";1898;1708
+"100";"1001";"Charles Aznavour";1882;822
+"101";"367015";"Orchestra Del Teatro Alla Scala Di Milano";1875;1868
+"102";"13332";"André Previn";1873;1737
+"103";"208462";"Richard Bonynge";1871;1864
+"104";"13994507";"Die Schule der magischen Tiere";1864;665
+"105";"633118";"The English Concert";1849;1849
+"106";"82310622";"Silent Chills";1830;53
+"107";"405";"Johnny Cash";1805;993
+"108";"156863";"Christophe Rousset";1799;1517
+"109";"156901002";"TZLMusic";1792;899
+"110";"221";"Nat King Cole";1767;1188
+"111";"65759";"Plácido Domingo";1766;1580
+"112";"1617419";"Jean-Baptiste Lully";1734;1672
+"113";"7701530";"Meditation Music Zone";1721;1252
+"114";"378313";"Chicago Symphony Orchestra";1706;1664
+"115";"290296";"Concerto Italiano";1702;1700
+"116";"70019";"Arthur Rubinstein";1684;989
+"117";"65173";"Gustav Leonhardt";1644;1386
+"118";"79927";"New York Philharmonic Orchestra";1644;1544
+"119";"4414862";"Valery Gergiev";1637;1622
+"120";"146545";"Tullio Serafin";1634;1527
+"121";"1231497";"Power Music Workout";1633;1568
+"122";"287205";"Helmuth Rilling";1621;1619
+"123";"7431354";"Piano Dreamers";1589;1536
+"124";"2167";"Frank Zappa";1583;607
+"125";"8347";"Michel Legrand";1574;1010
+"126";"383307";"Twinkle Twinkle Little Rock Star";1573;1413
+"127";"67418";"András Schiff";1572;1403
+"128";"805";"John Williams";1568;999
+"129";"1199471";"Lorne Balfe";1561;863
+"130";"409012";"les Arts Florissants";1556;1540
+"131";"56786";"Elisabeth Schwarzkopf";1551;1472
+"132";"1609";"Django Reinhardt";1549;1069
+"133";"56170302";"HOYO-MiX";1546;609
+"134";"15435";"Zen";1546;1267
+"135";"5338160";"Dan Gibson's Solitudes";1540;868
+"136";"1005338";"Les Talens Lyriques";1540;1540
+"137";"65832";"Pierre Boulez";1523;1294
+"138";"1384605";"Antal Dorati";1521;1475
+"139";"1062";"Dalida";1514;740
+"140";"870769";"Les Musiciens du Louvre";1513;1513
+"141";"93791";"The Hit Crew";1512;1182
+"142";"214891";"Carlo Maria Giulini";1507;1462
+"143";"242351";"Andre Cluytens";1503;1158
+"144";"4962";"Michael Giacchino";1500;331
+"145";"2448081";"Graham Blvd";1492;1317
+"146";"7972";"Gucci Mane";1489;700
+"147";"806";"Sizzla";1485;823
+"148";"207645";"Jean Sibelius";1484;1223
+"149";"181367";"Riccardo Chailly";1481;1448
+"150";"190362";"Alfred Brendel";1474;1229
+"151";"16596";"Brian Tyler";1462;884
+"152";"78233";"Freiburger Barockorchester";1457;1439
+"153";"1126";"Dean Martin";1454;842
+"154";"71312";"Lorin Maazel";1454;1356
+"155";"1159";"John Lee Hooker";1449;702
+"156";"58912";"Wilhelm Kempff";1449;1025
+"157";"210695";"Choir of King's College, Cambridge";1447;1332
+"158";"191266";"Boston Symphony Orchestra";1442;1393
+"159";"7124205";"Chakra Healing Music Academy";1437;1012
+"160";"875078";"Was ist Was";1431;21
+"161";"100675";"Vybz Kartel";1429;745
+"162";"210694";"Aldo Ciccolini";1421;970
+"163";"9711962";"Spa Music Relaxation";1409;1362
+"164";"369967";"Staatskapelle Dresden";1409;1398
+"165";"1036";"Billie Holiday";1396;852
+"166";"614";"Bing Crosby";1394;1009
+"167";"77865";"Zubin Mehta";1388;1351
+"168";"7140";"Nana Mouskouri";1377;711
+"169";"7941048";"Relaxing Music Therapy";1371;1335
+"170";"1342";"Ray Charles";1370;756
+"171";"493697";"Collegium Vocale Gent";1361;1355
+"172";"6005";"James Newton Howard";1354;519
+"173";"54941";"Ottavio Dantone";1354;1313
+"174";"55032";"Wilhelm Furtwängler";1353;1306
+"175";"5604436";"John Williams";1349;1001
+"176";"275309";"Vitamin String Quartet";1344;1251
+"177";"131794";"Seiji Ozawa";1338;1282
+"178";"56797";"Vladimir Horowitz";1334;888
+"179";"450109";"Pat Benesta";1331;1094
+"180";"201309";"Yehudi Menuhin";1330;1101
+"181";"9183";"Alexandre Desplat";1328;610
+"182";"9123";"Oscar Peterson";1322;1133
+"183";"808";"Bob Dylan";1317;899
+"184";"243716";"Ferenc Fricsay";1316;1315
+"185";"148912";"Eric Le Sage";1307;1194
+"186";"291123";"Bach-Collegium Stuttgart";1295;1295
+"187";"16137";"Tino Rossi";1290;687
+"188";"378507";"Relaxing Music";1289;1289
+"189";"5853";"Chet Baker";1282;926
+"190";"68069";"Mstislav Rostropovich";1272;929
+"191";"210706";"Otto Klemperer";1272;1242
+"192";"451479";"London Music Works";1270;692
+"193";"453401";"Concertgebouworkest";1264;1212
+"194";"66199";"Karl Richter";1261;1194
+"195";"3311311";"Reinhard Goebel";1260;1256
+"196";"1622";"James Brown";1257;638
+"197";"58950";"Claudio Arrau";1256;971
+"198";"1652107";"Barbie";1254;104
+"199";"611192";"Gächinger Kantorei";1254;1215
+"200";"290295";"Accademia Bizantina";1253;1253
+"201";"2393";"Sarah Vaughan";1246;934
+"202";"8425";"Marco Beltrami";1246;597
+"203";"101645";"Cheb Hasni";1245;245
+"204";"5857";"Charles Trenet";1245;480
+"205";"5953";"Henri Salvador";1239;550
+"206";"9460";"SEGA";1238;946
+"207";"5283357";"Mhairi McFarlane";1236;0
+"208";"78636";"Jules Verne";1229;659
+"209";"215729";"Nicolai Gedda";1220;1189
+"210";"100777122";"The Alexandrov Red Army Chorus";1218;500
+"211";"154357";"Sweet Little Band";1214;1051
+"212";"148749";"Nature Sounds";1210;1210
+"213";"3458";"Stan Getz";1204;978
+"214";"14944";"Christoph Willibald Gluck";1204;1199
+"215";"1434808";"Andrei Krylov";1198;243
+"216";"614025";"Yoga";1196;1196
+"217";"12162";"James Last";1196;825
+"218";"82127";"Fabio Biondi";1195;1081
+"219";"1062130";"Yoga Music";1195;1137
+"220";"3614";"B.B. King";1181;682
+"221";"79886";"Bernard Haitink";1179;1097
+"222";"760";"Danny Elfman";1177;620
+"223";"399000";"Monteverdi Choir";1175;1100
+"224";"64552";"Wendy";1165;13
+"225";"7306";"Count Basie";1161;870
+"226";"204712";"Noel Akchoté";1150;710
+"227";"1236978";"Musica Antiqua Köln";1148;1145
+"228";"211430";"Antonio Pappano";1145;1001
+"229";"1626";"Léo Ferré";1137;528
+"230";"309010";"Symphonieorchester des Bayerischen Rundfunks";1137;1106
+"231";"1636661";"Hervé Niquet";1137;1108
+"232";"66582";"Joe Hisaishi";1131;529
+"233";"248857";"Chamber Orchestra of Europe";1130;1129
+"234";"1332260";"Rockabye Baby!";1128;1060
+"235";"1134";"Peggy Lee";1125;806
+"236";"11440";"Sylvie Vartan";1118;513
+"237";"103281292";"Stella Tack";1116;1
+"238";"215648";"Sir Charles Mackerras";1115;1110
+"239";"7368";"George Gershwin";1108;986
+"240";"5575728";"Capcom Sound Team";1108;196
+"241";"1007";"Serge Gainsbourg";1105;438
+"242";"338076";"MIDIFine Systems";1104;914
+"243";"432540";"Mariinsky Orchestra";1100;1100
+"244";"2245";"Thomas Newman";1099;444
+"245";"13146925";"Instrumental Rap Hip Hop";1099;999
+"246";"65736";"Charles Dutoit";1095;1039
+"247";"14364";"Luis Mariano";1088;494
+"248";"65682";"Concerto Köln";1087;752
+"249";"57637";"Orchestre De La Suisse Romande";1084;1035
+"250";"96137";"Giuseppe Di Stefano";1084;1008
+"251";"1223321";"Entspannungsmusik";1083;1051
+"252";"882800";"Blake Neely";1080;647
+"253";"214841";"Stephen Cleobury";1073;1057
+"254";"56796";"Walter Gieseking";1073;813
+"255";"1632434";"Neeme Järvi";1069;1069
+"256";"3";"Snoop Dogg";1065;694
+"257";"103760";"Victor Hugo";1063;284
+"258";"67835";"Ramin Djawadi";1062;537
+"259";"2902";"Yves Montand";1056;440
+"260";"2301";"John Powell";1055;370
+"261";"2060";"Bill Evans";1055;734
+"262";"5741";"Nino Rota";1055;402
+"263";"3634241";"Radio-Symphonie-Orchester Berlin";1053;990
+"264";"6402";"Bourvil";1048;437
+"265";"151999";"Benny Goodman";1047;690
+"266";"297806";"I Musici";1045;964
+"267";"671";"Georges Brassens";1041;489
+"268";"153702";"Alexandre Tharaud";1036;651
+"269";"210712";"Samson François";1036;651
+"270";"2947";"Willie Nelson";1030;757
+"271";"3757";"Lee ""Scratch"" Perry";1026;587
+"272";"210718";"Michel Plasson";1026;695
+"273";"159192";"Francis Poulenc";1026;935
+"274";"157493";"Armand Amar";1022;441
+"275";"4726";"Philip Glass";1022;586
+"276";"1394622";"Orchestra dell'Accademia Nazionale di Santa Cecilia";1022;1008
+"277";"243906";"Gerald Moore";1022;1017
+"278";"2237971";"Bruitages";1018;294
+"279";"1000";"Gilbert Bécaud";1017;388
+"280";"5860";"Doris Day";1013;663
+"281";"97035";"Alfred Cortot";1011;654
+"282";"6416892";"Relaxing Spa Music";1010;967
+"283";"2705";"Jerry Lee Lewis";1004;620
+"284";"175069";"Peter Schreier";1004;990
+"285";"8728";"André Rieu";1001;720
+"286";"215336";"Victoria de los Angeles";1001;794
+"287";"98748";"Wiener Symphoniker";999;990
+"288";"1861771";"Simone Sommerland";999;999
+"289";"304792";"Yannick Nézet-Séguin";996;982
+"290";"55667";"Sidney Bechet";995;610
+"291";"72882";"Jean-Pierre Rampal";995;837
+"292";"211131";"Philippe Jaroussky";994;515
+"293";"82739832";"ASMR Bakery";993;146
+"294";"7065";"Gregory Isaacs";985;570
+"295";"99830";"Franck Pourcel";985;731
+"296";"1648806";"Yasuharu Takanashi";983;555
+"297";"2179";"The Beach Boys";981;410
+"298";"4521538";"La-Le-Lu";973;69
+"299";"1911391";"Karsten Glück";968;965
+"300";"870780";"Concentus musicus Wien";968;966
+"301";"78984";"National Philharmonic Orchestra";965;910
+"302";"9242";"Dizzy Gillespie";964;693
+"303";"10611";"Keith Jarrett";963;684
+"304";"323621";"DJ ReMix Factory";958;369
+"305";"791";"Alan Silvestri";952;307
+"306";"1203818";"Sunfly Karaoke";951;89
+"307";"4608828";"Leonardo García Alarcón";951;951
+"308";"1379";"Neil Young";950;630
+"309";"2059";"Aretha Franklin";948;592
+"310";"6009";"Dinah Washington";945;611
+"311";"982875";"Kevin MacLeod";944;399
+"312";"997";"David Bowie";943;472
+"313";"65469";"Il Giardino Armonico";943;840
+"314";"902154";"Vincent Dumestre";941;935
+"315";"719";"Bob Marley & The Wailers";940;457
+"316";"744";"Nina Simone";940;495
+"317";"524448";"Anne Sofie von Otter";939;918
+"318";"155494";"Trevor Morris";937;209
+"319";"5854";"Itzhak Perlman";933;799
+"320";"11189572";"Shiloh Dynasty";932;918
+"321";"241841";"Maurizio Pollini";930;824
+"322";"205555";"Pascal Rogé";930;848
+"323";"5863";"Bear McCreary";929;301
+"324";"311642";"Metropolitan Opera Orchestra";929;918
+"325";"13901561";"Focus & Work";929;911
+"326";"56867162";"Luc Ferry";928;92
+"327";"431571";"Scott Ross";928;418
+"328";"96133";"Renata Tebaldi";928;848
+"329";"416258";"RIAS Kammerchor";925;923
+"330";"4762";"Bruce Springsteen";924;514
+"331";"65707";"Claudio Scimone";923;830
+"332";"153589";"Choeur de Chambre de Namur";923;922
+"333";"4423327";"Münchener Bach-Orchester";922;920
+"334";"3198";"Eddy Mitchell";919;436
+"335";"2692";"Charlie Parker";917;577
+"336";"70237";"Eugene Ormandy";917;823
+"337";"215093";"Tito Gobbi";917;888
+"338";"553";"Santana";916;420
+"339";"6690";"Max Richter";916;509
+"340";"1950251";"Ocean Sounds";916;867
+"341";"125354";"Reiki";915;776
+"342";"4902955";"Countdown Singers";914;861
+"343";"67339";"Cyprien Katsaris";914;745
+"344";"5999288";"Ulrike Grote";912;912
+"345";"66362";"Gidon Kremer";910;824
+"346";"1878";"Prince";908;480
+"347";"150304";"The Hit Co.";908;760
+"348";"2449";"John Coltrane";906;650
+"349";"2077";"Gilberto Gil";904;412
+"350";"280497";"Nobuo Uematsu";904;442
+"351";"78520";"Wolfgang Sawallisch";902;893
+"352";"470538";"MY LITTLE PONY";896;611
+"353";"147640";"Traditional";895;840
+"354";"69485";"Christa Ludwig";895;796
+"355";"71838";"Montserrat Caballé";894;693
+"356";"5061199";"MC GW";889;853
+"357";"418961";"Valentina Lisitsa";887;613
+"358";"1377530";"Block & Crown";884;715
+"359";"194162";"D'Mixmasters";879;701
+"360";"1348510";"Orchestre de la société des concerts du conservatoire";879;875
+"361";"3170";"Harry Gregson-Williams";878;487
+"362";"11682503";"Oasis Relaxante Pour Dormir";878;521
+"363";"972";"Joan Baez";877;494
+"364";"5808238";"Assimil";875;122
+"365";"76164";"Arturo Toscanini";875;841
+"366";"902237";"Alain Couchot";874;210
+"367";"114622";"Simon Preston";873;853
+"368";"4259443";"Philippe Pierlot";872;843
+"369";"449167";"Daniel Pemberton";869;257
+"370";"15289753";"BGM channel";869;422
+"371";"68039";"Giuseppe Sinopoli";868;841
+"372";"176854297";"Tidiet";868;723
+"373";"1831";"Glenn Miller";867;569
+"374";"7692";"Camille Saint-Saëns";867;775
+"375";"70706";"Orchestra del Maggio Musicale Fiorentino";867;859
+"376";"243650";"Eugen Jochum";866;864
+"377";"67340";"Rudolf Buchbinder";865;642
+"378";"70002";"Erich Leinsdorf";865;844
+"379";"5980";"Jerry Goldsmith";864;439
+"380";"290293";"Europa Galante";863;854
+"381";"58915";"Bruno Walter";860;835
+"382";"151646";"Sandrine Piau";859;818
+"383";"12237";"José Carreras";854;768
+"384";"48763261";"Gibi ASMR";854;30
+"385";"118098302";"Kato";853;495
+"386";"62996";"Ryuichi Sakamoto";851;529
+"387";"211253";"Maurice Andre";851;478
+"388";"2466";"John Barry";847;405
+"389";"95927";"Georges Prêtre";847;687
+"390";"2212";"Jacques Loussier";846;329
+"391";"149869";"Rafael Kubelik";845;833
+"392";"883961";"Orchestre symphonique de Montréal";843;843
+"393";"1560";"Jacques Brel";842;337
+"394";"1383726";"Massage Tribe";842;613
+"395";"426250";"Jean-Yves Thibaudet";842;759
+"396";"320265";"Kidz Bop Kids";842;817
+"397";"510086";"Henry Jackman";841;452
+"398";"460395";"Béla Bartók";841;597
+"399";"3636";"Art Blakey";839;598
+"400";"2079811";"Conan Doyle";837;139
+"401";"95239";"Benjamin Britten";836;727
+"402";"55292412";"Goodnight Moon ASMR";834;12
+"403";"169006";"Orchester der Wiener Staatsoper";833;826
+"404";"208263";"Arleen Augér";831;824
+"405";"96233242";"Die Tribute von Panem";831;314
+"406";"391788";"Gewandhausorchester";830;830
+"407";"242586";"Barbara Hendricks";827;694
+"408";"1022170";"Le Poème Harmonique";827;827
+"409";"76609";"Astrid Lindgren";826;163
+"410";"290308";"Orchestre National De France";824;824
+"411";"67336";"Alan Curtis";823;532
+"412";"5503400";"Ballroom Orchestra & Singers";823;26
+"413";"2899";"Astor Piazzolla";821;529
+"414";"144340";"Sir Thomas Beecham";819;798
+"415";"7804798";"Sex Music Zone";816;645
+"416";"215655";"Mikhail Pletnev";814;687
+"417";"370357";"Orchestre de Paris";812;800
+"418";"157785";"Kent Nagano";811;713
+"419";"1244689";"Lo-Fi Beats";811;754
+"420";"620";"Etta James";810;505
+"421";"8983";"King Tubby";808;403
+"422";"152366";"Lang Lang";805;574
+"423";"16500";"Erroll Garner";805;583
+"424";"4694";"Lalo Schifrin";805;395
+"425";"420365";"LE CONCERT SPIRITUEL";804;778
+"426";"6030556";"Type Beat";803;482
+"427";"1360235";"Sleeping Music";803;803
+"428";"1121";"Louis Prima";802;553
+"429";"5005";"Amália Rodrigues";802;346
+"430";"9492";"Mina";800;402
+"431";"15206";"Twilight";800;772
+"432";"96136";"Rolando Panerai";800;799
+"433";"2798";"Van Morrison";796;462
+"434";"978";"Quincy Jones";795;527
+"435";"52010582";"Beats De Rap";791;778
+"436";"4088";"Tony Bennett";790;617
+"437";"110569";"Roberto Alagna";788;679
+"438";"1636671";"Diego Fasolis";788;769
+"439";"78434";"Mikis Theodorakis";788;506
+"440";"1830111";"Claudio Colombo";788;238
+"441";"8259286";"Work Music";787;599
+"442";"78147";"Sigiswald Kuijken";787;734
+"443";"994019";"Toygar Işıklı";785;191
+"444";"878343";"Jean-christophe Spinosi";785;653
+"445";"1937491";"Classical Study Music";784;687
+"446";"79862";"BBC Symphony Orchestra";783;761
+"447";"1191615";"Jul";781;480
+"448";"184";"James Horner";780;322
+"449";"984152";"Giovanni Antonini";779;775
+"450";"452545";"Joan Sutherland";779;766
+"451";"55015";"Anne Sylvestre";778;312
+"452";"100302112";"Somnolent Jean";777;777
+"453";"68338";"Clara Haskil";775;577
+"454";"1324125";"Meditation Music";774;703
+"455";"63495032";"Backing Business";774;44
+"456";"259442";"Laurence Equilbey";771;667
+"457";"69689";"Wynton Marsalis";770;569
+"458";"78982";"Emil Gilels";768;543
+"459";"512";"Beenie Man";767;465
+"460";"11106372";"BassTon";767;767
+"461";"77553";"Pablo Casals";767;603
+"462";"5657";"Barbra Streisand";766;480
+"463";"93256";"Sly & Robbie";766;463
+"464";"192";"Eric Clapton";765;598
+"465";"7956";"Georges Delerue";763;311
+"466";"255030";"Abdel Rahman El Bacha";763;392
+"467";"8741";"Dolly Parton";762;534
+"468";"207232";"Maria João Pires";762;690
+"469";"114035";"Igor Markevitch";762;760
+"470";"3201";"Andrea Bocelli";759;642
+"471";"14974";"The King's Singers";759;364
+"472";"67083";"Claude Bolling";758;396
+"473";"386024";"Dmitri Shostakovich";757;674
+"474";"5414";"Muddy Waters";755;439
+"475";"4663521";"Shiro Sagisu";755;147
+"476";"1785";"Grateful Dead";751;329
+"477";"246203792";"Royal Concertgebouw Orchestra";751;743
+"478";"58960";"Yo-Yo Ma";750;674
+"479";"4913844";"KnightsBridge";749;640
+"480";"2207";"Judy Garland";748;502
+"481";"4192880";"Guitar Tribute Players";748;724
+"482";"4050942";"GameChops";747;705
+"483";"2934901";"Chief Keef";747;516
+"484";"78074";"Los Angeles Philharmonic";747;740
+"485";"15323";"Stéphane Grappelli";745;684
+"486";"1134477";"Czech Philharmonic";744;744
+"487";"5196";"Les Enfoirés";743;557
+"488";"4676";"Françoise Hardy";743;293
+"489";"2833";"Chuck Berry";743;358
+"490";"192222";"Paul Kuentz";743;737
+"491";"786";"Eric Serra";742;183
+"492";"7061";"Anthony B";742;449
+"493";"53238562";"Relax Chillout Lounge";742;669
+"494";"2504";"Bernard Herrmann";741;406
+"495";"5114082";"François Joubert-Caillet";740;740
+"496";"119320";"David Parry";739;586
+"497";"160670";"Blandine Verlet";738;405
+"498";"5630825";"Bayreuther Festspielorchester";738;735
+"499";"173390";"Michel Corboz";737;573
+"500";"8661";"Tito Puente";735;462

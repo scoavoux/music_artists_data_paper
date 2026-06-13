@@ -1,22 +1,28 @@
-# install all depencies from renv.lock
-install.packages("renv")
-renv::restore()
-
 
 options(warn=0) # to suppress warnings, set to -1
 
 # SIMULATION=FALSE LOCAL_DATA_DIR="" Rscript -e "targets::tar_make()"
 
 SIMULATION <- as.logical(
-  Sys.getenv("SIMULATION", unset = "TRUE")
+  Sys.getenv("SIMULATION", unset = "FALSE")
 )
 
 LOCAL_DATA_DIR <- Sys.getenv(
   "LOCAL_DATA_DIR",
-  unset = "./data/"
+  unset = ""
 )
 
 library(targets)
+library(tarchetypes)
+library(dplyr)
+library(paws)
+library(tidyr)
+library(stringr)
+library(arrow)
+library(data.table)
+library(sjmisc)
+library(stringi)
+
 
 targets::tar_option_set(
   packages = c(
@@ -323,6 +329,16 @@ list(
              load_mbz_genre_artist(file="musicbrainz/musicbrainz_artist_genre.csv")),
   
   
+  # ------------------- NEW VARIABLES, TEMP LOCATION
+  
+  tar_target(n_tracks_feats,
+             compute_n_tracks(dz_songs)),
+  
+  tar_target(dz_favorites,
+             make_n_favorites(favorites_file="records_w3/favorites/RECORDS_hashed_user_favorites.parquet",
+                              dz_songs)
+  ),
+  
 
   # final dataframe with selected variables
   tar_target(df,
@@ -350,6 +366,12 @@ list(
                left_join(mbz_genre_artist, by = "mbz_artist_id") %>% 
                left_join(mbz_genre_album, by = "mbz_artist_id") %>% 
                
+               left_join(n_tracks_feats, by = "dz_artist_id") %>% 
+               
+               left_join(dz_favorites, by = "dz_artist_id") %>% 
+               
+               # rm, among others, our dear friend michel onfray
+               filter(genre_dz_album_1 != "Livres audio") %>%
                
                # compute final stream share
                mutate(
@@ -368,7 +390,8 @@ list(
                  starts_with("press_n_"),
                  starts_with("radio_"),
                  starts_with("press_"),
-                 artist_country,
+                 starts_with("release_"),
+                 country_of_origin,
                  gender,
                  starts_with("lang_"),
                  starts_with("respondent_")
@@ -379,13 +402,9 @@ list(
 
 
 
-# download_s3_folder(
-#   prefix = "interim/prod/",
-#   local_dir = "data/re"
-# )
 
 
-# make sample of gpt gender anti-joined with musicbrainz
+
 
 
 
