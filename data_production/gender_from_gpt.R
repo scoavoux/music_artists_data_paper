@@ -87,62 +87,27 @@ library(janitor)
 library(targets)
 library(aws.s3)
 
-## Test set ------
-
-manual_annotation <- read_csv("data/artistes_200_test - artists_200_randomsample.csv")
-test_set_annotation <- annotate_gender(manual_annotation, assistant_path = "assistant/gpt_gender_assistant.txt")
-
-test_set_annotation <- test_set_annotation |> 
-  rename(gpt_gender = "gender") %>% 
-  left_join(select(manual_annotation, artist_id, human_annotation, genre)) |> 
-  mutate(human_annotation = factor(human_annotation, levels = c(1, 2), labels = c("male", "female")))
-tabyl(test_set_annotation, gpt_gender, human_annotation)
-
 ## Full dataset run ------
 tar_load(all_final)
+df <- read_csv2("data_production/df_final_0705.csv")
+gender_gpt_annotation_path = "gpt_music_data/gpt_gender.csv"
+gndr_gpt <- load_s3(gender_gpt_annotation_path, simulation = FALSE) %>% 
+  select(dz_artist_id = "artist_id")
 
-## Add main genre
-main_genre_1 <- arrow::read_parquet(
-  file =   arrow::s3_bucket(
-    "scoavoux",
-    endpoint_override = "minio.lab.sspcloud.fr"
-  )$path("records_w3/items/artists_data.snappy.parquet"),
-  partitioning = arrow::schema(REGION = arrow::utf8()),
-  col_select = c("artist_id", "main_genre")
-) %>% 
-  filter(!is.na(main_genre))
-main_genre_2 <- arrow::read_parquet(
-  file =   arrow::s3_bucket(
-    "scoavoux",
-    endpoint_override = "minio.lab.sspcloud.fr"
-  )$path("records_w3/items/artist.snappy.parquet"),
-  partitioning = arrow::schema(REGION = arrow::utf8()),
-  col_select = c("artist_id", "main_genre")
-) %>% 
-  filter(!is.na(main_genre))
+df <- df %>% 
+  anti_join(gndr_gpt) %>% 
+  filter(is.na(gender))
 
-main_genre <- bind_rows(main_genre_2, main_genre_1) %>% 
-  group_by(artist_id) %>% 
-  slice(1) %>% 
-  ungroup()
-
-main_genre <- rename(main_genre, dz_artist_id = "artist_id") %>% 
-  mutate(dz_artist_id = as.character(dz_artist_id))
-
-all_final <- arrange(all_final, desc(dz_stream_share))
-main_artists <- select(all_final, dz_name, dz_artist_id, dz_stream_share) %>% 
-  filter(dz_stream_share > 0.000001)
-main_artists <- main_artists %>% 
-  left_join(main_genre) %>% 
-  distinct(dz_name, .keep_all = TRUE) %>% 
-  filter(!is.na(main_genre))
-
-to_code <- select(main_artists, artist_id = "dz_artist_id", name = "dz_name", genre = "main_genre")
+to_code <- select(df, 
+                  artist_id = "dz_artist_id", 
+                  name = "dz_name", 
+                  genre = "genre_1")
 
 full_set_annotation <- annotate_gender(to_code, assistant_path = "data_production/assistant/gpt_gender_assistant.txt")
 
 #full_set_annotation <- read_gender_annotations()
+tail(full_set_annotation, n = 50)
 full_set_annotation <- full_set_annotation %>% 
   select(artist_id, gpt_gender = "gender") %>% 
   # Should rather be saved on s3
-  write_csv("data/gpt_gender.csv")
+  write_csv("data/gpt_gender2.csv")
