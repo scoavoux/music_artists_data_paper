@@ -88,8 +88,9 @@ library(targets)
 library(aws.s3)
 
 ## Full dataset run ------
+tar_source()
 tar_load(all_final)
-df <- read_csv2("data_production/df_final_0705.csv")
+### If there was a first run
 gender_gpt_annotation_path = "gpt_music_data/gpt_gender.csv"
 gndr_gpt <- load_s3(gender_gpt_annotation_path, simulation = FALSE) %>% 
   select(dz_artist_id = "artist_id")
@@ -105,9 +106,11 @@ to_code <- select(df,
 
 full_set_annotation <- annotate_gender(to_code, assistant_path = "data_production/assistant/gpt_gender_assistant.txt")
 
-#full_set_annotation <- read_gender_annotations()
-tail(full_set_annotation, n = 50)
-full_set_annotation <- full_set_annotation %>% 
-  select(artist_id, gpt_gender = "gender") %>% 
-  # Should rather be saved on s3
-  write_csv("data/gpt_gender2.csv")
+full_set_annotation <- read_gender_annotations()
+
+gndr_gpt %>% 
+  bind_rows(full_set_annotation) %>% 
+  add_count(artist_id) %>% 
+  filter(n==1) %>% 
+  select(-n) %>% 
+  write_csv("data/gpt_gender.csv")
