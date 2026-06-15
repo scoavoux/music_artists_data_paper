@@ -25,17 +25,19 @@ library(stringi)
 
 
 targets::tar_option_set(
-  packages = c(
-    "tarchetypes",
-    "paws",
-    "tidyr",
-    "stringr",
-    "tidyverse",
-    "arrow",
-    "data.table",
-    "sjmisc",
-    "stringi"
-  )
+
+  repository = "aws", 
+  repository_meta = "aws",
+  resources = tar_resources(
+    aws = tar_resources_aws(
+      endpoint = Sys.getenv("S3_ENDPOINT"),
+      bucket = "scoavoux",
+      prefix = "omnivorism"),
+    
+    ),
+  packages = c("tarchetypes", "paws", "tidyr", "stringr",
+               "tidyverse", "arrow", "data.table", "sjmisc",
+               "stringi")
 )
 
 targets::tar_source("R")
@@ -85,7 +87,7 @@ list(
     tar_target(classical_albums,
                filter_classical_albums(album_file="interim/prod/genres_from_albums.parquet",
                                        genre_mapping_file="interim/dict/deezer_genre_mapping.csv")),
-    
+
     tar_target(dz_songs,
                bind_dz_songs(dz_songs_old, dz_songs_new, 
                              classical_albums, dz_names)),
@@ -285,12 +287,17 @@ list(
   
   
   ### --------------------------- RESPONDENT DEMOGRAPHICS
-  # load survey
+  # load survey --> ALREADY MAKE SURVEY VARIABLES HERE??
   tar_target(survey_raw,
              load_s3("records_w3/survey/RECORDS_Wave3_apr_june_23_responses_corrected.csv") %>% 
                as_tibble() %>% 
                filter(Progress == 100,
-                      country == "FR")
+                      country == "FR") %>% 
+               select(hashed_id, 
+                      E_birth_year, 
+                      E_gender, 
+                      E_diploma,
+                      starts_with("E_FR_prof_"))
              ),
   
   # compute isei scores of respondent
@@ -339,6 +346,11 @@ list(
                               dz_songs)
   ),
   
+  # tar_target(song_favorites,
+  #            make_song_favorites(favorites_file="records_w3/favorites/RECORDS_hashed_user_favorites.parquet",
+  #                                survey_raw,
+  #                                dz_songs))
+  
 
   # final dataframe with selected variables
   tar_target(df,
@@ -371,8 +383,8 @@ list(
                left_join(dz_favorites, by = "dz_artist_id") %>% 
                
                # rm, among others, our dear friend michel onfray
-               filter(genre_dz_album_1 != "Livres audio") %>%
-               
+               filter(is.na(genre_dz_album_1) | genre_dz_album_1 != "Livres audio") %>% 
+             
                # compute final stream share
                mutate(
                  n_plays_share = n_plays / sum(n_plays, na.rm = T) * 100,
@@ -399,11 +411,6 @@ list(
   )
   
 )
-
-
-
-
-
 
 
 

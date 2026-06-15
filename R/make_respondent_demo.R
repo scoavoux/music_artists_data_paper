@@ -66,12 +66,10 @@ make_respondent_demo <- function(respondent_streams, survey_raw,
   
   respondent_demographics <- respondent_age %>% 
     
-    full_join(respondent_share_female, by = "dz_artist_id") %>% # CHANGE ONCE dz_feat_id IS DEALT WITH
-    full_join(respondent_educ, by = "dz_artist_id") %>% # CHANGE ONCE dz_feat_id IS DEALT WITH
-    full_join(respondent_isei, by = "dz_artist_id") %>% # CHANGE ONCE dz_feat_id IS DEALT WITH
+    full_join(respondent_share_female, by = "dz_artist_id") %>% 
+    full_join(respondent_educ, by = "dz_artist_id") %>% 
+    full_join(respondent_isei, by = "dz_artist_id") %>% 
     
-    rename(dz_artist_id = "dz_artist_id") %>%  # CHANGE ONCE dz_feat_id IS DEALT WITH
-  
     select(dz_artist_id, 
            respondent_mean_age, 
            respondent_female_share,

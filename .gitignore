@@ -63,3 +63,6 @@ sql/.ipynb_checkpoints/
 # targets
 _targets/
 
+# .DS_store
+.DS_store
+
