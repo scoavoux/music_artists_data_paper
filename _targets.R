@@ -342,7 +342,7 @@ list(
              compute_n_tracks(dz_songs)),
   
   tar_target(dz_favorites,
-             make_n_favorites(favorites_file="records_w3/favorites/RECORDS_hashed_user_favorites.parquet",
+             make_artist_favorites(favorites_file="records_w3/favorites/RECORDS_hashed_user_favorites.parquet",
                               dz_songs)
   ),
   
