@@ -132,6 +132,104 @@ compute_n_tracks <- function(dz_songs) {
 }
 
 
+make_dz_likes <- function(favorites_file, dz_songs, survey_raw, raw_isei, dz_users){
+  
+  favorites <- load_s3(favorites_file)
+  
+  survey <- survey_raw %>% 
+    filter(E_gender %in% c("Un homme", "Une femme")) %>% 
+    mutate(gender = ifelse(E_gender == "Une femme", 1, 0)) %>% 
+    mutate(age = 2023 - E_birth_year) %>% 
+    left_join(raw_isei, by = "hashed_id") %>% 
+    filter(E_diploma != "", !is.na(E_diploma)) %>% 
+    mutate(higher_ed = ifelse(str_detect(E_diploma, "Licence|Master|Doctorat"), 1, 0),
+           graduate_ed = ifelse(str_detect(E_diploma, "Master|Doctorat"), 1, 0)) %>% 
+    select(hashed_id, age, gender, isei, higher_ed, graduate_ed)
+  
+  favorites <- load_s3("records_w3/favorites/RECORDS_hashed_user_favorites.parquet")
+  
+  favorites <- favorites %>% 
+    left_join(dz_users, by = "hashed_id") %>% 
+    left_join(survey, by = "hashed_id")
+  
+  fav_song <- favorites %>% 
+    filter(item_type == "song") %>% 
+    rename(song_id = "item_id") %>% 
+    left_join(dz_songs, by = "song_id")
+  
+  fav_art <- favorites %>% 
+    filter(item_type == "artist") %>% 
+    mutate(dz_artist_id = as.character(item_id))
+  
+  #### --------------------------------------
+  
+  # artist control: 
+  artist_control <- fav_art %>% 
+    filter(is_control == T) %>% # control
+    count(dz_artist_id, name = "likes_art_n_users") %>% 
+    select(dz_artist_id, likes_art_n_users)
+  
+  # artist respondent
+  artist_respondent <- fav_art %>% 
+    filter(is_respondent == TRUE) %>%
+    group_by(dz_artist_id) %>%
+    summarise(
+      likes_art_mean_age = mean(age, na.rm = TRUE),
+      likes_art_female_share = mean(gender, na.rm = TRUE),
+      likes_art_higher_ed_share = mean(higher_ed, na.rm = TRUE),
+      likes_art_graduate_ed_share = mean(graduate_ed, na.rm = TRUE),
+      likes_art_mean_isei = mean(isei, na.rm = TRUE),
+      .groups = "drop"
+    )
+  
+  # song control
+  song_control <- fav_song %>%
+    filter(is_control == TRUE) %>%
+    group_by(dz_artist_id) %>%
+    summarise(
+      likes_song_n_users = n_distinct(hashed_id),
+      likes_song_n = n(),
+      .groups = "drop"
+    )
+  
+  # song respondent
+  song_weights <- fav_song %>%
+    filter(is_respondent == TRUE) %>%
+    count(hashed_id, dz_artist_id, name = "n")
+  
+  song_respondent <- song_weights %>%
+    left_join(
+      fav_song %>%
+        select(
+          hashed_id,
+          age,
+          gender,
+          higher_ed,
+          graduate_ed,
+          isei
+        ) %>%
+        distinct(),
+      by = "hashed_id"
+    ) %>%
+    group_by(dz_artist_id) %>%
+    summarise(
+      likes_song_mean_age = weighted.mean(age, w = n, na.rm = TRUE),
+      likes_song_female_share = weighted.mean(gender, w = n, na.rm = TRUE),
+      likes_song_higher_ed_share = weighted.mean(higher_ed, w = n, na.rm = TRUE),
+      likes_song_graduate_ed_share = weighted.mean(graduate_ed, w = n, na.rm = TRUE),
+      likes_song_mean_isei = weighted.mean(isei, w = n, na.rm = TRUE),
+      .groups = "drop"
+    )
+  
+  likes <- artist_control %>% 
+    left_join(artist_respondent, by = "dz_artist_id") %>% 
+    left_join(song_control, by = "dz_artist_id") %>% 
+    left_join(song_respondent, by = "dz_artist_id")
+  
+  
+  return(likes)
+  
+}
 
 
 

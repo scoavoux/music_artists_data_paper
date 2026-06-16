@@ -341,16 +341,13 @@ list(
   tar_target(n_tracks_feats,
              compute_n_tracks(dz_songs)),
   
-  tar_target(dz_favorites,
-             make_artist_favorites(favorites_file="records_w3/favorites/RECORDS_hashed_user_favorites.parquet",
-                              dz_songs)
+  tar_target(dz_likes,
+             make_dz_likes(favorites_file="records_w3/favorites/RECORDS_hashed_user_favorites.parquet",
+                               dz_songs, 
+                               survey_raw, 
+                               raw_isei, 
+                               dz_users)
   ),
-  
-  # tar_target(song_favorites,
-  #            make_song_favorites(favorites_file="records_w3/favorites/RECORDS_hashed_user_favorites.parquet",
-  #                                survey_raw,
-  #                                dz_songs))
-  
 
   # final dataframe with selected variables
   tar_target(df,
@@ -380,7 +377,7 @@ list(
                
                left_join(n_tracks_feats, by = "dz_artist_id") %>% 
                
-               left_join(dz_favorites, by = "dz_artist_id") %>% 
+               left_join(dz_likes, by = "dz_artist_id") %>% 
                
                # rm, among others, our dear friend michel onfray
                filter(is.na(genre_dz_album_1) | genre_dz_album_1 != "Livres audio") %>% 
@@ -396,6 +393,7 @@ list(
                  dz_name,
                  ends_with("_id"),
                  starts_with("n_"),
+                 starts_with("likes_"),
                  starts_with("genre_"),
                  sc_collection_count,
                  starts_with("sc_avg_"),
@@ -412,7 +410,9 @@ list(
   
 )
 
-
+tar_load(df)
+t <- df %>%
+  select(dz_name, starts_with("likes_"))
 
 
 
