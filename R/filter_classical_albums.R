@@ -4,7 +4,7 @@ filter_classical_albums <- function(album_file, genre_mapping_file){
   
   albums <- load_s3(album_file)
   deezer_genre_mapping <- load_s3(genre_mapping_file)
-
+  
   classical_albums <- albums %>%
     left_join(deezer_genre_mapping, by = "genre_id") %>%
     filter(!is.na(genre)) %>%
@@ -14,25 +14,31 @@ filter_classical_albums <- function(album_file, genre_mapping_file){
            genre) %>%
     filter(genre == "Classique") %>% 
     as_tibble()
-
+  
   # --------------
   
   # load base compositeurs
-  comp <- read.csv("data/composers.csv",
+  comp <- read.csv("data/comp_wide_1706.csv",
                    sep = ";")
-
+  
   comp <- comp %>% 
     as_tibble() %>% 
     mutate(dz_artist_id = as.character(dz_artist_id)) %>% 
-    select(dz_artist_id, dz_name) 
-
+    mutate(aliases = str_normalize_klassik(aliases),
+           dz_name = str_normalize_klassik(dz_name)) %>% 
+    mutate(aliases = paste(dz_name, aliases, sep = "|")) %>% 
+    mutate(aliases = gsub("\\s*\\|\\s*", "|", aliases)) %>% 
+    select(dz_artist_id, dz_name, aliases) 
+  
+  
   ## ------------ filter candidate albums (reduce computing time)
   
-  pat <- paste(comp$dz_name, collapse = "|")
-
+  pat <- paste(comp$aliases, collapse = "|")
+  
   classical_albums <- classical_albums %>%
-    filter(str_detect(str_to_lower(album_title), pat))
-
+    mutate(album_title = str_normalize_klassik(album_title)) %>% 
+    filter(str_detect(album_title, pat))
+  
   ## ------------ match composers with albums
   
   classical_albums <- classical_albums %>%
@@ -40,11 +46,11 @@ filter_classical_albums <- function(album_file, genre_mapping_file){
     crossing(comp) %>%
     filter(
       str_detect(
-      str_to_lower(album_title),
-      regex(
-        paste0("\\b", dz_name, "\\b")
+        album_title,
+        regex(
+          paste0("\\b(", aliases, ")\\b")
+        )
       )
-    )
     ) %>% 
     distinct(album_id, dz_artist_id) %>%
     group_by(album_id) %>%

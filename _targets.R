@@ -327,7 +327,7 @@ list(
 
   tar_target(dz_genre_album,
              load_dz_genre_album(album_file="interim/prod/genres_from_albums.parquet",
-                                     genre_mapping_file="interim/dict/deezer_genre_mapping.csv")),
+                                  genre_mapping_file="interim/dict/deezer_genre_mapping.csv")),
   
   tar_target(mbz_genre_album,
              load_mbz_genre_album(file="musicbrainz/musicbrainz_artist_releasegroup_genre.csv")),
@@ -408,11 +408,20 @@ list(
                  )
   )
   
+  ## add publishable dataset target --> sélection
+  
 )
 
 tar_load(df)
-t <- df %>%
-  select(dz_name, starts_with("likes_"))
+
+df <- df %>% 
+  filter(genre_dz_album_1 == "Classique")
+
+
+
+
+
+
 
 
 

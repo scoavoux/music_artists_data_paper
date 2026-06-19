@@ -108,6 +108,19 @@ str_normalize <- function(str){
   return(str)
 }
 
+str_normalize_klassik <- function(str){
+  #stringi
+  str <- str %>% 
+    
+    str_to_lower() %>%  
+    
+    stri_trans_general("Latin-ASCII") %>% # rm accents
+    
+    str_squish() # trim + remove extra spaces
+  
+  return(str)
+}
+
 
 # clean profession descriptions for isei
 normalize_job <- function(string) {
