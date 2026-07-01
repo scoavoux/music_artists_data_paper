@@ -1,4 +1,4 @@
-validate_annotation <- function(gender_expert_annotation_path, #edit default
+validate_annotation <- function(gender_expert_annotation_path = "gpt_music_data/gender_sample_expert_annotated.csv",
                                 gender_gpt_annotation_path = "gpt_music_data/gpt_gender.csv"){
   
   library(yardstick)
@@ -22,9 +22,9 @@ validate_annotation <- function(gender_expert_annotation_path, #edit default
       gender_expert_sc = factor(gender_expert_sc, levels = lvls)
     )
   # inspect disagreements
-  # df %>% 
-  #   filter(gender != gender_expert_sc, gender != "uncertain") %>% 
-  #   select(dz_artist_id, dz_name, gender, gender_expert_sc)
+  df %>%
+    filter(gender != gender_expert_sc, gender != "uncertain") %>%
+    select(dz_artist_id, dz_name, gender, gender_expert_sc)
   
   metrics <- metric_set(precision, recall, f_meas)
   
@@ -44,7 +44,7 @@ validate_annotation <- function(gender_expert_annotation_path, #edit default
     right_join(results_wide) %>% 
     relocate(n_certain, .after = f_meas)
   
-  if(!dir.exists("output")) dir.creat("output")
+  if(!dir.exists("output")) dir.create("output")
   filename = "output/gender_validation_metric.tex"
   kbl(tb, format = "latex", digits = 2, booktabs = TRUE) %>% 
     save_kable(file = filename)
