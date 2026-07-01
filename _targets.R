@@ -406,7 +406,12 @@ list(
                  starts_with("lang_"),
                  starts_with("respondent_")
                  )
-  )
+  ),
+  
+  # Tables and plots for data paper
+  tar_target(tb_gender_validation_metric,
+             validate_annotation(),
+             format = "file", repository = "local")
   
   ## add publishable dataset target --> sélection
   
