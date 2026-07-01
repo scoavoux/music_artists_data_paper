@@ -319,11 +319,18 @@ write_s3(press_ents, "replication_data/extracted_ents_2105.csv")
 
 
 
+# --------------- favorites
 
+dz_favorites <- load_s3("records_w3/favorites/RECORDS_hashed_user_favorites.parquet")
 
+n <- 5000
+dz_favorites <- dz_favorites %>% 
+  inner_join(dz_songs_new_sample, by = c(item_id = "song_id")) %>% 
+  slice_sample(n = 5000) %>% 
+  mutate(hashed_id = sample(rep(1:100, length.out = n))) %>% 
+  select(item_id, item_type, hashed_id)
 
-
-
+write_parquet(dz_favorites, "data/records_w3/favorites/RECORDS_hashed_user_favorites.parquet")
 
 
 

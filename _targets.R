@@ -408,20 +408,14 @@ list(
                  )
   )
   
-  ## add publishable dataset target --> sélection
+  ## add publishable dataset target --> further variable selection
   
 )
 
-tar_load(df)
-
-df <- df %>% 
-  filter(genre_dz_album_1 == "Classique")
 
 
-
-
-
-
+## refaire comparaison comp avant/après
+## mettre la liste
 
 
 
