@@ -10,7 +10,7 @@ validate_annotation <- function(gender_expert_annotation_path = "gpt_music_data/
   
   df <- gndr_gpt %>% 
     rename(dz_artist_id = "artist_id") %>% 
-    right_join(gndr_expert)
+    right_join(gndr_expert, by = "dz_artist_id")
   
   # Ensure matching factor levels; set the level you consider "positive" first.
   lvls <- union(levels(factor(df$gender_expert_sc)), levels(factor(df$gender)))
@@ -41,7 +41,7 @@ validate_annotation <- function(gender_expert_annotation_path = "gpt_music_data/
     group_by(popularity_bin) %>% 
     summarize(n_certain = n()) %>% 
     ungroup() %>% 
-    right_join(results_wide) %>% 
+    right_join(results_wide, by = "popularity_bin") %>% 
     relocate(n_certain, .after = f_meas)
   
   if(!dir.exists("output")) dir.create("output")

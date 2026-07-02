@@ -40,8 +40,6 @@ readr::write_excel_csv2(
 )
 
 
-str_extract("Nikolai Rimsky-Korsakov", "\\w*$")
-  
 
 
 

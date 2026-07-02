@@ -22,6 +22,8 @@ library(arrow)
 library(data.table)
 library(sjmisc)
 library(stringi)
+library(yardstick)
+library(kableExtra)
 
 
 targets::tar_option_set(
@@ -37,7 +39,7 @@ targets::tar_option_set(
     ),
   packages = c("tarchetypes", "paws", "tidyr", "stringr",
                "tidyverse", "arrow", "data.table", "sjmisc",
-               "stringi")
+               "stringi", "yardstick", "kableExtra")
 )
 
 targets::tar_source("R")
@@ -411,7 +413,8 @@ list(
   # Tables and plots for data paper
   tar_target(tb_gender_validation_metric,
              validate_annotation(),
-             format = "file", repository = "local")
+             format = "file", 
+             repository = "local")
   
   ## add publishable dataset target --> further variable selection
   
@@ -421,6 +424,14 @@ list(
 
 ## refaire comparaison comp avant/après
 ## mettre la liste
+
+
+
+
+
+
+
+
 
 
 
