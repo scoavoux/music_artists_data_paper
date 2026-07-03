@@ -18,7 +18,7 @@ filter_classical_albums <- function(album_file, genre_mapping_file){
   # --------------
   
   # load base compositeurs
-  comp <- read.csv("interim/dict/comp_wide_1706.csv",
+  comp <- load_s3("interim/dict/comp_wide_1706.csv",
                    sep = ";")
   
   comp <- comp %>% 

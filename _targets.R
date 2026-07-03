@@ -350,6 +350,13 @@ list(
                                raw_isei, 
                                dz_users)
   ),
+  
+  tar_target(song_diversity,
+             make_song_diversity(dz_songs, 
+                                 dz_users, 
+                                 path_long="records_w3/streams/streams_long", 
+                                 path_short="records_w3/streams/streams_short")
+  ),
 
   # final dataframe with selected variables
   tar_target(df,
@@ -381,6 +388,8 @@ list(
                
                left_join(dz_likes, by = "dz_artist_id") %>% 
                
+               left_join(song_diversity, by = "dz_artist_id") %>% 
+               
                # rm, among others, our dear friend michel onfray
                filter(is.na(genre_dz_album_1) | genre_dz_album_1 != "Livres audio") %>% 
              
@@ -396,6 +405,7 @@ list(
                  ends_with("_id"),
                  starts_with("n_"),
                  starts_with("likes_"),
+                 starts_with("div_"),
                  starts_with("genre_"),
                  sc_collection_count,
                  starts_with("sc_avg_"),

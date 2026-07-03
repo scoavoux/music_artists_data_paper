@@ -11,7 +11,8 @@ query_raw_streams <- function(
 ) {
   
   song_artist_weights <- dz_songs %>%
-    select(song_id, dz_artist_id, w_feat)
+    mutate(song_title_norm = str_normalize_klassik(song_title)) %>%
+    select(song_id, song_title_norm, dz_artist_id, w_feat)
   
   # ------------------------------------------------------------------
   # LOAD LONG STREAMS
@@ -81,6 +82,7 @@ query_raw_streams <- function(
     select(
       hashed_id,
       song_id,
+      song_title_norm,
       dz_artist_id,
       is_respondent,
       w_feat
@@ -114,6 +116,7 @@ query_raw_streams <- function(
     select(
       hashed_id,
       song_id,
+      song_title_norm,
       dz_artist_id,
       is_respondent,
       w_feat
