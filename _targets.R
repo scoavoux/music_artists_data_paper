@@ -357,9 +357,21 @@ list(
                                  path_long="records_w3/streams/streams_long", 
                                  path_short="records_w3/streams/streams_short")
   ),
+  
+  tar_target(n_followers,
+             load_s3("records_w3/artists_pop.csv") %>% 
+               mutate(dz_artist_id = as.character(artist_id)) %>% 
+               select(dz_artist_id, n_followers = "nb_fans")
+             ),
+  
+  # Tables and plots for data paper
+  tar_target(tb_gender_validation_metric,
+             validate_annotation(),
+             format = "file", 
+             repository = "local"),
 
   # final dataframe with selected variables
-  tar_target(df,
+  tar_target(df_complete,
              artists %>% 
                
                # press counts updated with aliases counts
@@ -389,6 +401,8 @@ list(
                left_join(dz_likes, by = "dz_artist_id") %>% 
                
                left_join(song_diversity, by = "dz_artist_id") %>% 
+               
+               left_join(n_followers, by = "dz_artist_id") %>% 
                
                # rm, among others, our dear friend michel onfray
                filter(is.na(genre_dz_album_1) | genre_dz_album_1 != "Livres audio") %>% 
@@ -420,20 +434,34 @@ list(
                  )
   ),
   
-  # Tables and plots for data paper
-  tar_target(tb_gender_validation_metric,
-             validate_annotation(),
-             format = "file", 
-             repository = "local")
   
-  ## add publishable dataset target --> further variable selection
+  tar_target(df_data_paper,
+             df_complete %>% 
+               select(
+                 dz_name,
+                 ends_with("_id"),
+                 n_plays, 
+                 n_users, 
+                 n_followers,
+                 n_tracks, 
+                 # starts_with("likes_"), # delete useless like measures
+                 div_shannon_effective,
+                 genre_dz_album_1,
+                 sc_collection_count,
+                 sc_avg_score,
+                 starts_with("press_"),
+                 starts_with("radio_"),
+                 starts_with("release_"),
+                 country_of_origin,
+                 gender,
+                 lang_main,
+                 starts_with("respondent_"),
+                 -respondent_n_valid_isei
+               ))
   
 )
 
 
-
-## refaire comparaison comp avant/après
-## mettre la liste
 
 
 
