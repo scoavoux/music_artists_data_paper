@@ -436,6 +436,7 @@ list(
   
   
   tar_target(df_data_paper,
+             
              df_complete %>% 
                select(
                  dz_name,
@@ -457,14 +458,24 @@ list(
                  lang_main,
                  starts_with("respondent_"),
                  -respondent_n_valid_isei
-               ))
+               ) %>% 
+               
+               # bin n_plays
+               mutate(
+                 rank = row_number(),
+                 n_plays = case_when(
+                   rank <= 100   ~ 100,
+                   rank <= 500   ~ 500,
+                   rank <= 1000  ~ 1000,
+                   rank <= 10000 ~ 10000,
+                   rank <= 50000 ~ 50000,
+                   rank <= 100000 ~ 100000,
+                   TRUE          ~ 300000
+                 )
+               )
+             )
   
 )
-
-
-
-
-
 
 
 
