@@ -1,8 +1,6 @@
-# helper functions for the artist id issues 
+## various helpers for production
 
-# quick benchmark of stream shares after consolidatoin steps
-# input x is a dataframe with the 3 ids columns (and optionnally n_ratings)
-# output is a tibble with N and stream_share covered by each id
+# quick benchmark of stream shares after consolidation steps
 print_stream_share <- function(x){ 
   
   x <- x %>% 
@@ -48,7 +46,7 @@ print_stream_share <- function(x){
   
 }
 
-# show stream share of patches
+# show stream share of each patch
 stream_share_patch <- function(x, 
                 deezer = artists){
   
@@ -65,7 +63,7 @@ stream_share_patch <- function(x,
 }
 
 
-# prop of nas of each column within a dataset
+# proportion of NAs of each column within a dataset
 prop_na <- function(x) {
   
   nas <- function(x){
@@ -76,8 +74,7 @@ prop_na <- function(x) {
   
 }
 
-# wrapper for tar_source("R") and tar_make()
-# (maybe i'm just super lazy but that's alright)
+# (terribly lazy) wrapper for tar_source and tar_make
 make <- function(){
   
   tar_source("R")
@@ -86,8 +83,9 @@ make <- function(){
   
 }
 
+# fully normalize strings
 str_normalize <- function(str){
-  #stringi
+
   str <- str %>% 
     
     str_to_lower() %>%  
@@ -95,21 +93,22 @@ str_normalize <- function(str){
     stri_trans_general("Latin-ASCII") %>% # rm accents
     
     str_replace_all(c(
-      #"\\bthe\\b" = "(the|les|des|du|de\sla)?", # LEAVE OUT FOR NOW
       "\\b(the|les|des|le|la)\\s\\b" = "", # remove the
-      "\\b(?:and|et|&)\\b" = "&", # unify &
+      "\\b(?:and|et|&)\\b" = "&", # unify and, et, & to &
       "-" = " "
     )) %>% 
     
-    str_remove_all("[.,!?;:]") %>% 
+    str_remove_all("[.,!?;:]") %>%  # remove punctuation
     
     str_squish() # trim + remove extra spaces
   
   return(str)
 }
 
-str_normalize_klassik <- function(str){
-  #stringi
+# normalize album and song titles
+# no punctuation removal etc
+str_normalize_titles <- function(str){
+
   str <- str %>% 
     
     str_to_lower() %>%  
@@ -121,21 +120,6 @@ str_normalize_klassik <- function(str){
   return(str)
 }
 
-
-# clean profession descriptions for isei
-normalize_job <- function(string) {
-  #stringi
-  string %>%
-    str_to_lower() %>% # tolower
-    stri_trans_general("Latin-ASCII") %>%  # rm accents
-    
-    str_remove_all("[.,!?;:]") %>% 
-    
-    str_remove_all("\\b(de|du|des|la|le|l'|en|et|d')\\b") %>% 
-    
-    str_squish() # rm whitespaces
-  
-}
 
 
 

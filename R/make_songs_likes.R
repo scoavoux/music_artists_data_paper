@@ -1,4 +1,4 @@
-### load items_old or items_new
+### load songs_old / songs_new
 make_dz_songs <- function(to_remove_file, file) {
   
   to_remove <- load_s3(to_remove_file)
@@ -12,7 +12,7 @@ make_dz_songs <- function(to_remove_file, file) {
               by = "artist_id") %>% 
     
     select(song_id,
-           album_id, # ADDED 2205
+           album_id,
            song_title,
            dz_artist_feat_id = "artists_ids",
            dz_artist_id = "artist_id")
@@ -20,11 +20,12 @@ make_dz_songs <- function(to_remove_file, file) {
   return(df)
 }
 
-
+# bind old and new songs and
+# weight song attribution in case of featuring
 bind_dz_songs <- function(dz_songs_old, dz_songs_new, classical_albums, dz_names){
   
   # bind items_old and items_new
-  # prioritize deezer_id of items_new
+  # prioritize deezer_id of songs_new over songs_old
   songs <- dz_songs_new %>% 
     bind_rows(
       dz_songs_old %>% 
@@ -80,6 +81,7 @@ bind_dz_songs <- function(dz_songs_old, dz_songs_new, classical_albums, dz_names
 }
 
 
+# bind deezer names from main file to new scraped names
 bind_dz_names <- function(file_1, file_2){
   
   names <- load_s3(file_1)
@@ -104,15 +106,16 @@ bind_dz_names <- function(file_1, file_2){
 }
 
 
-## make alternative
+# make n_tracks variable with normalized
+# song_title instead of song_id
 compute_n_tracks <- function(dz_songs) {
   
   song_artist <- dz_songs %>%
-    mutate(song_title = str_to_lower(song_title)) %>% 
+    mutate(song_title = str_normalize_titles(song_title)) %>% 
     distinct(song_title, dz_artist_id)
   
   feat_info <- song_artist %>%
-    mutate(song_title = str_to_lower(song_title)) %>% 
+    mutate(song_title = str_normalize_titles(song_title)) %>% 
     group_by(song_title) %>%
     summarise(
       is_feat_track = n_distinct(dz_artist_id) > 1,
@@ -132,6 +135,7 @@ compute_n_tracks <- function(dz_songs) {
 }
 
 
+# make alternative popularity measurement: deezer favorites, ie likes
 make_dz_likes <- function(favorites_file, dz_songs, survey_raw, raw_isei, dz_users){
   
   favorites <- load_s3(favorites_file)

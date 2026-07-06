@@ -1,3 +1,5 @@
+## clean all 4 corpora and bind them for export to python NER
+
 clean_telerama <- function(telerama_file){
   
   telerama <- load_s3(paste0("french_media/", telerama_file))
@@ -230,6 +232,7 @@ clean_liberation <- function(liberation_file, simulation = SIMULATION){
 }
 
 
+# bind and clean all 4 corpora to export for NER
 bind_press_corpora <- function(telerama_file, lefigaro_file, 
                                liberation_file, lemonde_filepath,
                                bert_reviews_file){
@@ -245,7 +248,7 @@ bind_press_corpora <- function(telerama_file, lefigaro_file,
     filter(!is.na(article_text)) %>%
     mutate(article_text = paste(article_title, ".\n", article_text)) %>%
     select(source, article_text) %>% 
-    distinct(article_text, .keep_all = T) %>% # REMOVE DUPLICATE TEXTS
+    distinct(article_text, .keep_all = T) %>% # rm duplicate texts
     mutate(article_id = row_number()) %>%
     filter(!str_detect(article_text, "^NA")) %>%  # delete articles when title starts with NA
     as_tibble()
@@ -262,22 +265,6 @@ bind_press_corpora <- function(telerama_file, lefigaro_file,
   return(press_corpus)
   
 }
-
-
-# # load entities file separately
-# extracted_ents <- load_s3("press/extracted_ents_1203.csv")
-# 
-# # names to drop
-# press_outliers_checked <- load_s3("press/press_outliers_checked_1003.csv")
-# 
-# # aliases to update
-# ents_without_match_checked <- load_s3("press/ents_without_match_checked_1003.csv")
-# 
-# 
-# extracted_ents %>% as_tibble()
-# press_outliers_checked
-# ents_without_match_checked
-# 
 
 
 

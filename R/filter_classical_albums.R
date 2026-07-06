@@ -1,4 +1,7 @@
-
+# load albums, filter classical music, normalize album titles,
+# search for composer names or aliases through hand-coded dictionary
+# if a name is found, append dz_artist_id of composer to the songs
+# linked to the album in order to give composers credit when deezer does not
 
 filter_classical_albums <- function(album_file, genre_mapping_file){
   
@@ -24,8 +27,8 @@ filter_classical_albums <- function(album_file, genre_mapping_file){
   comp <- comp %>% 
     as_tibble() %>% 
     mutate(dz_artist_id = as.character(dz_artist_id)) %>% 
-    mutate(aliases = str_normalize_klassik(aliases),
-           dz_name = str_normalize_klassik(dz_name)) %>% 
+    mutate(aliases = str_normalize_titles(aliases),
+           dz_name = str_normalize_titles(dz_name)) %>% 
     mutate(aliases = paste(dz_name, aliases, sep = "|")) %>% 
     mutate(aliases = gsub("\\s*\\|\\s*", "|", aliases)) %>% 
     select(dz_artist_id, dz_name, aliases) 
@@ -36,7 +39,7 @@ filter_classical_albums <- function(album_file, genre_mapping_file){
   pat <- paste(comp$aliases, collapse = "|")
   
   classical_albums <- classical_albums %>%
-    mutate(album_title = str_normalize_klassik(album_title)) %>% 
+    mutate(album_title = str_normalize_titles(album_title)) %>% 
     filter(str_detect(album_title, pat))
   
   ## ------------ match composers with albums
@@ -61,10 +64,6 @@ filter_classical_albums <- function(album_file, genre_mapping_file){
   
   return(classical_albums)
 }
-
-
-# albums <- load_s3("interim/prod/genres_from_albums.parquet")
-# deezer_genre_mapping <- load_s3("interim/dict/deezer_genre_mapping.csv")
 
 
 

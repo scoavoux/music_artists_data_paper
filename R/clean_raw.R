@@ -1,7 +1,8 @@
-## insert custom functions to clean the raw files here
+## custom functions to clean raw files
 
 ## select relevant columns, filter duplicates,
-## remove unused cases, recode ids to str, recode wrong ids (https...), etc.
+## remove unused cases, recode ids to str, 
+## recode wrong ids (https...), etc.
 
 
 # ----------------- RATINGS ---------------------------
@@ -132,7 +133,8 @@ load_mbz_deezer <- function(file) {
 }
 
 
-# ------------------- WIKI ---------------------------
+# query artists on wikidata
+# queries commented out due to reproducibility issues
 load_wiki <- function(mbz_deezer) {
   
   # require(WikidataQueryServiceR)
@@ -283,17 +285,12 @@ load_wiki <- function(mbz_deezer) {
   #   full_join(wiki_mbz, by = "itemId") 
   #   #full_join(wiki_discogs, by = "itemId") %>%  
   #   #full_join(wiki_spotify, by = "itemId") %>%  
-  #   
-  #
-  
-  ## TEMP -- TEMP -- TEMP -- TEMP -- TEMP -- TEMP -- TEMP -- TEMP -- TEMP
-  
+
+
+  # load the file produced by the queries above
   wiki <- load_s3("interim/prod/wiki_ids.csv")
   
-  ## TEMP -- TEMP -- TEMP -- TEMP -- TEMP -- TEMP -- TEMP -- TEMP -- TEMP
-  
-  #
-  # 
+
   # ADD MBZ NAMES
   mbz_name <- mbz_deezer %>% 
     select(mbz_artist_id, mbz_name)

@@ -1,4 +1,4 @@
-# group dz_songs by artist and joins popularity
+# group dz_songs by artist and join stream popularity
 group_songs_by_artist <- function(dz_songs, dz_stream_data){
   
   dz_artists <- dz_songs %>% 
@@ -8,7 +8,6 @@ group_songs_by_artist <- function(dz_songs, dz_stream_data){
     summarise(dz_name = first(dz_name),
               .groups = "drop") %>% 
     
-    # NEW 18/03: ADD POP HERE!
     inner_join(dz_stream_data, by = "dz_artist_id") %>% 
     
     arrange(desc(n_plays))
@@ -17,7 +16,7 @@ group_songs_by_artist <- function(dz_songs, dz_stream_data){
 }
 
 
-# --------------- binds all "raw" id files to one dataset
+# bind all raw id files to one dataset
 join_artist_ids <- function(dz_songs, 
                             dz_stream_data,
                             mbz_deezer, 

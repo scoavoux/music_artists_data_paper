@@ -1,8 +1,5 @@
 
-
-# load senscritique ratings for albums and tracks and compute
-# 4 metrics:
-
+# make average senscritique ratings for albums and tracks
 make_sc_ratings <- function(sc_albums_ratings_file, 
                             sc_albums_list_file,
                             sc_tracks_ratings_file, 

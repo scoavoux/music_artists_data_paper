@@ -1,4 +1,5 @@
 # make genre_dz_album
+# aggregated from deezer album genres
 load_dz_genre_album <- function(album_file, genre_mapping_file){
   
   albums <- load_s3(album_file)
@@ -50,6 +51,7 @@ load_dz_genre_album <- function(album_file, genre_mapping_file){
 }
 
 # make genre_mbz_album
+# aggregated from musicbrainz album genres
 load_mbz_genre_album <- function(file){
   
   genres_raw <- load_s3(file)
@@ -110,6 +112,7 @@ load_mbz_genre_album <- function(file){
 
 
 # make genre_mbz_artist
+# mbz genre tags at the artist level
 load_mbz_genre_artist <- function(file){
   
   genres_raw <- load_s3(file)
@@ -119,17 +122,6 @@ load_mbz_genre_artist <- function(file){
     rename(mbz_artist_id = artist_mbid,
            mbz_genre = genre_name) %>%
     filter(mbz_genre != "")
-  
-  # join to df for tests --> reuse if more tests needed
-  # genres <- df %>%
-  #   inner_join(genres, by = "mbz_artist_id") %>%
-  #   select(
-  #     mbz_artist_id,
-  #     dz_name,
-  #     mbz_genre,
-  #     genre_count,
-  #     n_plays_share
-  #   )
   
   # overall genre frequency
   genre_frq <- frq(genres$mbz_genre, sort.frq = "desc")[[1]] %>%
@@ -171,8 +163,6 @@ load_mbz_genre_artist <- function(file){
   return(genres_wide)
 }
 
-
-### ADD COMPLETE TABLES FOR MBZ GENRE ARTIST AND ALBUM
 
   
   

@@ -261,13 +261,13 @@ list(
              load_s3("interim/prod/artists_songs_languages.csv") %>% 
                as_tibble() %>% 
                mutate(dz_artist_id = as.character(art_id),
-                      lang_main = lang,
-                      lang_main_nb_songs = nb_songs) %>% 
-               arrange(dz_artist_id, desc(lang_main_nb_songs)) %>% 
+                      language_main = lang,
+                      language_main_n_songs = nb_songs) %>% 
+               arrange(dz_artist_id, desc(language_main_n_songs)) %>% 
                group_by(dz_artist_id) %>% 
                slice(1) %>% 
                ungroup() %>% 
-               select(dz_artist_id, lang_main, lang_main_nb_songs)
+               select(dz_artist_id, language_main, language_main_n_songs)
              ),
   
   # gender
@@ -429,7 +429,7 @@ list(
                  starts_with("release_"),
                  country_of_origin,
                  gender,
-                 starts_with("lang_"),
+                 starts_with("language_"),
                  starts_with("respondent_")
                  )
   ),
@@ -438,28 +438,8 @@ list(
   tar_target(df_data_paper,
              
              df_complete %>% 
-               select(
-                 dz_name,
-                 ends_with("_id"),
-                 n_plays, 
-                 n_users, 
-                 n_followers,
-                 n_tracks, 
-                 # starts_with("likes_"), # delete useless like measures
-                 div_shannon_effective,
-                 genre_dz_album_1,
-                 sc_collection_count,
-                 sc_avg_score,
-                 starts_with("press_"),
-                 starts_with("radio_"),
-                 starts_with("release_"),
-                 country_of_origin,
-                 gender,
-                 lang_main,
-                 starts_with("respondent_"),
-                 -respondent_n_valid_isei
-               ) %>% 
                
+      
                # bin n_plays
                mutate(
                  rank = row_number(),
@@ -472,15 +452,41 @@ list(
                    rank <= 100000 ~ 100000,
                    TRUE          ~ 300000
                  )
+               ) %>% 
+  
+               # select data paper variables
+               select(
+                 dz_name,
+                 ends_with("_id"),
+                 
+                 # popularity
+                 n_plays, 
+                 n_users, 
+                 n_followers,
+                 
+                 # artist metadata
+                 genre_dz_album_1, # rename to genre?
+                 country_of_origin,
+                 gender,
+                 language_main,
+                 starts_with("release_"),
+                 n_tracks, 
+                 div_shannon_effective,
+                 
+                 # alternative legitimacy 
+                 sc_collection_count,
+                 sc_avg_score,
+                 starts_with("press_"),
+                 starts_with("radio_"),
+                 
+                 # listener demographics
+                 starts_with("respondent_"),
+                 -respondent_n_valid_isei
                )
-             )
+  )
+
   
 )
-
-
-
-
-
 
 
 

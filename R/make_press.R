@@ -1,4 +1,3 @@
-# DISCLAIMER: this workflow is **temporary**.
 # separate targets are made for aliases to add and names to drop because
 # we might update these later, and until then it is best to not integrate them. 
 # importantly, both aliases and names to drop lists are made looking at 
@@ -218,9 +217,6 @@ make_press_counts <- function(artists, upd_press_name_counts){
   
   return(artists)
 }
-
-
-
 
 
 
