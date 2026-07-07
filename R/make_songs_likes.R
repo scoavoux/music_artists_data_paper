@@ -127,7 +127,7 @@ compute_n_tracks <- function(dz_songs) {
     group_by(dz_artist_id) %>%
     summarise(
       n_tracks = n(),
-      n_feat_tracks = sum(is_feat_track),
+      n_tracks_feat = sum(is_feat_track),
       .groups = "drop"
     )
   
@@ -149,8 +149,6 @@ make_dz_likes <- function(favorites_file, dz_songs, survey_raw, raw_isei, dz_use
     mutate(higher_ed = ifelse(str_detect(E_diploma, "Licence|Master|Doctorat"), 1, 0),
            graduate_ed = ifelse(str_detect(E_diploma, "Master|Doctorat"), 1, 0)) %>% 
     select(hashed_id, age, gender, isei, higher_ed, graduate_ed)
-  
-  favorites <- load_s3("records_w3/favorites/RECORDS_hashed_user_favorites.parquet")
   
   favorites <- favorites %>% 
     left_join(dz_users, by = "hashed_id") %>% 

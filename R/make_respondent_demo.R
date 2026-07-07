@@ -52,8 +52,7 @@ make_respondent_isei <- function(respondent_streams, raw_isei){
     inner_join(raw_isei, by = "hashed_id") %>%
     group_by(dz_artist_id) %>%
     mutate(f = n_plays / sum(n_plays, na.rm = T)) %>%
-    summarise(respondent_n_valid_isei = n(),
-              respondent_mean_isei = sum(f * isei, na.rm = T))
+    summarise(audience_mean_isei = sum(f * isei, na.rm = T))
 
   return(respondent_isei)
 }
@@ -74,8 +73,8 @@ make_respondent_educ <- function(survey_raw, respondent_streams){
     inner_join(educ, by = "hashed_id") %>% 
     group_by(dz_artist_id) %>% 
     mutate(f = n_plays / sum(n_plays, na.rm = T)) %>% 
-    summarise(respondent_higher_ed_share = sum(f * higher_ed, na.rm = T),
-              respondent_graduate_ed_share = sum(f * graduate_ed, na.rm = T))
+    summarise(audience_higher_ed_share = sum(f * higher_ed, na.rm = T),
+              audience_graduate_ed_share = sum(f * graduate_ed, na.rm = T))
   
   return(respondent_educ)
   
@@ -102,7 +101,7 @@ make_respondent_demo <- function(respondent_streams, survey_raw,
     inner_join(age, by = "hashed_id") %>% 
     group_by(dz_artist_id) %>% 
     mutate(f = n_plays / sum(n_plays)) %>% 
-    summarise(respondent_mean_age = sum(f * age, na.rm = T))
+    summarise(audience_mean_age = sum(f * age, na.rm = T))
   
   # share of females within artist's respondents
   respondent_share_female <- respondent_streams %>% 
@@ -110,7 +109,7 @@ make_respondent_demo <- function(respondent_streams, survey_raw,
     group_by(dz_artist_id) %>% 
     mutate(f = n_plays / sum(n_plays)) %>% 
     filter(E_gender == "Une femme") %>% 
-    summarise(respondent_female_share = sum(f, na.rm = T))
+    summarise(audience_female_share = sum(f, na.rm = T))
   
   respondent_demographics <- respondent_age %>% 
     
@@ -119,12 +118,7 @@ make_respondent_demo <- function(respondent_streams, survey_raw,
     full_join(respondent_isei, by = "dz_artist_id") %>% 
     
     select(dz_artist_id, 
-           respondent_mean_age, 
-           respondent_female_share,
-           respondent_higher_ed_share,
-           respondent_graduate_ed_share,
-           respondent_mean_isei,
-           respondent_n_valid_isei)
+           starts_with("audience_"))
 
   return(respondent_demographics)
   

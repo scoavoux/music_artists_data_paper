@@ -430,7 +430,7 @@ list(
                  country_of_origin,
                  gender,
                  starts_with("language_"),
-                 starts_with("respondent_")
+                 starts_with("audience_")
                  )
   ),
   
@@ -459,29 +459,24 @@ list(
                  dz_name,
                  ends_with("_id"),
                  
-                 # popularity
-                 n_plays, 
-                 n_users, 
-                 n_followers,
-                 
                  # artist metadata
-                 genre_dz_album_1, # rename to genre?
+                 starts_with("genre_dz_album_"), 
                  country_of_origin,
                  gender,
                  language_main,
                  starts_with("release_"),
                  n_tracks, 
+                 n_tracks_feat,
+
+                 # popularity
+                 n_plays, 
                  div_shannon_effective,
-                 
-                 # alternative legitimacy 
-                 sc_collection_count,
                  sc_avg_score,
-                 starts_with("press_"),
+                 press_n_mentions,
                  starts_with("radio_"),
                  
                  # listener demographics
-                 starts_with("respondent_"),
-                 -respondent_n_valid_isei
+                 starts_with("audience_")
                )
   )
 
