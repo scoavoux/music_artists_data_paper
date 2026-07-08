@@ -323,7 +323,8 @@ list(
              make_respondent_demo(respondent_streams, 
                                   survey_raw,
                                   respondent_educ, 
-                                  respondent_isei)),
+                                  respondent_isei,
+                                  min_n_users = 10)),
   
   # -------------- GENRE 
 
@@ -482,6 +483,15 @@ list(
 
   
 )
+
+
+
+
+
+
+
+
+
 
 
 

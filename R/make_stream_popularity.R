@@ -189,10 +189,10 @@ make_stream_popularity <- function(dz_songs, dz_users){
       values_from = c(n_plays_raw, n_plays, n_users),
       names_glue = "{.value}_{group}"
     ) %>% 
-    rename(n_plays_raw = "n_plays_raw_control",
-           n_plays = "n_plays_control",
-           n_users = "n_users_control",
-           dz_artist_id = "dz_artist_id") %>% 
+    rename(
+      n_plays_raw = "n_plays_raw_control",
+      n_plays = "n_plays_control"
+      ) %>% 
     
     # filter out artists with no plays in control group
     filter(!is.na(n_plays)) 
@@ -223,8 +223,17 @@ make_respondent_plays <- function(dz_songs, dz_users){
       n_plays_raw = sum(w_feat / w_feat),
       n_plays = sum(n_plays, na.rm = TRUE),
       .groups = "drop"
-    ) %>%
-    
+    )
+  
+  n_users <- respondent_plays %>%
+    group_by(dz_artist_id) %>%
+    summarise(
+      n_users_respondent = n(),
+      .groups = "drop"
+    )
+  
+  respondent_plays <- respondent_plays %>%
+    left_join(n_users, by = "dz_artist_id") %>%
     collect()
   
   return(respondent_plays)

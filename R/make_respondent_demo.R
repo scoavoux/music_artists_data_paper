@@ -103,7 +103,8 @@ make_respondent_educ <- function(survey_raw, respondent_streams){
 
 # compute mean age and gender of artists' listeners within respondents
 make_respondent_demo <- function(respondent_streams, survey_raw,
-                                 respondent_educ, respondent_isei){
+                                 respondent_educ, respondent_isei,
+                                 min_n_users){
   
   age <- survey_raw %>%
     mutate(age = 2023 - E_birth_year,
@@ -154,13 +155,25 @@ make_respondent_demo <- function(respondent_streams, survey_raw,
   respondent_demographics <- respondent_age %>%
     full_join(respondent_share_female, by = "dz_artist_id") %>%
     full_join(respondent_educ, by = "dz_artist_id") %>%
-    full_join(respondent_isei, by = "dz_artist_id") %>%
+    full_join(respondent_isei, by = "dz_artist_id")
+  
+  respondent_demographics <- respondent_demographics %>%
+    left_join(
+      respondent_streams %>%
+        select(dz_artist_id, n_users_respondent) %>%
+        distinct(),
+      by = "dz_artist_id"
+    ) %>%
+    mutate(
+      across(
+        starts_with("audience_"),
+        ~ if_else(n_users_respondent < min_n_users, NA_real_, .)
+      )
+    ) %>%
     select(dz_artist_id, starts_with("audience_"))
   
   return(respondent_demographics)
 }
-
-
 
 
 
