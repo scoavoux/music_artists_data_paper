@@ -120,19 +120,26 @@ count_names_press <- function(artists,
   artists <- artists %>% 
     filter(!is.na(sc_artist_id) & !is.na(mbz_artist_id)) %>% # complete cases
     mutate(dz_name = str_normalize(dz_name)) %>% # normalize name
-    group_by(dz_name) %>% 
-    mutate(keep = ifelse(n_plays == max(n_plays), 
-                         TRUE, 
-                         FALSE)) %>% # deduplicate
-    filter(keep == TRUE) %>% 
+    group_by(dz_name) %>%
+    mutate(
+      duplicated_name = n() > 1, # record name duplicates
+      keep = n_plays == max(n_plays)
+    ) %>%
     ungroup() %>%
     add_count(dz_name) %>% 
     filter(n == 1) %>% # remove 15 (insignificant) duplicates tied on popularity
-    select(dz_name, n_plays, dz_artist_id)
+    select(dz_artist_id, dz_name, n_plays, duplicated_name)
   
   # ------------- 1. match on name in dz_names
   press_name_counts <- artists %>% 
     left_join(press_named_entities, by = c(dz_name = "ent_name")) %>% 
+    mutate(
+      press_n_mentions = if_else(
+        duplicated_name,
+        NA_real_, # assign NA to name duplicates
+        press_n_mentions
+      )
+    ) %>% 
     mutate(corr_pop = abs(log(n_plays / press_n_mentions))) %>% # MIX WITH ARTICLE_COUNT?
     arrange(desc(press_n_mentions))
   
@@ -211,7 +218,7 @@ make_press_counts <- function(artists, upd_press_name_counts){
     mutate(
       matched = dz_artist_id %in% upd_press_name_counts$dz_artist_id,
       across(starts_with("press_n_mentions"),
-             ~ ifelse(!matched, 0, .))
+             ~ ifelse(!matched, NA_real_, .)) # changed from 0 to NA
     ) %>% # make sure only the hand-coded NAs are NA, all others == 0
     select(-matched)
   
@@ -219,7 +226,10 @@ make_press_counts <- function(artists, upd_press_name_counts){
 }
 
 
+tar_load(df_complete)
 
+t <- df_complete %>% 
+  select(dz_artist_id, dz_name, starts_with("press_"))
 
 
 
