@@ -226,12 +226,6 @@ make_press_counts <- function(artists, upd_press_name_counts){
 }
 
 
-tar_load(df_complete)
-
-t <- df_complete %>% 
-  select(dz_artist_id, dz_name, starts_with("press_"))
-
-
 
 
 

@@ -1,8 +1,14 @@
+# this script loads dependencies, sets parameters, and runs the {targets} pipeline
+# that produces the final dataset. it can be run either on the real data
+# (located in the onyxia datalab server) or on simulated sample data located in the
+# local `data/` folder (to choose, see the constants below). the script produces 2
+# main outputs, `df_complete` (with all variables) and `df_data_paper`, with selected
+# variables for the data paper and some recodes needed for data property purposes.
 
-options(warn=0) # to suppress warnings, set to -1
 
-# SIMULATION=FALSE LOCAL_DATA_DIR="" Rscript -e "targets::tar_make()"
+# ------- choose real vs simulated data
 
+# to run all: SIMULATION=FALSE LOCAL_DATA_DIR="" Rscript -e "targets::tar_make()"
 SIMULATION <- as.logical(
   Sys.getenv("SIMULATION", unset = "FALSE")
 )
@@ -12,6 +18,11 @@ LOCAL_DATA_DIR <- Sys.getenv(
   unset = ""
 )
 
+# ------- optional: supress warnings
+options(warn = 0) # to suppress warnings, set to -1
+
+
+# ------- load packages (TEMP: change that)
 library(targets)
 library(tarchetypes)
 library(dplyr)
@@ -26,6 +37,7 @@ library(yardstick)
 library(kableExtra)
 
 
+# ------- set targets options and libraries
 targets::tar_option_set(
 
   repository = "aws", 
@@ -37,19 +49,27 @@ targets::tar_option_set(
       prefix = "omnivorism"),
     
     ),
+  
   packages = c("tarchetypes", "paws", "tidyr", "stringr",
                "tidyverse", "arrow", "data.table", "sjmisc",
                "stringi", "yardstick", "kableExtra")
 )
 
+# ------- source functions
 targets::tar_source("R")
+
+
+# ------- constants used in functions
+MIN_N_USERS = 10 # n users threshold for audience variables
+TRACK_WEIGHT = .2 # weight applied to tracks for sc ratings variables
+MIN_N_MENTIONS = 30 # n press mentions threshold for manual alias coding
 
 
 # List of targets ------
 list(
   
-    ### CREATE (deezer) ARTISTS ----------------------------------------------
-
+  # --------- load deezer users
+  
     tar_target(dz_users,
                load_s3("records_w3/survey/RECORDS_hashed_user_group.parquet") %>% 
                  mutate(
@@ -62,8 +82,7 @@ list(
                         is_respondent, 
                         is_control)),
     
-    ## ---- streams: 2 targets because calculating user-song popularity
-    ## for all users is too intensive computationally
+    # --------- process streaming data
     
     # make popularity split by control and respondents
     tar_target(dz_stream_data,
@@ -73,11 +92,12 @@ list(
     tar_target(respondent_streams,
                make_respondent_plays(dz_songs, dz_users)),
     
-    # bind old and new songs and names, join to streams
+    # --------- load deezer names
     tar_target(dz_names,
                bind_dz_names(file_1 = "records_w3/items/artists_data.snappy.parquet",
                             file_2 = "interim/prod/new_artists_names_from_api.csv")),
     
+    # --------- load deezer songs
     tar_target(dz_songs_old,
                make_dz_songs(to_remove_file = "interim/dict/artists_to_remove.csv",
                              file = "records_w3/items/songs.snappy.parquet")),
@@ -86,10 +106,12 @@ list(
                make_dz_songs(to_remove_file = "interim/dict/artists_to_remove.csv",
                               file = "records_w3/items/song.snappy.parquet")),
     
+    # --------- recode attribution of classical tracks
     tar_target(classical_albums,
                filter_classical_albums(album_file="interim/prod/genres_from_albums.parquet",
                                        genre_mapping_file="interim/dict/deezer_genre_mapping.csv")),
 
+    # --------- bind deezer songs and weight tracks by n featured artists
     tar_target(dz_songs,
                bind_dz_songs(dz_songs_old, dz_songs_new, 
                              classical_albums, dz_names)),
@@ -97,17 +119,17 @@ list(
     
     # -------- load and process raw ID data
     
-    # sc_artist_id (+ metadata) to mbz_artist_id
+    # sc_artist_id (contains mbz_artist_id)
     tar_target(senscritique, 
                load_senscritique(sc_file="senscritique/contacts.csv")),
     
-    # manual searches sc_artist_id to dz_artist_id
+    # manual searches for missing ids
     tar_target(manual_search,
                load_s3("interim/dict/manual_search_ids.csv") %>% 
                  mutate(dz_artist_id = as.character(dz_artist_id),
                         sc_artist_id = as.character(sc_artist_id))),
 
-    # mbz_artist_id to dz_artist_id
+    # mbz_artist_id (contains dz_artist_id)
     tar_target(mbz_deezer,
                load_mbz_deezer(file="musicbrainz/musicbrainz_urls.csv")),
     
@@ -115,14 +137,14 @@ list(
     tar_target(wiki_labels,
                load_s3("interim/prod/wiki_labels.csv")),
 
-    # wikidata itemId to mbz_artist_id and dz_artist_id
+    # wikidata itemId (contains mbz_artist_id and/or dz_artist_id)
     tar_target(wiki,
                load_wiki(mbz_deezer)),
     
     
-    ### BUILD AND CONSOLIDATE ARTISTS ----------------------------------------
+    # -------- build and consolidate artist ids
     
-    ##### group by artist and left-join raw data
+    ## group by artist and left-join raw data
     tar_target(artists_to_patch,
                join_artist_ids(dz_songs, 
                                dz_stream_data,
@@ -131,7 +153,7 @@ list(
                                manual_search, 
                                wiki)),
     
-    # unique matches between deezer and senscritique names
+    ## find unique matches between deezer and senscritique names
     tar_target(sc_names_patch,
                patch_names(all = artists_to_patch,
                                      ref = senscritique,
@@ -139,7 +161,7 @@ list(
                                      ref_name = "sc_name",
                                      all_name = "dz_name")),
     
-    # unique matches between deezer and mbz names
+    ## find unique matches between deezer and mbz names
     tar_target(mbz_names_patch,
                patch_names(all = artists_to_patch,
                                      ref = mbz_deezer,
@@ -147,7 +169,7 @@ list(
                                      ref_name = "mbz_name",
                                      all_name = "dz_name")),
     
-    # unique matches between deezer and mbz names from wiki
+    ## find unique matches between deezer and mbz names from wikidata
     tar_target(wiki_mbz_names_patch,
                patch_names(all = artists_to_patch,
                                      ref = wiki,
@@ -155,7 +177,7 @@ list(
                                      ref_name = "mbz_name",
                                      all_name = "dz_name")),
     
-    # unique matches between deezer and wiki names
+    ## find unique matches between deezer and wikidata names
     tar_target(wiki_names_patch,
                patch_names(all = artists_to_patch,
                                      ref = wiki,
@@ -163,33 +185,33 @@ list(
                                      ref_name = "wiki_name",
                                      all_name = "dz_name")),
     
-    # mbz ids retrieved from wiki
+    ## find missing mbz_artist_id in wikidata
     tar_target(wiki_mbz_ids_patch,
                patch_mbz_from_wiki(artists_to_patch, wiki)),
     
-    # unique matches between duplicated deezer names and
-    # unique sc names when one deezer duplicate has 90% of streams
+    ## find unique matches between duplicated deezer names and
+    ## find unique sc names when one deezer duplicate has 90% of streams
     tar_target(dup_dz_sc_patch,
                patch_deezer_dups(ref = senscritique, 
                                            ref_id = "sc_artist_id", 
                                            ref_name = "sc_name",
                                            all = artists_to_patch)),
     
-    # unique matches between duplicated deezer names and
-    # unique mbz names when one deezer duplicate has 90% of dz_stream_share
+    ## find unique matches between duplicated deezer names and
+    ## unique mbz names when one deezer duplicate has 90% of dz_stream_share
     tar_target(dup_dz_mbz_patch,
                patch_deezer_dups(ref = mbz_deezer, 
                                            ref_id = "mbz_artist_id", 
                                            ref_name = "mbz_name",
                                            all = artists_to_patch)),
     
-    # unique matches between unique deezer names and
-    # duplicated sc names when one deezer duplicate has 90% of collection_counts
+    ## find unique matches between unique deezer names and
+    ## duplicated sc names when one deezer duplicate has 90% of collection_counts
     tar_target(dup_sc_patch,
                patch_sc_dups(artists_to_patch, senscritique)),
     
-    # update initial left-joined dataset with all patches
-    # and deduplicate ids with custom function
+    ## update initial left-joined dataset with all patches
+    ## and handle duplicate ids with custom function
     tar_target(artists,
                artists_to_patch %>% 
                  update_rows(sc_names_patch = sc_names_patch,
@@ -201,10 +223,12 @@ list(
                              wiki_mbz_ids_patch = wiki_mbz_ids_patch,
                              dup_sc_patch = dup_sc_patch) %>% 
                  
-                 # deduplicate ids!
-                 deduplicate_ids() 
+                 deduplicate_ids() # deduplicate ids!
                ),
 
+  # --------- count artist names in press corpus
+    
+  ## bind 4 corpora into one press corpus
   tar_target(press_corpus,
              bind_press_corpora(telerama_file = "telerama_raw.csv",
                                 lefigaro_file = "lefigaro-complet-v0.csv",
@@ -212,51 +236,50 @@ list(
                                 lemonde_filepath = "lemonde/lemonde-20",
                                 bert_reviews_file = "interim/press/bert_review_classif.csv")),
 
-  # load entities file separately
+  ## load named entities file separately
   tar_target(press_named_entities,
              clean_press_ents("interim/press/extracted_ents_2105.csv")), # CHANGED FROM 1203 TO NEW ENT FILE
   
-  # names to drop
+  ## load hand-coded file with named entities to drop
   tar_target(entities_to_drop,
              list_entities_to_drop(file="interim/press/press_outliers_checked_1003.csv")),
   
-  # aliases to update
-  # attention: hand-coded csv files which we might update!
+  ## load verified files with artist aliases to update
   tar_target(aliases_to_add,
              list_aliases(file1 = "interim/press/ents_without_match_checked_1003.csv",
                           file2 = "interim/press/press_outliers_checked_1003.csv",
                           artists)),
 
-  # output: all press counts linked to valid dz_artist_id
-  # AND export the "CHECK" datasets as byproduct!!!
-  # implement my dictionaries to remove names and add aliases
+  ## output: all press counts linked to valid dz_artist_id
   tar_target(press_name_counts,
              count_names_press(artists, 
                                press_named_entities, 
-                               min_n_mentions = 30)),
+                               min_n_mentions = MIN_N_MENTIONS)),
   
+  ## implement dictionaries to remove names and add aliases
   tar_target(upd_press_name_counts,
              update_press_names(press_name_counts, 
                                 aliases_to_add, 
                                 entities_to_drop)),
   
-  # compute mbz release variables
+  
+  # -------- compute mbz variables on artists' releases
   tar_target(mbz_releases,
              load_mbz_releases(release_file="musicbrainz/musicbrainz_releases.csv",
                                dates_active_file="musicbrainz/musicbrainz_artist_end_date.csv",
                                genre=mbz_genre_album)), # PLACEHOLDER!
   
-  # compute 2 radio variables
-  # integrate later
+  # -------- load artists' radio popularity
   tar_target(radio_counts,
              count_radio_plays(file="records_w3/radio/radio_plays_with_artist_id.csv")),
   
+  # -------- make artists' country from their mbz areas
   tar_target(mbz_artist_country,
              make_artist_country(mbz_area_file="musicbrainz/musicbrainz_area.csv",
                                  area_country_file="interim/prod/area_country.csv",
                                  country_rank_file="interim/dict/country_rank.csv")),
   
-  # language
+  # -------- make artists' main language
   tar_target(artist_language,
              load_s3("interim/prod/artists_songs_languages.csv") %>% 
                as_tibble() %>% 
@@ -270,26 +293,27 @@ list(
                select(dz_artist_id, language_main, language_main_n_songs)
              ),
   
-  # gender
+  # -------- make artists' gender by coalescing musicbrainz and GPT classification
   tar_target(mbz_gpt_gender,
              make_artist_gender(artists,
                                 mbz_gender_file="musicbrainz/musicbrainz_artist_gender.csv",
                                 gpt_gender_file="interim/prod/gpt_gender.csv")
              ),
   
-  # ratings
+  # -------- load release ratings on senscritique
   tar_target(sc_ratings,
              make_sc_ratings(sc_albums_ratings_file="senscritique/ratings.csv", # REMOVED / in filepath
                                        sc_albums_list_file="senscritique/contacts_albums_link.csv",
                                        sc_tracks_ratings_file="senscritique/tracks.csv",
                                        sc_tracks_list_file="senscritique/contact_tracks_link.csv",
-                                       track_weight = .2)
+                                       track_weight = TRACK_WEIGHT)
              ),
   
   
   
-  ### --------------------------- RESPONDENT DEMOGRAPHICS
-  # load survey --> ALREADY MAKE SURVEY VARIABLES HERE??
+  # -------- make respondent demographics
+  
+  ## load survey
   tar_target(survey_raw,
              load_s3("records_w3/survey/RECORDS_Wave3_apr_june_23_responses_corrected.csv") %>% 
                as_tibble() %>% 
@@ -302,48 +326,55 @@ list(
                       starts_with("E_FR_prof_"))
              ),
   
-  # compute isei scores of respondent
-  # TEMP: delete target once isei is stable
+  ## compute isei scores of respondent
+  ## TEMP: delete target once isei is stable
   tar_target(raw_isei,
              make_raw_isei(survey_raw, 
                            isco_isei_file = "interim/prod/isco_isei.csv", 
                            isco_file = "interim/prod/L72_Matrice_codification_ISCO_collecte_2026.csv", 
                            recode_file = "interim/prod/professions_recodees.csv")),
 
+  ## make respondents ISEI
   tar_target(respondent_isei,
              make_respondent_isei(respondent_streams, 
                                   raw_isei)),
   
+  ## make respondents education variables
   tar_target(respondent_educ,
              make_respondent_educ(survey_raw, 
                                   respondent_streams)),
   
-  # combine respondent education, isei, age and gender
+  ## combine demographics and filter min_n_users
   tar_target(respondent_demographics,
              make_respondent_demo(respondent_streams, 
                                   survey_raw,
                                   respondent_educ, 
                                   respondent_isei,
-                                  min_n_users = 10)),
+                                  min_n_users = MIN_N_USERS)),
   
-  # -------------- GENRE 
-
+  # -------- make genre variables
+  
+  ## genre from deezer albums
   tar_target(dz_genre_album,
              load_dz_genre_album(album_file="interim/prod/genres_from_albums.parquet",
                                   genre_mapping_file="interim/dict/deezer_genre_mapping.csv")),
   
+  ## genre from mbz albums
   tar_target(mbz_genre_album,
              load_mbz_genre_album(file="musicbrainz/musicbrainz_artist_releasegroup_genre.csv")),
   
+  ## genre from mbz artists
   tar_target(mbz_genre_artist,
              load_mbz_genre_artist(file="musicbrainz/musicbrainz_artist_genre.csv")),
   
   
-  # ------------------- NEW VARIABLES, TEMP LOCATION
+  # ------------------- !! NEW VARIABLES, TEMP LOCATION
   
+  # -------- compute n tracks and n featured tracks
   tar_target(n_tracks_feats,
              compute_n_tracks(dz_songs)),
   
+  # -------- make deezer likes as alternative popularity measures
   tar_target(dz_likes,
              make_dz_likes(favorites_file="records_w3/favorites/RECORDS_hashed_user_favorites.parquet",
                                dz_songs, 
@@ -352,6 +383,7 @@ list(
                                dz_users)
   ),
   
+  # -------- make song diversity metrics (inequality between song popularity within one artist)
   tar_target(song_diversity,
              make_song_diversity(dz_songs, 
                                  dz_users, 
@@ -359,19 +391,21 @@ list(
                                  path_short="records_w3/streams/streams_short")
   ),
   
+  # -------- load n followers
   tar_target(n_followers,
              load_s3("records_w3/artists_pop.csv") %>% 
                mutate(dz_artist_id = as.character(artist_id)) %>% 
-               select(dz_artist_id, n_followers = "nb_fans")
+               select(dz_artist_id, 
+                      n_followers = "nb_fans")
              ),
   
-  # Tables and plots for data paper
+  # -------- make tables and plots for data paper
   tar_target(tb_gender_validation_metric,
              validate_annotation(),
              format = "file", 
              repository = "local"),
 
-  # final dataframe with selected variables
+  # -------- make complete dataframe with all variables
   tar_target(df_complete,
              artists %>% 
                
@@ -435,12 +469,11 @@ list(
                  )
   ),
   
-  
+  # -------- filter df_complete with data paper variables and bin n_plays
   tar_target(df_data_paper,
              
              df_complete %>% 
                
-      
                # bin n_plays
                mutate(
                  rank = row_number(),
