@@ -211,7 +211,6 @@ make_respondent_plays <- function(dz_songs, dz_users){
                                dz_songs=dz_songs, dz_users=dz_users)
   
   respondent_plays <- streams %>%
-    mutate(hashed_id = as.character(hashed_id)) %>% 
     filter(is_respondent == 1) %>% 
     group_by(hashed_id, song_id, dz_artist_id, w_feat) %>%
     summarise(n_plays_raw = sum(w_feat / w_feat),

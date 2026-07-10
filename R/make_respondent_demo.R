@@ -74,11 +74,10 @@ make_respondent_educ <- function(survey_raw, respondent_streams){
     filter(E_diploma != "", !is.na(E_diploma)) %>%
     mutate(
       higher_ed = ifelse(str_detect(E_diploma, "Licence|Master|Doctorat"), 1, 0),
-      graduate_ed = ifelse(str_detect(E_diploma, "Master|Doctorat"), 1, 0),
-      hashed_id = as.character(hashed_id)
+      graduate_ed = ifelse(str_detect(E_diploma, "Master|Doctorat"), 1, 0)
     ) %>%
     select(hashed_id, higher_ed, graduate_ed)
-  
+
   respondent_educ <- respondent_streams %>%
     inner_join(educ, by = "hashed_id") %>%
     group_by(hashed_id) %>%
@@ -106,15 +105,13 @@ make_respondent_demo <- function(respondent_streams, survey_raw,
                                  min_n_users){
   
   age <- survey_raw %>%
-    mutate(age = 2023 - E_birth_year,
-           hashed_id = as.character(hashed_id)) %>%
+    mutate(age = 2023 - E_birth_year) %>%
     filter(!is.na(age), age < 100) %>%
     select(hashed_id, age)
   
   gender <- survey_raw %>%
     filter(E_gender %in% c("Un homme", "Une femme")) %>%
     mutate(
-      hashed_id = as.character(hashed_id),
       gender = ifelse(E_gender == "Une femme", 1, 0)
     ) %>%
     select(hashed_id, gender)
