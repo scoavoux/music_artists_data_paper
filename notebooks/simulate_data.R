@@ -343,9 +343,10 @@ artists_pop <- artists_pop %>%
 write.csv2(artists_pop, "data/records_w3/items/artists_pop.csv")
 
 
+# -------------- gender sample machin
+gender_sample <- load_s3("interim/dict/gender_sample_expert_annotated.csv")
 
-
-
+write.csv2(gender_sample, "data/interim/dict/gender_sample_expert_annotated.csv")
 
 
 
