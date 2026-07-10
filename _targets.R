@@ -392,7 +392,7 @@ list(
   
   # -------- load n followers
   tar_target(n_followers,
-             load_s3("records_w3/artists_pop.csv") %>% 
+             load_s3("records_w3/items/artists_pop.csv") %>% 
                mutate(dz_artist_id = as.character(artist_id)) %>% 
                select(dz_artist_id, 
                       n_followers = "nb_fans")
@@ -400,9 +400,8 @@ list(
   
   # -------- make tables and plots for data paper
   tar_target(tb_gender_validation_metric,
-             validate_annotation(),
-             format = "file", 
-             repository = "local"),
+             validate_gender_annotation(gender_expert_annotation_path = "interim/dict/gender_sample_expert_annotated.csv",
+                                        gender_gpt_annotation_path = "interim/prod/gpt_gender.csv")),
 
   # -------- make complete dataframe with all variables
   tar_target(df_complete,
