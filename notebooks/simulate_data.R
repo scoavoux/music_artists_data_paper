@@ -130,7 +130,7 @@ survey_raw <- load_s3("records_w3/survey/RECORDS_Wave3_apr_june_23_responses_cor
 survey_raw <- survey_raw %>% 
   slice_sample(n = 100) %>% 
   mutate(across(all_of(colnames(survey_raw)), sample)) %>% 
-  mutate(hashed_id = as.character(1:100)) %>% 
+  mutate(hashed_id = 1:100) %>% 
   select(hashed_id, Progress, E_birth_year, E_gender,
          E_situation_prof, E_FR_prof_femme, E_FR_prof_homme,
          E_FR_prof_retr_femme, E_FR_prof_retr_homme,
@@ -329,7 +329,7 @@ dz_favorites <- dz_favorites %>%
   slice_sample(n = 5000) %>% 
   mutate(hashed_id = sample(rep(1:100, length.out = n))) %>% 
   select(item_id, item_type, hashed_id)
-
+dz_favorites
 write_parquet(dz_favorites, "data/records_w3/favorites/RECORDS_hashed_user_favorites.parquet")
 
 
@@ -349,10 +349,11 @@ gender_sample <- load_s3("interim/dict/gender_sample_expert_annotated.csv")
 write.csv2(gender_sample, "data/interim/dict/gender_sample_expert_annotated.csv")
 
 
-
-
-
-
+# ------------ isco isei stuff
+recode_file <- load_s3("interim/prod/professions_recodees.csv")
+recode_file <- recode_file %>% 
+  mutate(hashed_id = sample(rep(1:nrow(recode_file))))
+write.csv2(recode_file, "data/interim/prod/professions_recodees.csv")
 
 
 

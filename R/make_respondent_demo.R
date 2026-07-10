@@ -10,7 +10,6 @@ make_raw_isei <- function(survey_raw, isco_isei_file, isco_file, recode_file){
   
   # recode professions with sam's stuff
   survey <- survey_raw %>%
-    mutate(hashed_id = as.character(hashed_id)) %>% 
     left_join(claude_recode, by = "hashed_id") %>%
     filter(!is.na(profession_recode)) %>%
     select(hashed_id, profession_recode)

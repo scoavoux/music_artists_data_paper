@@ -35,25 +35,28 @@ library(sjmisc)
 library(stringi)
 library(yardstick)
 library(kableExtra)
+library(purrr)
+library(lubridate)
 
-
-# ------- set targets options and libraries
-targets::tar_option_set(
-
-  repository = "aws", 
-  repository_meta = "aws",
-  resources = tar_resources(
-    aws = tar_resources_aws(
-      endpoint = Sys.getenv("S3_ENDPOINT"),
-      bucket = "scoavoux",
-      prefix = "omnivorism"),
+if (SIMULATION == FALSE) {
+  # ------- set targets options and libraries
+  targets::tar_option_set(
     
+    repository = "aws", 
+    repository_meta = "aws",
+    resources = tar_resources(
+      aws = tar_resources_aws(
+        endpoint = Sys.getenv("S3_ENDPOINT"),
+        bucket = "scoavoux",
+        prefix = "omnivorism"),
+      
     ),
-  
-  packages = c("tarchetypes", "paws", "tidyr", "stringr",
-               "tidyverse", "arrow", "data.table", "sjmisc",
-               "stringi", "yardstick", "kableExtra")
-)
+    
+    packages = c("tarchetypes", "paws", "tidyr", "stringr",
+                 "tidyverse", "arrow", "data.table", "sjmisc",
+                 "stringi", "yardstick", "kableExtra")
+  )
+}
 
 # ------- source functions
 targets::tar_source("R")
