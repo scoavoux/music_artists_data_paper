@@ -326,8 +326,7 @@ list(
                       starts_with("E_FR_prof_"))
              ),
   
-  ## compute isei scores of respondent
-  ## TEMP: delete target once isei is stable
+  ## compute isei scores of respondents
   tar_target(raw_isei,
              make_raw_isei(survey_raw, 
                            isco_isei_file = "interim/prod/isco_isei.csv", 
@@ -425,9 +424,7 @@ list(
                
                # genres
 
-               # left_join(dz_genre_artist, by = "dz_artist_id") %>% 
                left_join(dz_genre_album, by = "dz_artist_id") %>% 
-               
                left_join(mbz_genre_artist, by = "mbz_artist_id") %>% 
                left_join(mbz_genre_album, by = "mbz_artist_id") %>% 
                
@@ -516,11 +513,6 @@ list(
 
   
 )
-
-
-
-
-
 
 
 

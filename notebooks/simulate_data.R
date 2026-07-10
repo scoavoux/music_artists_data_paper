@@ -5,9 +5,8 @@ library(arrow)
 
 set.seed(12345)
 
-tar_load(df)
-
-
+tar_load(df_complete)
+df <- df_complete
 
 
 # -------------------------------------------
@@ -31,7 +30,7 @@ dz_songs_new_sample <- dz_songs_new %>%
   rename(artists_ids = dz_artist_feat_id,
          artist_id = dz_artist_id) %>%  
   mutate(artist_id = as.integer(artist_id)) %>% 
-  inner_join(artist_sample, by = c(artist_id = "dz_artist_id"))
+  inner_join(artist_sample, by = c(artist_id = "dz_artist_id")) 
 
 tar_load(dz_songs_old)
 
@@ -54,8 +53,9 @@ artist_sample_2 <- df %>%
   select(dz_artist_id, 
          dz_name = "dz_name.x", 
          mbz_artist_id = "mbz_artist_id.x", 
-         sc_artist_id)
+         sc_artist_id = "sc_artist_id.x")
 
+artist_sample_2
 
 # ---------------------- dz_users
 
@@ -331,6 +331,26 @@ dz_favorites <- dz_favorites %>%
   select(item_id, item_type, hashed_id)
 
 write_parquet(dz_favorites, "data/records_w3/favorites/RECORDS_hashed_user_favorites.parquet")
+
+
+# --------------- artists_pop (for n_followers)
+artists_pop <- load_s3("records_w3/artists_pop.csv")
+
+artists_pop <- artists_pop %>% 
+  inner_join(artist_sample, by = c(artist_id = "dz_artist_id")) %>% 
+  select(artist_id, nb_fans)
+
+write.csv2(artists_pop, "data/records_w3/items/artists_pop.csv")
+
+
+
+
+
+
+
+
+
+
 
 
 
