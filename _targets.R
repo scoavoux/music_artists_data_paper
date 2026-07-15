@@ -400,6 +400,9 @@ list(
                select(dz_artist_id, 
                       n_followers = "nb_fans")
              ),
+  # -------- alternative, exogenous popularity
+  tar_target(gfk_pop,
+             make_gfk_pop(dz_songs)),
   
   # -------- make tables and plots for data paper
   tar_target(tb_gender_validation_metric,
@@ -438,6 +441,8 @@ list(
                
                left_join(n_followers, by = "dz_artist_id") %>% 
                
+               left_join(gfk_pop, by = "dz_artist_id") %>% 
+               
                # rm, among others, our dear friend michel onfray
                filter(is.na(genre_dz_album_1) | genre_dz_album_1 != "Livres audio") %>% 
              
@@ -452,6 +457,7 @@ list(
                  dz_name,
                  ends_with("_id"),
                  starts_with("n_"),
+                 starts_with("gfkpop_"),
                  starts_with("likes_"),
                  starts_with("div_"),
                  starts_with("genre_"),

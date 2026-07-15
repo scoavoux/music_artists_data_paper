@@ -215,7 +215,35 @@ download_s3_folder <- function(
   message("Done.")
 }
 
-
+# duckdb initialization
+duckdb_s3_con <- function() {
+  
+  con <- DBI::dbConnect(duckdb::duckdb())
+  
+  # enable direct reads from S3/http
+  DBI::dbExecute(con, "INSTALL httpfs; LOAD httpfs;")
+  
+  # MinIO is path-style and served over https://<AWS_S3_ENDPOINT>
+  DBI::dbExecute(con, "SET s3_url_style = 'path';")
+  DBI::dbExecute(con, "SET s3_use_ssl   = true;")
+  
+  DBI::dbExecute(con, glue::glue_sql(
+    "SET s3_endpoint = {Sys.getenv('AWS_S3_ENDPOINT')};", .con = con))
+  DBI::dbExecute(con, glue::glue_sql(
+    "SET s3_region = {Sys.getenv('AWS_DEFAULT_REGION')};", .con = con))
+  DBI::dbExecute(con, glue::glue_sql(
+    "SET s3_access_key_id = {Sys.getenv('AWS_ACCESS_KEY_ID')};", .con = con))
+  DBI::dbExecute(con, glue::glue_sql(
+    "SET s3_secret_access_key = {Sys.getenv('AWS_SECRET_ACCESS_KEY')};", .con = con))
+  
+  # temporary creds (paws also uses AWS_SESSION_TOKEN); set only if present
+  if (nzchar(Sys.getenv("AWS_SESSION_TOKEN"))) {
+    DBI::dbExecute(con, glue::glue_sql(
+      "SET s3_session_token = {Sys.getenv('AWS_SESSION_TOKEN')};", .con = con))
+  }
+  
+  con
+}
 
 
 
