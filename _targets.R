@@ -284,17 +284,7 @@ list(
   
   # -------- make artists' main language
   tar_target(artist_language,
-             load_s3("interim/prod/artists_songs_languages.csv") %>% 
-               as_tibble() %>% 
-               mutate(dz_artist_id = as.character(art_id),
-                      language_main = lang,
-                      language_main_n_songs = nb_songs) %>% 
-               arrange(dz_artist_id, desc(language_main_n_songs)) %>% 
-               group_by(dz_artist_id) %>% 
-               slice(1) %>% 
-               ungroup() %>% 
-               select(dz_artist_id, language_main, language_main_n_songs)
-             ),
+             make_lang(dz_songs)),
   
   # -------- make artists' gender by coalescing musicbrainz and GPT classification
   tar_target(mbz_gpt_gender,
