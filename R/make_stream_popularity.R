@@ -260,16 +260,9 @@ make_song_diversity <- function(dz_songs,
   # ---------------------------------------------------------------
   # SONG-LEVEL POPULARITY
   # ---------------------------------------------------------------
-  
-  isrc <- load_s3("records_w3/items/song_ids_isrc_matched.csv")
-  isrc <- isrc %>% 
-    distinct() # rm perfect duplicates
-  
-  streams <- streams %>% 
-    left_join(isrc, by = "song_id")
-  
+
   song_popularity <- streams %>%
-    group_by(isrc, dz_artist_id) %>%
+    group_by(song_title_norm, dz_artist_id) %>%
     summarise(
       n_plays_raw = n(),
       n_plays = sum(w_feat),
@@ -325,18 +318,6 @@ make_song_diversity <- function(dz_songs,
   return(song_diversity)
   
 }
-
-
-
-# df_complete <- df_complete %>% 
-#   select(dz_artist_id, 
-#          dz_name,
-#          n_plays,
-#          starts_with("div_"))
-# 
-# write.csv2(df_complete, "data/df_div_song_title.csv")
-# 
-
 
 
 
