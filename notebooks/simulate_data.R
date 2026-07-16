@@ -300,12 +300,20 @@ gpt_gender <- gpt_gender %>%
 write_s3(gpt_gender, "replication_data/gpt_gender.csv")
 
 
-# ---------------------
+# --------------------- language
 
 artists_songs_languages <- load_s3("interim/prod/artists_songs_languages.csv")
 artists_songs_languages <- artists_songs_languages %>% 
   inner_join(artist_sample, by = c(art_id = "dz_artist_id"))
 write_s3(artists_songs_languages, "replication_data/artists_songs_languages.csv")
+
+song_id_lang <- load_s3("records_w3/items/song_id_lang.csv")
+song_id_lang <- song_id_lang %>% 
+  inner_join(dz_songs_new_sample, by = "song_id") %>% 
+  slice_sample(n = 10000) %>% 
+  select(song_id, lang)
+
+write.csv2(song_id_lang, "data/records_w3/items/song_id_lang.csv")
 
 
 
@@ -354,6 +362,19 @@ recode_file <- load_s3("interim/prod/professions_recodees.csv")
 recode_file <- recode_file %>% 
   mutate(hashed_id = sample(rep(1:nrow(recode_file))))
 write.csv2(recode_file, "data/interim/prod/professions_recodees.csv")
+
+
+
+# -------------
+
+
+
+
+
+
+
+
+
 
 
 
