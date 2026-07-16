@@ -8,7 +8,8 @@
 
 # ------- choose real vs simulated data
 
-# to run all: SIMULATION=FALSE LOCAL_DATA_DIR="" Rscript -e "targets::tar_make()"
+# to run production: $ SIMULATION=FALSE LOCAL_DATA_DIR="" Rscript -e "targets::tar_make()"
+# to run simulation: $ SIMULATION=TRUE LOCAL_DATA_DIR="./data/" Rscript -e "targets::tar_make()"
 SIMULATION <- as.logical(
   Sys.getenv("SIMULATION", unset = "FALSE")
 )
@@ -31,10 +32,7 @@ library(tidyr)
 library(stringr)
 library(arrow)
 library(data.table)
-library(sjmisc)
 library(stringi)
-library(yardstick)
-library(kableExtra)
 library(purrr)
 library(lubridate)
 
@@ -54,7 +52,7 @@ if (SIMULATION == FALSE) {
     
     packages = c("tarchetypes", "paws", "tidyr", "stringr",
                  "tidyverse", "arrow", "data.table", "sjmisc",
-                 "stringi", "yardstick", "kableExtra")
+                 "stringi")
   )
 }
 

@@ -90,7 +90,7 @@ str_normalize <- function(str){
     
     str_to_lower() %>%  
     
-    stri_trans_general("Latin-ASCII") %>% # rm accents
+    stringi::stri_trans_general("Latin-ASCII") %>% # rm accents
     
     str_replace_all(c(
       "\\b(the|les|des|le|la)\\s\\b" = "", # remove the
