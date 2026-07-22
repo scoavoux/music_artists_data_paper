@@ -217,7 +217,6 @@ load_mbz_releases <- function(release_file, dates_active_file, genre){
     rename(mbz_artist_id = "mbid") %>% 
     as_tibble()
   
-  names(dates_active)
   # changed genre 2805
   genre <- genre %>% 
     select(mbz_artist_id, genre_mbz_album_1)
@@ -264,8 +263,11 @@ load_mbz_releases <- function(release_file, dates_active_file, genre){
   # ------------------- COMPUTE VARIABLES --------------------------
   
   mbz_releases <- release_data %>%
+    
     group_by(mbz_artist_id) %>%
+    
     summarise(
+      
       release_year_first = min(first_release_date_year),
       release_year_last  = max(first_release_date_year),
       
@@ -276,10 +278,7 @@ load_mbz_releases <- function(release_file, dates_active_file, genre){
       
       release_count_2019_2023 = sum(weight[first_release_date_year >= 2019 &
                                              first_release_date_year <= 2023])
-      
-      # add this? might be relevant
-      # release_career_span = release_year_last - release_year_first
-      
+
     )
   
   return(mbz_releases)

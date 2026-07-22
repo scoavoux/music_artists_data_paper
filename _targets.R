@@ -51,8 +51,7 @@ if (SIMULATION == FALSE) {
     ),
     
     packages = c("tarchetypes", "paws", "tidyr", "stringr",
-                 "tidyverse", "arrow", "data.table", "sjmisc",
-                 "stringi")
+                 "tidyverse", "arrow", "data.table", "stringi")
   )
 }
 
@@ -268,7 +267,7 @@ list(
   tar_target(mbz_releases,
              load_mbz_releases(release_file="musicbrainz/musicbrainz_releases.csv",
                                dates_active_file="musicbrainz/musicbrainz_artist_end_date.csv",
-                               genre=mbz_genre_album)), # PLACEHOLDER!
+                               genre=mbz_genre_album)),
   
   # -------- load artists' radio popularity
   tar_target(radio_counts,
@@ -416,25 +415,26 @@ list(
                # respondent demographics
                left_join(respondent_demographics, by = "dz_artist_id") %>% 
                
-               # genres
-
+               # artistmetadata
                left_join(dz_genre_album, by = "dz_artist_id") %>% 
                left_join(mbz_genre_artist, by = "mbz_artist_id") %>% 
                left_join(mbz_genre_album, by = "mbz_artist_id") %>% 
-               
                left_join(n_tracks_feats, by = "dz_artist_id") %>% 
-               
                left_join(dz_likes, by = "dz_artist_id") %>% 
-               
                left_join(song_diversity, by = "dz_artist_id") %>% 
-               
                left_join(n_followers, by = "dz_artist_id") %>% 
-               
                left_join(gfk_pop, by = "dz_artist_id") %>% 
                
                # rm, among others, our dear friend michel onfray
                filter(is.na(genre_dz_album_1) | genre_dz_album_1 != "Livres audio") %>% 
              
+               # set release spans to NA for deezer classical albums
+               # needed because releases filter classical out on mbz genre only (which has a lot of missings)
+               mutate(
+                 release_year_first = ifelse(genre_dz_album_1 == "Classique", NA, release_year_first),
+                 release_year_last = ifelse(genre_dz_album_1 == "Classique", NA, release_year_last)
+               ) %>%
+
                # compute final stream share
                mutate(
                  n_plays_share = n_plays / sum(n_plays, na.rm = T) * 100,
@@ -507,9 +507,12 @@ list(
                  starts_with("audience_")
                )
   )
-
   
 )
+
+
+
+
 
 
 
