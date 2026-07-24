@@ -267,7 +267,7 @@ list(
   tar_target(mbz_releases,
              load_mbz_releases(release_file="musicbrainz/musicbrainz_releases.csv",
                                dates_active_file="musicbrainz/musicbrainz_artist_end_date.csv",
-                               genre=mbz_genre_album)),
+                               artists)),
   
   # -------- load artists' radio popularity
   tar_target(radio_counts,
@@ -427,14 +427,8 @@ list(
                
                # rm, among others, our dear friend michel onfray
                filter(is.na(genre_dz_album_1) | genre_dz_album_1 != "Livres audio") %>% 
-             
-               # set release spans to NA for deezer classical albums
-               # needed because releases filter classical out on mbz genre only (which has a lot of missings)
-               mutate(
-                 release_year_first = ifelse(genre_dz_album_1 == "Classique", NA, release_year_first),
-                 release_year_last = ifelse(genre_dz_album_1 == "Classique", NA, release_year_last)
-               ) %>%
-
+               filter(is.na(genre_dz_album_2) | genre_dz_album_2 != "Livres audio") %>% 
+               
                # compute final stream share
                mutate(
                  n_plays_share = n_plays / sum(n_plays, na.rm = T) * 100,
@@ -478,7 +472,7 @@ list(
                    rank <= 10000 ~ 10000,
                    rank <= 50000 ~ 50000,
                    rank <= 100000 ~ 100000,
-                   TRUE          ~ 300000
+                   TRUE          ~ nrow(df_complete)
                  )
                ) %>% 
   
@@ -509,6 +503,8 @@ list(
   )
   
 )
+
+
 
 
 

@@ -205,7 +205,7 @@ count_radio_plays <- function(file){
 # compute variables related to releases
 # filtering, recoding, grouping of
 # release-level data and artist-level metrics
-load_mbz_releases <- function(release_file, dates_active_file, genre){
+load_mbz_releases <- function(release_file, dates_active_file, artists){
   
   # -------------------- PREPARE INPUTS ----------------------
   # main release file
@@ -217,16 +217,12 @@ load_mbz_releases <- function(release_file, dates_active_file, genre){
     rename(mbz_artist_id = "mbid") %>% 
     as_tibble()
   
-  # changed genre 2805
-  genre <- genre %>% 
-    select(mbz_artist_id, genre_mbz_album_1)
   
   # -------------------- BUILD AND CLEAN RELEASES DATASET ----------------
   release_data <- release_file %>%  
     as_tibble() %>% 
     rename(mbz_artist_id = "mbid") %>% 
-    left_join(genre, by = "mbz_artist_id") %>% 
-    
+
     mutate(secondary_type_name = ifelse(secondary_type_name == "", 
                                         NA, 
                                         secondary_type_name)) %>% 
@@ -244,8 +240,7 @@ load_mbz_releases <- function(release_file, dates_active_file, genre){
     
     # limit release dates to end of collaboration year + 2
     left_join(dates_active, by = "mbz_artist_id") %>% 
-    mutate(last_active_year = case_when(genre_mbz_album_1 == "classical" ~ 9999, # for composers
-                                        is.na(end_date_year) ~ NA, # for still active artists
+    mutate(last_active_year = case_when(is.na(end_date_year) ~ NA, # for still active artists
                                         TRUE ~ end_date_year)) %>% 
     filter(first_release_date_year < last_active_year + 2 | is.na(last_active_year)) %>% 
     
@@ -258,6 +253,7 @@ load_mbz_releases <- function(release_file, dates_active_file, genre){
     ungroup() %>% 
     filter(keep) %>% 
     mutate(weight = c("Single" = .2, "EP" = .5, "Album" = 1)[primary_type_name])
+  
   
   
   # ------------------- COMPUTE VARIABLES --------------------------
@@ -281,7 +277,28 @@ load_mbz_releases <- function(release_file, dates_active_file, genre){
 
     )
   
+  # exclude composers from the release dates
+  comp <- load_s3("interim/dict/comp_wide_1706.csv",
+                  sep = ";") %>% 
+    mutate(dz_artist_id = as.character(dz_artist_id))
+  
+  mbz_releases <- mbz_releases %>% 
+    left_join(artists, by = "mbz_artist_id") %>% # needed for dz_artist_id
+    left_join(comp, by = "dz_artist_id") %>% 
+    mutate(release_year_first = ifelse(!is.na(last_name_only) & 
+                                         period_szk != "Moderne", # filter old composers: fill out missings on period!!
+                                       NA, 
+                                       release_year_first), 
+           release_year_last = ifelse(!is.na(last_name_only) &
+                                        period_szk != "Moderne",
+                                      NA, 
+                                      release_year_last)
+           ) %>% 
+    select(mbz_artist_id, starts_with("release_"))
+  
   return(mbz_releases)
   
 }
+
+
 
