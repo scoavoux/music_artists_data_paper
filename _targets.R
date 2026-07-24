@@ -431,8 +431,8 @@ list(
                
                # compute final stream share
                mutate(
-                 n_plays_share = n_plays / sum(n_plays, na.rm = T) * 100,
-                 n_plays_share_respondent = n_plays_respondent / sum(n_plays_respondent, na.rm = T) * 100
+                 n_plays_share = n_plays_raw / sum(n_plays_raw, na.rm = T) * 100,
+                 n_plays_share_respondent = n_plays_raw_respondent / sum(n_plays_raw_respondent, na.rm = T) * 100
                  ) %>% 
                
                # select needed variables

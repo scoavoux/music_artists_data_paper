@@ -146,8 +146,7 @@ make_stream_popularity <- function(dz_songs, dz_users){
     summarise(n_plays_raw = sum(w_feat / w_feat), # cancel weights
               n_plays = sum(w_feat),
               .groups = "drop") %>% 
-    select(song_id, dz_artist_id, is_respondent, 
-           n_plays_raw, n_plays)
+    select(song_id, dz_artist_id, is_respondent,n_plays_raw, n_plays)
   
   
   # make n_users at group-artist levels
