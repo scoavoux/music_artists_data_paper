@@ -405,19 +405,19 @@ list(
                
                # artist information
                left_join(radio_counts, by = "dz_artist_id") %>% 
-               left_join(mbz_releases, by = "mbz_artist_id") %>% 
-               left_join(mbz_artist_country, by = "mbz_artist_id") %>% 
+               left_join(mbz_releases, by = "mbz_artist_id", na_matches = "never") %>% 
+               left_join(mbz_artist_country, by = "mbz_artist_id", na_matches = "never") %>% 
                left_join(artist_language, by = "dz_artist_id") %>% 
                left_join(mbz_gpt_gender, by = "dz_artist_id") %>%
-               left_join(sc_ratings, by = "sc_artist_id") %>% 
+               left_join(sc_ratings, by = "sc_artist_id", na_matches = "never") %>% 
 
                # respondent demographics
                left_join(respondent_demographics, by = "dz_artist_id") %>% 
                
                # artistmetadata
                left_join(dz_genre_album, by = "dz_artist_id") %>% 
-               left_join(mbz_genre_artist, by = "mbz_artist_id") %>% 
-               left_join(mbz_genre_album, by = "mbz_artist_id") %>% 
+               left_join(mbz_genre_artist, by = "mbz_artist_id", na_matches = "never") %>% 
+               left_join(mbz_genre_album, by = "mbz_artist_id", na_matches = "never") %>% 
                left_join(n_tracks_feats, by = "dz_artist_id") %>% 
                left_join(dz_likes, by = "dz_artist_id") %>% 
                left_join(song_diversity, by = "dz_artist_id") %>% 
