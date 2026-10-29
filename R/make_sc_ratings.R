@@ -37,9 +37,11 @@ make_sc_ratings <- function(sc_albums_ratings_file,
     inner_join(sc_tracks_list, by = "product_id") %>% 
     mutate(type = "track") %>% 
     select(product_id, 
+           contact_id,
            mean_rating, 
            n_ratings = "rating_count",
-           weight)
+           weight,
+           type)
   
   
 
@@ -48,6 +50,7 @@ make_sc_ratings <- function(sc_albums_ratings_file,
   sc_rating_metrics <- bind_rows(sc_tracks_ratings, sc_albums_ratings) %>%
     
     mutate(sc_artist_id = as.character(contact_id)) %>% 
+    filter(!is.na(sc_artist_id)) %>% 
     
     group_by(sc_artist_id) %>%
     
