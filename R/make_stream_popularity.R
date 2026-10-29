@@ -218,7 +218,7 @@ make_respondent_plays <- function(dz_songs, dz_users){
     
     group_by(hashed_id, dz_artist_id) %>%
     summarise(
-      n_plays_raw = sum(w_feat / w_feat),
+      n_plays_raw = sum(n_plays_raw),
       n_plays = sum(n_plays, na.rm = TRUE),
       .groups = "drop"
     )
