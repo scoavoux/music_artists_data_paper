@@ -281,8 +281,7 @@ list(
   
   # -------- make artists' main language
   tar_target(artist_language,
-             make_lang(dz_songs)
-             ),
+             make_lang(dz_songs)),
   
   # -------- make artists' gender by coalescing musicbrainz and GPT classification
   tar_target(mbz_gpt_gender,
