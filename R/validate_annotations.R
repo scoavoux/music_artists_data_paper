@@ -6,7 +6,7 @@ validate_gender_annotation <- function(
   # Load annotations
   gndr_expert <- load_s3(gender_expert_annotation_path)
   gndr_gpt <- load_s3(gender_gpt_annotation_path)
-  
+
   # Merge
   df <- gndr_gpt %>%
     rename(dz_artist_id = artist_id) %>%
@@ -17,16 +17,19 @@ validate_gender_annotation <- function(
     levels(factor(df$gender_expert_sc)),
     levels(factor(df$gender))
   )
-  
+
   df <- df %>%
     mutate(
-      popularity_bin   = factor(popularity_bin, levels = unique(gndr_expert$popularity_bin)),
-      gender           = factor(gender, levels = lvls),
-      gender_expert_sc = factor(gender_expert_sc, levels = lvls)
+      popularity_bin = factor(popularity_bin, 
+                              levels = unique(gndr_expert$popularity_bin)),
+      gender = factor(gender, 
+                      levels = lvls),
+      gender_expert_sc = factor(gender_expert_sc, 
+                                levels = lvls)
     )
-  
+
   metrics <- metric_set(precision, recall, f_meas)
-  
+
   results <- df %>%
     filter(gender != "uncertain") %>%
     group_by(popularity_bin) %>%
@@ -44,8 +47,11 @@ validate_gender_annotation <- function(
     relocate(n_certain, .after = f_meas)
   
   output_file <- "data/interim/output/gender_validation_metric.tex"
-  
-  kbl(table_out, format = "latex", digits = 2, booktabs = TRUE) %>%
+
+  kableExtra::kbl(table_out, 
+      format = "latex", 
+      digits = 2, 
+      booktabs = TRUE) %>%
     save_kable(output_file)
   
   invisible(output_file)

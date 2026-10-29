@@ -1,3 +1,90 @@
+## make artist main language from dz_songs
+make_lang <- function(dz_songs,
+                      con        = NULL,
+                      simulation = SIMULATION,
+                      local_dir  = LOCAL_DATA_DIR) {
+  
+  # ---- resolve sources: local files in sim, s3:// otherwise ------------------
+  song_lang_src <- if (simulation)
+    file.path(local_dir, "records_w3/items/song_id_lang.csv")
+  else
+    "s3://scoavoux/records_w3/items/song_id_lang.csv"
+  
+  deezer_src <- if (simulation)
+    file.path(local_dir, "interim/prod/artists_songs_languages.csv")
+  else
+    "s3://scoavoux/interim/prod/artists_songs_languages.csv"
+  
+  # ---- connection ------------------------------------------------------------
+  if (is.null(con)) {
+    con <- if (simulation) DBI::dbConnect(duckdb::duckdb()) else duckdb_s3_con()
+    on.exit(DBI::dbDisconnect(con, shutdown = TRUE), add = TRUE)
+  }
+  
+  # register dz_songs (only the 2 needed cols) as a zero-copy virtual table
+  duckdb::duckdb_register(
+    con, "dz_songs",
+    dplyr::transmute(dz_songs,
+                     song_id      = as.character(song_id),      # bit64 -> exact digit string
+                     dz_artist_id = as.character(dz_artist_id))
+  )
+  on.exit(duckdb::duckdb_unregister(con, "dz_songs"), add = TRUE)
+  
+  sql <- sprintf(r"(
+    WITH exploded AS (
+      SELECT song_id,
+             unnest(string_split(regexp_replace(lang, '[\[\]"]', '', 'g'), ',')) AS lang
+      FROM read_csv_auto('%s')
+    ),
+    song_lang AS (
+      SELECT song_id, trim(lang) AS lang
+      FROM exploded
+      WHERE trim(lang) NOT IN ('', 'zxx', 'qlt-instrumental')
+    ),
+    counts AS (
+      SELECT s.dz_artist_id, l.lang, COUNT(*) AS n
+      FROM dz_songs s
+      JOIN song_lang l ON s.song_id = CAST(l.song_id AS VARCHAR)   -- text = text
+      GROUP BY s.dz_artist_id, l.lang
+    ),
+    tracks_top AS (
+      SELECT dz_artist_id,
+             lang         AS language_main,
+             n            AS language_main_n_songs,
+             total_tracks AS language_main_n_total_songs
+      FROM (
+        SELECT dz_artist_id, lang, n,
+               SUM(n)       OVER (PARTITION BY dz_artist_id)                 AS total_tracks,
+               ROW_NUMBER() OVER (PARTITION BY dz_artist_id ORDER BY n DESC) AS rk
+        FROM counts
+      )
+      WHERE rk = 1
+    ),
+    deezer_top AS (
+      SELECT dz_artist_id, language_main, language_main_n_songs
+      FROM (
+        SELECT CAST(art_id AS VARCHAR) AS dz_artist_id,
+               lang                    AS language_main,
+               nb_songs                AS language_main_n_songs,
+               ROW_NUMBER() OVER (PARTITION BY CAST(art_id AS VARCHAR)
+                                  ORDER BY nb_songs DESC) AS rk
+        FROM read_csv_auto('%s')
+      )
+      WHERE rk = 1
+    )
+    SELECT * FROM tracks_top
+    UNION ALL
+    SELECT d.dz_artist_id, d.language_main, d.language_main_n_songs,
+           CAST(NULL AS BIGINT) AS language_main_n_total_songs
+    FROM deezer_top d
+    WHERE NOT EXISTS (SELECT 1 FROM tracks_top t WHERE t.dz_artist_id = d.dz_artist_id)
+  )", song_lang_src, deezer_src)
+  
+  tibble::as_tibble(DBI::dbGetQuery(con, sql))
+}
+
+
+
 # load artists' countries from musicbrainz
 # recode areas (eg cities or regions) to countries
 # and rank countries by defined dict
@@ -118,7 +205,7 @@ count_radio_plays <- function(file){
 # compute variables related to releases
 # filtering, recoding, grouping of
 # release-level data and artist-level metrics
-load_mbz_releases <- function(release_file, dates_active_file, genre){
+load_mbz_releases <- function(release_file, dates_active_file, artists){
   
   # -------------------- PREPARE INPUTS ----------------------
   # main release file
@@ -130,17 +217,12 @@ load_mbz_releases <- function(release_file, dates_active_file, genre){
     rename(mbz_artist_id = "mbid") %>% 
     as_tibble()
   
-  names(dates_active)
-  # changed genre 2805
-  genre <- genre %>% 
-    select(mbz_artist_id, genre_mbz_album_1)
   
   # -------------------- BUILD AND CLEAN RELEASES DATASET ----------------
   release_data <- release_file %>%  
     as_tibble() %>% 
     rename(mbz_artist_id = "mbid") %>% 
-    left_join(genre, by = "mbz_artist_id") %>% 
-    
+
     mutate(secondary_type_name = ifelse(secondary_type_name == "", 
                                         NA, 
                                         secondary_type_name)) %>% 
@@ -158,8 +240,7 @@ load_mbz_releases <- function(release_file, dates_active_file, genre){
     
     # limit release dates to end of collaboration year + 2
     left_join(dates_active, by = "mbz_artist_id") %>% 
-    mutate(last_active_year = case_when(genre_mbz_album_1 == "classical" ~ 9999, # for composers
-                                        is.na(end_date_year) ~ NA, # for still active artists
+    mutate(last_active_year = case_when(is.na(end_date_year) ~ NA, # for still active artists
                                         TRUE ~ end_date_year)) %>% 
     filter(first_release_date_year < last_active_year + 2 | is.na(last_active_year)) %>% 
     
@@ -174,11 +255,15 @@ load_mbz_releases <- function(release_file, dates_active_file, genre){
     mutate(weight = c("Single" = .2, "EP" = .5, "Album" = 1)[primary_type_name])
   
   
+  
   # ------------------- COMPUTE VARIABLES --------------------------
   
   mbz_releases <- release_data %>%
+    
     group_by(mbz_artist_id) %>%
+    
     summarise(
+      
       release_year_first = min(first_release_date_year),
       release_year_last  = max(first_release_date_year),
       
@@ -189,13 +274,31 @@ load_mbz_releases <- function(release_file, dates_active_file, genre){
       
       release_count_2019_2023 = sum(weight[first_release_date_year >= 2019 &
                                              first_release_date_year <= 2023])
-      
-      # add this? might be relevant
-      # release_career_span = release_year_last - release_year_first
-      
+
     )
+  
+  # exclude composers from the release dates
+  comp <- load_s3("interim/dict/comp_wide_1706.csv",
+                  sep = ";") %>% 
+    mutate(dz_artist_id = as.character(dz_artist_id))
+  
+  mbz_releases <- mbz_releases %>% 
+    left_join(artists, by = "mbz_artist_id") %>% # needed for dz_artist_id
+    left_join(comp, by = "dz_artist_id") %>% 
+    mutate(release_year_first = ifelse(!is.na(last_name_only) & 
+                                         period_szk != "Moderne", # filter old composers: fill out missings on period!!
+                                       NA, 
+                                       release_year_first), 
+           release_year_last = ifelse(!is.na(last_name_only) &
+                                        period_szk != "Moderne",
+                                      NA, 
+                                      release_year_last)
+           ) %>% 
+    select(mbz_artist_id, starts_with("release_"))
   
   return(mbz_releases)
   
 }
+
+
 

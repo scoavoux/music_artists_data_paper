@@ -6,9 +6,6 @@ make_gfk_pop <- function(dz_songs,
   
   # Import  GfK data (file is ISRC/week/sales chanel)
   # Aggregate per year at ISRC level
-  library(DBI)
-  library(duckdb)
-  library(glue)
   
   import_gfk_duckdb <- function(years  = 2019:2022,
                                 bucket = "scoavoux",
@@ -18,7 +15,7 @@ make_gfk_pop <- function(dz_songs,
     on.exit(DBI::dbDisconnect(con, shutdown = TRUE), add = TRUE)
     
     # --- list of parquet keys on S3 --------------------------------------------
-    files    <- glue("s3://{bucket}/GfK/{years}.parquet")
+    files    <- glue::glue("s3://{bucket}/GfK/{years}.parquet")
     file_lit <- paste0("[", paste(sprintf("'%s'", files), collapse = ", "), "]")
     
     # --- the query --------------------------------------------------------------
@@ -40,7 +37,7 @@ make_gfk_pop <- function(dz_songs,
     )
   ")
     
-    dbGetQuery(con, sql)
+    DBI::dbGetQuery(con, sql)
   }
   
   gfk <- import_gfk_duckdb(2019:2022)
@@ -48,20 +45,21 @@ make_gfk_pop <- function(dz_songs,
   
   # From ISRC to track id: pair with song_ids_isrc_matched.csv (WARNING: one ISRC -> many track ids)  
   isrc <- load_s3("records_w3/items/song_ids_isrc_matched.csv")
+  
   isrc_artist_id <- distinct_gfk_isrc %>% 
-    inner_join(isrc) %>% 
+    inner_join(isrc, by = "isrc") %>% 
   # From track_id to artist_id: pair with dz_songs (WARNING: one track_id -> many artists)
-    inner_join(select(dz_songs, song_id, dz_artist_id)) %>% 
+    inner_join(select(dz_songs, song_id, dz_artist_id), by = "song_id") %>% 
   # Reduce to ISRC. For each ISRC, one line for each artist tagged in at least one track id
     distinct(isrc, dz_artist_id)
   
   # Summarize at artist level
   res <- gfk %>% 
-    inner_join(isrc_artist_id) %>% 
+    inner_join(isrc_artist_id, by = "isrc") %>% 
     group_by(dz_artist_id, lab) %>% 
     summarize(sales = sum(sales)) %>% 
     ungroup() %>% 
     pivot_wider(names_from = lab, values_from = sales)
-  res
+
   return(res)
 }

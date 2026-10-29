@@ -8,7 +8,8 @@
 
 # ------- choose real vs simulated data
 
-# to run all: SIMULATION=FALSE LOCAL_DATA_DIR="" Rscript -e "targets::tar_make()"
+# to run production: $ SIMULATION=FALSE LOCAL_DATA_DIR="" Rscript -e "targets::tar_make()"
+# to run simulation: $ SIMULATION=TRUE LOCAL_DATA_DIR="./data/" Rscript -e "targets::tar_make()"
 SIMULATION <- as.logical(
   Sys.getenv("SIMULATION", unset = "FALSE")
 )
@@ -31,10 +32,7 @@ library(tidyr)
 library(stringr)
 library(arrow)
 library(data.table)
-library(sjmisc)
 library(stringi)
-library(yardstick)
-library(kableExtra)
 library(purrr)
 library(lubridate)
 
@@ -53,8 +51,7 @@ if (SIMULATION == FALSE) {
     ),
     
     packages = c("tarchetypes", "paws", "tidyr", "stringr",
-                 "tidyverse", "arrow", "data.table", "sjmisc",
-                 "stringi", "yardstick", "kableExtra")
+                 "tidyverse", "arrow", "data.table", "stringi")
   )
 }
 
@@ -270,7 +267,7 @@ list(
   tar_target(mbz_releases,
              load_mbz_releases(release_file="musicbrainz/musicbrainz_releases.csv",
                                dates_active_file="musicbrainz/musicbrainz_artist_end_date.csv",
-                               genre=mbz_genre_album)), # PLACEHOLDER!
+                               artists)),
   
   # -------- load artists' radio popularity
   tar_target(radio_counts,
@@ -417,29 +414,24 @@ list(
                # respondent demographics
                left_join(respondent_demographics, by = "dz_artist_id") %>% 
                
-               # genres
-
+               # artistmetadata
                left_join(dz_genre_album, by = "dz_artist_id") %>% 
                left_join(mbz_genre_artist, by = "mbz_artist_id") %>% 
                left_join(mbz_genre_album, by = "mbz_artist_id") %>% 
-               
                left_join(n_tracks_feats, by = "dz_artist_id") %>% 
-               
                left_join(dz_likes, by = "dz_artist_id") %>% 
-               
                left_join(song_diversity, by = "dz_artist_id") %>% 
-               
                left_join(n_followers, by = "dz_artist_id") %>% 
-               
                left_join(gfk_pop, by = "dz_artist_id") %>% 
                
                # rm, among others, our dear friend michel onfray
                filter(is.na(genre_dz_album_1) | genre_dz_album_1 != "Livres audio") %>% 
-             
+               filter(is.na(genre_dz_album_2) | genre_dz_album_2 != "Livres audio") %>% 
+               
                # compute final stream share
                mutate(
-                 n_plays_share = n_plays / sum(n_plays, na.rm = T) * 100,
-                 n_plays_share_respondent = n_plays_respondent / sum(n_plays_respondent, na.rm = T) * 100
+                 n_plays_share = n_plays_raw / sum(n_plays_raw, na.rm = T) * 100,
+                 n_plays_share_respondent = n_plays_raw_respondent / sum(n_plays_raw_respondent, na.rm = T) * 100
                  ) %>% 
                
                # select needed variables
@@ -479,7 +471,7 @@ list(
                    rank <= 10000 ~ 10000,
                    rank <= 50000 ~ 50000,
                    rank <= 100000 ~ 100000,
-                   TRUE          ~ 300000
+                   TRUE          ~ nrow(df_complete)
                  )
                ) %>% 
   
@@ -508,9 +500,14 @@ list(
                  starts_with("audience_")
                )
   )
-
   
 )
+
+
+
+
+
+
 
 
 
